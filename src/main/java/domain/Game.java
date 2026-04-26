@@ -8,6 +8,7 @@ public class Game
 {
     private GamePhase phase;
     private List<Player> players;
+    int currentPlayerIndex;
 
     public Game(){
         this.phase = GamePhase.SETUP;
@@ -19,6 +20,7 @@ public class Game
         }
 
         initializePlayers(playerCount);
+        currentPlayerIndex = 0;
         phase = GamePhase.PLAYER_TURN;
     }
 
@@ -39,6 +41,6 @@ public class Game
     }
 
     public Player getCurrentPlayer() {
-        return null;
+        return players.get(currentPlayerIndex);
     }
 }

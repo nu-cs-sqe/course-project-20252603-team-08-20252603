@@ -52,4 +52,14 @@ class GameTest {
 
         assertEquals(GamePhase.PLAYER_TURN, game.getPhase());
     }
+
+
+    @Test
+    void startGame_createsCorrectNumberOfPlayers() {
+        Game game = new Game();
+
+        game.startGame(2, Locale.ENGLISH);
+
+        assertEquals(2, game.getPlayers().size());
+    }
 }

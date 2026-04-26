@@ -1,5 +1,6 @@
 package domain;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -13,11 +14,20 @@ public class Game
             throw new IllegalArgumentException();
         }
 
+        initializePlayers(playerCount);
         phase = GamePhase.PLAYER_TURN;
     }
 
     public GamePhase getPhase() {
         return phase;
+    }
+
+    public void initializePlayers(int playerCount) {
+        players = new ArrayList<>(playerCount);
+
+        for (int i = 0; i < playerCount; i++) {
+            players.add(new Player());
+        }
     }
 
     public List<Player> getPlayers() {

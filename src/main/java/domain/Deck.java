@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class Deck<C> {
-    public List<Card<C>> cards;
+public class Deck {
+    public List<Card> cards;
 
     public Deck() {
         this.cards = new ArrayList<>();
@@ -15,14 +15,14 @@ public class Deck<C> {
         Collections.shuffle(cards);
     }
 
-    public Card<C> drawCard() {
+    public Card drawCard() {
         if (isEmpty()) {
             return null;
         }
         return cards.remove(0);
     }
 
-    public void addCard(Card<C> card) {
+    public void addCard(Card card) {
         cards.add(card);
     }
 

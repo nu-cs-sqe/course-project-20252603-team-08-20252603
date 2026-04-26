@@ -1,15 +1,14 @@
 package domain;
 
-
 import java.util.Map;
 
-public class Card<C> {
+public class Card {
     public int level;
-    public C bonusColor;
-    public Map<C, Integer> cost;
+    public TokenColor bonusColor;
+    public Map<TokenColor, Integer> cost;
     public int prestigePoints;
 
-    public Card(int level, C bonusColor, Map<C, Integer> cost, int prestigePoints) {
+    public Card(int level, TokenColor bonusColor, Map<TokenColor, Integer> cost, int prestigePoints) {
         this.level = level;
         this.bonusColor = bonusColor;
         this.cost = cost;

@@ -69,4 +69,22 @@ class GameTest {
 
         assertEquals(GamePhase.SETUP, game.getPhase());
     }
+
+    @Test
+    void startGame_setsCurrentPlayerToFirstPlayerForTwoPlayers() {
+        Game game = new Game();
+
+        game.startGame(2, Locale.ENGLISH);
+
+        assertEquals(game.getPlayers().get(0), game.getCurrentPlayer());
+    }
+
+    @Test
+    void startGame_setsCurrentPlayerToFirstPlayerForFourPlayers() {
+        Game game = new Game();
+
+        game.startGame(4, Locale.ENGLISH);
+
+        assertEquals(game.getPlayers().get(0), game.getCurrentPlayer());
+    }
 }

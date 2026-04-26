@@ -1,5 +1,6 @@
 package domain;
 
+
 import java.util.Map;
 
 public class Card<C> {

@@ -10,7 +10,7 @@ public class Game
     private List<Player> players;
 
     public Game(){
-
+        this.phase = GamePhase.SETUP;
     }
 
     public void startGame(int playerCount, Locale locale) {

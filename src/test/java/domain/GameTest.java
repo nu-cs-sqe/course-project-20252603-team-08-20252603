@@ -62,4 +62,11 @@ class GameTest {
 
         assertEquals(2, game.getPlayers().size());
     }
+
+    @Test
+    void newGame_startsInSetupPhase() {
+        Game game = new Game();
+
+        assertEquals(GamePhase.SETUP, game.getPhase());
+    }
 }

@@ -9,6 +9,10 @@ public class Game
     private GamePhase phase;
     private List<Player> players;
 
+    public Game(){
+
+    }
+
     public void startGame(int playerCount, Locale locale) {
         if (playerCount < 2 || playerCount > 4) {
             throw new IllegalArgumentException();

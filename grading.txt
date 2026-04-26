@@ -1,0 +1,73 @@
+COMP_SCI 380: Software Quality Engineering Project Grading
+Each student's project grade is determined in two steps:
+1. TeamGrade:TheteamisassignedabaselinelettergradeaccordingtotheGrading Rubrics for Team detailed below.
+2. IndividualAdjustment:Individualcontributionsarethenevaluatedusingthe project's commit history and the Peer Evaluation Survey. Depending on this assessment, a student's final project grade may be adjusted up or down from the team baseline to reflect their specific level of contribution.
+The same process is applied for any project choice.
+Grading Rubrics for the Team
+How to read the rubrics: The evaluation starts with the criteria for F and progresses through D, C, B, and A. The grade advances to the next level if all criteria for the current grade are met or exceeded.
+F: Not Sufficient Work
+• The project does not meet all the criteria of D. D: Progressing
+• Product Completion:
+o Ifthegamehasmultiplecardsorcharacters,atleastonetypeisfully
+implemented.
+o Thegameisplayable.
+• Product Quality:
+o Theteamhasa“definitionofdone”(BVA)fullydocumentedforthepartofthe
+system that is done.
+o AlltheautomatedtestscorrectlyreflecttheBVAanalysis,includingbutnot
+limited to using the correct input values identified by BVA and using the
+appropriate assertions.
+o Automatedtestingmayindicatesomefailures.
+• Process Quality:
+o Theteamusestheprojectmanagementboardveryrarely.
+
+o GitHubrepositorybranchprotectionrulesarenotfullysetupsothatpeople can push into main without a pull request approval.
+o ContinuousIntegration(CI)isnotfullysetuporonlysetupinthelasttwo weeks.
+C: Satisfactory
+• Product Completion:
+o Ifthegamehasmultiplecardsorcharacters,mostofthetypesarefully
+implemented.
+o Thewinconditionisimplemented.
+• Product Quality:
+o Alltheautomatedtestspass.
+o GitHubcommithistorydemonstratesevidenceofaTDD/BDDworkflowforall
+the non-UI code.
+o Thereisevidencethattheteamusesmutationtestingandcodecoverageto
+improve the quality of the test cases, but not all the issues are solved.
+o Theteamhassetupsomecodestylestandards,butnotallthecodesatisfies
+the standard.
+• Process Quality:
+o Theteamusestheprojectmanagementboardsteadilyandfrequently,but
+the description of each task is very vague.
+o GitHubrepositorybranchprotectionrulesarefullysetupsothatpeople
+cannot push into main without a pull request approval.
+o ContinuousIntegration(CI)isnotfullysetuporonlysetupinthelastfive
+weeks.
+o Theteamrarelydocumentseachweek’splanningandprogress.
+B: Good Work
+• Product Completion:
+o (Applicableonlyifthechosengamehasmorethanonewinningcondition)All
+the winning conditions are implemented.
+o Ifthegamehasmultiplecardsorcharacters,allthetypesarefully
+implemented.
+• Product Quality:
+o Thereisevidencethattheteamusesmutationtestingandcodecoverageas
+soon as the concepts are introduced and there is no issue revealed by them. ▪ 100% mutants should be killed (except for equivalent mutant).
+
+▪ 100%cyclomaticcoveragefornon-GUIandnon-enumcode. o Thecodefullysatisfiesthestylestandardstheteamsetup.
+o Thereisprogressonintegrationtesting.
+• Process Quality:
+o Theteamusestheprojectmanagementboardsteadilyandfrequently,and
+the description of each task is detailed.
+o ContinuousIntegration(CI)isfullysetupfromthebeginning.
+o Theteamdocumentseveryweek’splanningandprogressevaluation
+professionally.
+A: Excellent
+• Product Completion:
+o Supportoflocale:
+▪ Thesoftwareallowstheusertochoosebetweenatleasttwo languages at the beginning of the game.
+▪ Thecodesupportseasilyaddingnewlocaleswithoutchanging existing code.
+• Product Quality:
+o ThecodefullysatisfiedthecodestandardsdiscussedinCleanCode. o Integrationtestingisdoneonatleast2mainfeatures.
+Below is a simplified visual summary of the grading rubrics.
+ 

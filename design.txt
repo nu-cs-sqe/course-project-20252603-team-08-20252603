@@ -1,0 +1,257 @@
+4.1 Functional Requirements – Game Setup Phase
+Feature Description
+The Game Setup Phase initializes a new game of Splendor.
+ The system prepares all required game components including players, card decks, nobles, and tokens so that the game is ready for the first turn.
+The setup process should be automatic once the user starts a new game.
+
+User Story
+As a player of Splendor,
+ I want the system to automatically initialize the game when a new game starts,
+ so that the cards, nobles, tokens, and players are properly prepared and the game can begin immediately.
+
+Acceptance Criteria
+The following criteria must be satisfied before the game can start.
+Player Setup
+✅ The game must only start if the number of players is between 2 and 4.
+✅ The system must create a Player object for each player.
+✅ Each player must start with:
+0 tokens
+0 development cards
+0 prestige points
+
+Development Card Setup
+✅ The system must load all development cards.
+✅ Development cards must be divided into three decks:
+Level 1
+Level 2
+Level 3
+✅ Each deck must be shuffled before use.
+✅ The system must place 4 face-up cards from each deck on the table.
+
+Noble Setup
+✅ The system must load all noble tiles.
+✅ The system must randomly select number of players + 1 nobles.
+Example:
+Players
+Nobles
+2
+3
+3
+4
+4
+5
+
+
+Token Bank Setup
+✅ The system must initialize the token supply based on the number of players.
+Players
+Tokens per Color
+2
+4
+3
+5
+4
+7
+
+Colors include:
+Diamond
+Sapphire
+Emerald
+Ruby
+Onyx
+Gold tokens are also initialized for reserved cards.
+
+Turn Initialization
+✅ The system must initialize the turn order.
+✅ The system must set the first player.
+
+Use Case – Start New Game
+Actor
+Player
+
+Preconditions
+The game application has started.
+
+Main Flow
+The player selects Start Game.
+The system asks for the number of players.
+The player enters the number of players.
+The system validates the number of players.
+The system creates player objects.
+The system loads and shuffles the development card decks.
+The system places 4 cards from each deck on the table.
+The system loads noble tiles.
+The system selects players + 1 nobles randomly.
+The system initializes the token bank.
+The system initializes turn order.
+The game enters the first player's turn.
+
+Alternate Flow
+Invalid Player Number
+If the number of players is less than 2 or greater than 4:
+The system displays an error message.
+The player must re-enter the number of players.
+
+Postconditions
+After setup:
+Players are initialized.
+Decks are shuffled.
+Table cards are visible.
+Nobles are placed.
+Token bank is initialized.
+Turn order is determined.
+The system is ready for the first turn.
+
+4.2 Design
+This section describes the system design for implementing the Game Setup Phase.
+The design focuses on:
+clear separation of responsibilities
+easy unit testing
+support for TDD
+
+Core Classes
+Game
+The Game class manages the overall game state and controls the setup process.
+Responsibilities
+Start the game
+Coordinate setup steps
+Track player turns
+Fields
+List<Player> players
+Deck level1Deck
+Deck level2Deck
+Deck level3Deck
+List<Card> level1TableCards
+List<Card> level2TableCards
+List<Card> level3TableCards
+TokenBank tokenBank
+List<Noble> nobles
+int currentPlayerIndex
+Methods
+startGame(int playerCount)
+
+initializePlayers(int playerCount)
+
+initializeDecks()
+
+setupTableCards()
+
+setupNobles(int playerCount)
+
+initializeTokenBank(int playerCount)
+
+initializeTurnOrder()
+
+getCurrentPlayer()
+
+nextTurn()
+
+Player
+Represents a player in the game.
+Fields
+String name
+Map<TokenColor, Integer> tokens
+List<Card> developmentCards
+List<Card> reservedCards
+int prestigePoints
+Methods
+addToken(TokenColor color)
+
+removeToken(TokenColor color)
+
+addDevelopmentCard(Card card)
+
+reserveCard(Card card)
+
+getPrestigePoints()
+
+Deck
+Represents a deck of development cards.
+Fields
+List<Card> cards
+Methods
+shuffle()
+
+drawCard()
+
+addCard(Card card)
+
+isEmpty()
+
+Card
+Represents a development card.
+Fields
+int level
+TokenColor bonusColor
+Map<TokenColor, Integer> cost
+int prestigePoints
+
+Noble
+Represents a noble tile.
+Fields
+Map<TokenColor, Integer> requirements
+int prestigePoints
+
+TokenBank
+Represents the central supply of tokens.
+Fields
+Map<TokenColor, Integer> tokens
+Methods
+initialize(int playerCount)
+
+takeToken(TokenColor color)
+
+returnToken(TokenColor color)
+
+getTokenCount(TokenColor color)
+
+TokenColor (Enum)
+DIAMOND
+SAPPHIRE
+EMERALD
+RUBY
+ONYX
+GOLD
+
+Game Setup Workflow
+The initialization process follows this sequence:
+startGame()
+     ↓
+initializePlayers()
+     ↓
+initializeDecks()
+     ↓
+setupTableCards()
+     ↓
+setupNobles()
+     ↓
+initializeTokenBank()
+     ↓
+initializeTurnOrder()
+     ↓
+Game Ready
+
+Design Considerations
+The design follows Clean Code principles and supports testing.
+Single Responsibility
+Each class handles one concept:
+Game → game flow
+Player → player state
+Deck → card deck
+TokenBank → token management
+
+Testability
+Each setup step is implemented as a separate method so it can be tested independently.
+Example unit tests:
+testDeckShuffle()
+testCorrectNumberOfTableCards()
+testCorrectNumberOfNobles()
+testTokenInitialization()
+
+Future Extension
+The design allows new features to be added easily:
+card reservation
+buying cards
+noble acquisition
+victory condition
+

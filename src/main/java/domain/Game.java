@@ -43,4 +43,8 @@ public class Game
     public Player getCurrentPlayer() {
         return players.get(currentPlayerIndex);
     }
+
+    public TokenBank getTokenBank() {
+        return null;
+    }
 }

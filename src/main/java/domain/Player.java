@@ -1,27 +1,46 @@
 package domain;
 
-import java.util.Collections;
+import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.List;
+import java.util.Map;
 
 public class Player {
+    private final Map<TokenColor, Integer> tokens;
+    private final List<Card> developmentCards;
+    private final List<Card> reservedCards;
+    private int prestigePoints;
+
+    public Player() {
+        this.tokens = new EnumMap<>(TokenColor.class);
+        this.developmentCards = new ArrayList<>();
+        this.reservedCards = new ArrayList<>();
+        this.prestigePoints = 0;
+    }
 
     public int getPrestigePoints() {
-        return -1;
+        return prestigePoints;
     }
 
     public int getTokenCount(TokenColor color) {
-        return -1;
+        return tokens.getOrDefault(color, 0);
     }
 
     public List<Card> getDevelopmentCards() {
-        return Collections.singletonList(new Card());
+        return developmentCards;
     }
 
     public List<Card> getReservedCards() {
-        return Collections.singletonList(new Card());
+        return reservedCards;
     }
 
     public int getTotalTokenCount() {
-        return -1;
+        int total = 0;
+
+        for (int count : tokens.values()) {
+            total += count;
+        }
+
+        return total;
     }
 }

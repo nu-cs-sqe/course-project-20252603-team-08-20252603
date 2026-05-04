@@ -15,5 +15,8 @@
 - JUnit 5.10
 - Gradle 8.10
 
+## Design Choice
+- Non-GUI design
+
 ## Acknowledgements
 REFERENCES, SOURCE OF HELP ETC

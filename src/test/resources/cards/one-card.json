@@ -1,0 +1,11 @@
+[
+  {
+    "level": 2,
+    "bonusColor": "SAPPHIRE",
+    "prestigePoints": 1,
+    "cost": {
+      "ONYX": 2,
+      "EMERALD": 1
+    }
+  }
+]

@@ -17,11 +17,12 @@ import java.util.Map;
 public class CardLoader {
 
     public List<Card> loadFromClasspath(Class<?> anchorClass, String resourcePath) throws IOException {
-        try (InputStream in = anchorClass.getResourceAsStream(resourcePath)) {
-            if (in == null) {
-                throw new FileNotFoundException("Resource not found: " + resourcePath);
-            }
-            JsonArray root = JsonParser.parseReader(new InputStreamReader(in, StandardCharsets.UTF_8))
+        InputStream in = anchorClass.getResourceAsStream(resourcePath);
+        if (in == null) {
+            throw new FileNotFoundException("Resource not found: " + resourcePath);
+        }
+        try (InputStream stream = in) {
+            JsonArray root = JsonParser.parseReader(new InputStreamReader(stream, StandardCharsets.UTF_8))
                     .getAsJsonArray();
             List<Card> cards = new ArrayList<>();
             for (JsonElement element : root) {

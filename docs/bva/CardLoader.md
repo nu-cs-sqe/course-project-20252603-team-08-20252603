@@ -24,6 +24,6 @@ JSON root is an **array** of objects with `level` (int), `bonusColor` (`TokenCol
   - **State of the system**: `resourcePath` points to a **present** classpath file whose array contains **at least one** well-formed card.
   - **Expected output**: non-empty `List<Card>`; first element’s fields match the file.
 
-- **CL-FILE-02** ( :x: )
+- **CL-FILE-02** ( :white_check_mark: )
   - **State of the system**: `anchorClass.getResourceAsStream(resourcePath)` is **null** (unknown path).
   - **Expected output**: fails with `IOException` (or subclass such as `FileNotFoundException`) carrying a message that identifies the missing resource.

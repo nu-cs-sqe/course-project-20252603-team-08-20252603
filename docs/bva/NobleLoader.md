@@ -20,7 +20,7 @@
 
 JSON root is an **array** of objects with `requirements` (object: `TokenColor` enum name → non-negative int) and `prestigePoints` (int). Encoding UTF-8.
 
-- **NL-FILE-01** ( :x: )
+- **NL-FILE-01** ( :white_check_mark: )
   - **State of the system**: `resourcePath` points to a **present** classpath file whose array contains **at least one** well-formed noble.
   - **Expected output**: non-empty `List<Noble>`; first element’s `requirements` and `prestigePoints` match the file.
 

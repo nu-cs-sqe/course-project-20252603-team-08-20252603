@@ -1,6 +1,8 @@
 package domain;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.util.List;
@@ -20,5 +22,16 @@ class CardLoaderTest {
         assertEquals(1, card.prestigePoints);
         assertEquals(2, card.cost.get(TokenColor.ONYX));
         assertEquals(1, card.cost.get(TokenColor.EMERALD));
+    }
+
+    @Test
+    void loadFromClasspath_missingResource_throwsIOExceptionWithPathInMessage() {
+        CardLoader loader = new CardLoader();
+        String missingPath = "/cards/no-such-file.json";
+
+        IOException thrown =
+                assertThrows(IOException.class, () -> loader.loadFromClasspath(CardLoaderTest.class, missingPath));
+
+        assertTrue(thrown.getMessage().contains(missingPath));
     }
 }

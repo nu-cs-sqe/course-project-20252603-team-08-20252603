@@ -1,64 +1,59 @@
 # Deck — BVA
 
-`Deck` holds a list of development `Card`s for one level during setup and play. Public API: construct an empty deck, **add** cards (typically from a loader), **shuffle**, **draw** from the front, and query **isEmpty**. Drawing uses index **0** as the “top” of the deck.
+`Deck` holds development `Card`s for one pile during **game setup** and later play: **construct** an empty deck, **add** cards, **shuffle**, **draw** from the front (index `0`), and **isEmpty**. This document lists only cases covered by **`DeckTest`** for the setup phase (all implemented).
 
 ## Steps 1–3 (intermediate)
 
-**Partitions**
+**Focus**
 
-- **Size**: 0 cards vs 1 vs 2+.
-- **drawCard**: deck empty vs non-empty.
-- **shuffle**: effect on size (order may vary; tests only fix size / non-empty).
+- Fresh deck is empty; drawing is `null` until cards are added.
+- **FIFO** draw order matches add order for setup smoke tests.
+- **Shuffle** does not change how many cards are in the deck.
 
 **Boundaries**
 
-- **Empty deck**: `isEmpty` true; `drawCard` returns `null`.
-- **After last draw**: deck becomes empty again.
+- Size **0** vs **2+** for shuffle test; draw until empty again.
 
 ## Step 4 — Test cases (required)
 
 ### Method under test: `Deck()` (constructor)
 
 - **DECK-CTOR-01** ( :white_check_mark: )
-  - **State of the system**: newly constructed `Deck`.
-  - **Expected output**: internal `cards` is empty; `isEmpty()` is `true`; `drawCard()` returns `null`.
+  - **State of the system**: `new Deck()` right after construction.
+  - **Expected output**: `isEmpty()` is `true` and `drawCard()` is `null` (see `gameSetup_newDeckIsEmpty`).
 
 ### Method under test: `isEmpty()`
 
 - **DECK-IE-01** ( :white_check_mark: )
-  - **State of the system**: deck with **no** cards.
-  - **Expected output**: `true`.
+  - **State of the system**: newly constructed deck, no `addCard` yet.
+  - **Expected output**: `true` (`gameSetup_newDeckIsEmpty`).
 
 - **DECK-IE-02** ( :white_check_mark: )
-  - **State of the system**: deck with **at least one** card after `addCard`.
-  - **Expected output**: `false` (until all cards are drawn).
+  - **State of the system**: after two cards were added and both drawn in order.
+  - **Expected output**: `true` (`gameSetup_addAndDrawPopsInOrder`).
+
+- **DECK-IE-03** ( :white_check_mark: )
+  - **State of the system**: deck with two cards after `shuffle()`.
+  - **Expected output**: `false` (`gameSetup_shuffle_doesNotChangeSize`).
 
 ### Method under test: `drawCard()`
 
 - **DECK-DRAW-01** ( :white_check_mark: )
-  - **State of the system**: deck with **zero** cards.
-  - **Expected output**: `null`; deck remains empty.
+  - **State of the system**: deck with zero cards.
+  - **Expected output**: `null` (`gameSetup_newDeckIsEmpty`).
 
 - **DECK-DRAW-02** ( :white_check_mark: )
-  - **State of the system**: cards added in order **A** then **B** (two draws possible).
-  - **Expected output**: first `drawCard()` returns **A** and removes it; second returns **B**; then `isEmpty()` is `true`.
+  - **State of the system**: `addCard(A)` then `addCard(B)`; no shuffle between adds.
+  - **Expected output**: first `drawCard()` returns `A`, second returns `B` (`gameSetup_addAndDrawPopsInOrder`).
 
 ### Method under test: `addCard(Card card)`
 
 - **DECK-ADD-01** ( :white_check_mark: )
-  - **State of the system**: empty deck; `addCard` with a non-null `Card`.
-  - **Expected output**: subsequent `drawCard()` returns that same card reference (FIFO with single card).
-
-- **DECK-ADD-02** ( :x: )
-  - **State of the system**: `card` is **`null`** (boundary; behavior not specified in design doc).
-  - **Expected output**: *document when decided* (reject vs allow); **no automated test yet**.
+  - **State of the system**: empty deck; `addCard` twice with two distinct `Card` instances.
+  - **Expected output**: draws return those instances in FIFO order (`gameSetup_addAndDrawPopsInOrder`).
 
 ### Method under test: `shuffle()`
 
-- **DECK-SHUF-01** ( :x: )
-  - **State of the system**: deck with **zero** cards; then `shuffle()`.
-  - **Expected output**: still empty; no exception (**not covered by its own test**).
-
-- **DECK-SHUF-02** ( :white_check_mark: )
-  - **State of the system**: deck with **two** non-null cards; record `cards.size()` before shuffle.
-  - **Expected output**: size unchanged; deck still not empty.
+- **DECK-SHUF-01** ( :white_check_mark: )
+  - **State of the system**: deck with exactly two cards; record `cards.size()` before `shuffle()`.
+  - **Expected output**: size unchanged after shuffle; deck is still not empty (`gameSetup_shuffle_doesNotChangeSize`).

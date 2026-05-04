@@ -8,6 +8,8 @@ public class Card {
     public Map<TokenColor, Integer> cost;
     public int prestigePoints;
 
+    public Card() {}
+
     public Card(int level, TokenColor bonusColor, Map<TokenColor, Integer> cost, int prestigePoints) {
         this.level = level;
         this.bonusColor = bonusColor;

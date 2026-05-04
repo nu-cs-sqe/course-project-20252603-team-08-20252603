@@ -9,6 +9,7 @@ public class Game
     private GamePhase phase;
     private List<Player> players;
     int currentPlayerIndex;
+    private TokenBank tokenBank;
 
     public Game(){
         this.phase = GamePhase.SETUP;
@@ -20,6 +21,7 @@ public class Game
         }
 
         initializePlayers(playerCount);
+        initializeTokenBank(playerCount);
         currentPlayerIndex = 0;
         phase = GamePhase.PLAYER_TURN;
     }
@@ -28,7 +30,7 @@ public class Game
         return phase;
     }
 
-    public void initializePlayers(int playerCount) {
+    private void initializePlayers(int playerCount) {
         players = new ArrayList<>(playerCount);
 
         for (int i = 0; i < playerCount; i++) {
@@ -42,5 +44,15 @@ public class Game
 
     public Player getCurrentPlayer() {
         return players.get(currentPlayerIndex);
+    }
+
+
+    private void initializeTokenBank(int playerCount) {
+        tokenBank = new TokenBank();
+        tokenBank.initialize(playerCount);
+    }
+
+    public TokenBank getTokenBank() {
+        return tokenBank;
     }
 }

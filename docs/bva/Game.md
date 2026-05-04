@@ -14,9 +14,9 @@
 
 ## Method: getPlayers()
 
-|              | State of the System | Expected output | Implemented? |
-|--------------|---------------------|-----------------|--------------|
-| Test Case 6  | After startGame(2)  | players.size() == 2 | :white_check_mark: |
+|             | State of the System | Expected output     | Implemented?       |
+|-------------|---------------------|---------------------|--------------------|
+| Test Case 6 | After startGame(2)  | players.size() == 2 | :white_check_mark: |
 
 ---
 
@@ -35,3 +35,15 @@
 |--------------|---------------------|--------------------------------|--------------------|
 | Test Case 9  | After startGame(2)  | First player is current player | :white_check_mark: |
 | Test Case 10 | After startGame(4)  | First player is current player | :white_check_mark: |
+
+
+## Method: getTokenBank()
+
+|              | State of the System       | Expected output                            | Implemented?       |
+|--------------|---------------------------|--------------------------------------------|--------------------|
+| Test Case 11 | Before startGame()        | getTokenBank() == null                     | :white_check_mark: |
+| Test Case 12 | After startGame(2)        | getTokenBank().getTokenCount(DIAMOND) == 4 | :white_check_mark: |
+| Test Case 13 | After startGame(3)        | getTokenBank().getTokenCount(DIAMOND) == 5 | :white_check_mark: |
+| Test Case 14 | After startGame(4)        | getTokenBank().getTokenCount(DIAMOND) == 7 | :white_check_mark: |
+| Test Case 15 | After startGame(2)        | getTokenBank().getTokenCount(GOLD) == 5    | :white_check_mark: |
+| Test Case 16 | After failed startGame(1) | getTokenBank() == null                     | :white_check_mark: |

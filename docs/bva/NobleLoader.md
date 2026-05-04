@@ -24,6 +24,6 @@ JSON root is an **array** of objects with `requirements` (object: `TokenColor` e
   - **State of the system**: `resourcePath` points to a **present** classpath file whose array contains **at least one** well-formed noble.
   - **Expected output**: non-empty `List<Noble>`; first element’s `requirements` and `prestigePoints` match the file.
 
-- **NL-FILE-02** ( :x: )
+- **NL-FILE-02** ( :white_check_mark: )
   - **State of the system**: `anchorClass.getResourceAsStream(resourcePath)` is **null** (unknown path).
   - **Expected output**: fails with `IOException` (or subclass such as `FileNotFoundException`) carrying a message that identifies the missing resource.

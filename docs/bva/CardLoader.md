@@ -20,7 +20,7 @@
 
 JSON root is an **array** of objects with `level` (int), `bonusColor` (`TokenColor` enum name), `prestigePoints` (int), and `cost` (object: color name → int). Encoding UTF-8.
 
-- **CL-FILE-01** ( :x: )
+- **CL-FILE-01** ( :white_check_mark: )
   - **State of the system**: `resourcePath` points to a **present** classpath file whose array contains **at least one** well-formed card.
   - **Expected output**: non-empty `List<Card>`; first element’s fields match the file.
 

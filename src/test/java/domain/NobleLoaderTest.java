@@ -1,6 +1,8 @@
 package domain;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.util.List;
@@ -19,5 +21,16 @@ class NobleLoaderTest {
         assertEquals(3, noble.requirements.get(TokenColor.EMERALD));
         assertEquals(3, noble.requirements.get(TokenColor.RUBY));
         assertEquals(3, noble.requirements.get(TokenColor.ONYX));
+    }
+
+    @Test
+    void loadFromClasspath_missingResource_throwsIOExceptionWithPathInMessage() {
+        NobleLoader loader = new NobleLoader();
+        String missingPath = "/nobles/no-such-file.json";
+
+        IOException thrown =
+                assertThrows(IOException.class, () -> loader.loadFromClasspath(NobleLoaderTest.class, missingPath));
+
+        assertTrue(thrown.getMessage().contains(missingPath));
     }
 }

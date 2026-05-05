@@ -4,13 +4,13 @@
 
 |             | State of the System | Expected output                               | Implemented?       |
 |-------------|---------------------|-----------------------------------------------|--------------------|
-| Test Case 1 | playerCount = 1     | Throw IllegalArgumentException                | :white_check_mark: |
+| Test Case 1 | playerCount = 1     | Throw IllegalArgumentException                | :x:                |
 | Test Case 2 | playerCount = 2     | Game starts successfully, phase = PLAYER_TURN | :white_check_mark: |
 | Test Case 3 | playerCount = 3     | Game starts successfully, phase = PLAYER_TURN | :white_check_mark: |
 | Test Case 4 | playerCount = 4     | Game starts successfully, phase = PLAYER_TURN | :white_check_mark: |
-| Test Case 5 | playerCount = 5     | Throw IllegalArgumentException                | :white_check_mark: |
-| Test Case 17 | playerCount = 3, locale = US | Returns ActionResult (isSuccess=true), phase = PLAYER_TURN | :x:                |
-| Test Case 18 | playerCount = 5, locale = US | Returns ActionResult (isSuccess=false), phase remains SETUP | :x:                |
+| Test Case 5 | playerCount = 5     | Throw IllegalArgumentException                | :x:                |
+| Test Case 17 | playerCount = 3, locale = US | Returns ActionResult (isSuccess=true), phase = PLAYER_TURN | :white_check_mark: |
+| Test Case 18 | playerCount = 5, locale = US | Returns ActionResult (isSuccess=false), phase remains SETUP | :white_check_mark: |
 
 ---
 
@@ -48,4 +48,4 @@
 | Test Case 13 | After startGame(3)        | getTokenBank().getTokenCount(DIAMOND) == 5 | :white_check_mark: |
 | Test Case 14 | After startGame(4)        | getTokenBank().getTokenCount(DIAMOND) == 7 | :white_check_mark: |
 | Test Case 15 | After startGame(2)        | getTokenBank().getTokenCount(GOLD) == 5    | :white_check_mark: |
-| Test Case 16 | After failed startGame(1) | getTokenBank() == null                     | :white_check_mark: |
+| Test Case 16 | After failed startGame(1) | getTokenBank() == null                     | :x:                |

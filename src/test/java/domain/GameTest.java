@@ -12,18 +12,16 @@ class GameTest {
     void startGame_rejectsTooFewPlayers() {
         Game game = new Game();
 
-        assertThrows(IllegalArgumentException.class, () -> {
-            game.startGame(1, Locale.ENGLISH);
-        });
+        ActionResult result = game.startGame(1, Locale.ENGLISH);
+        assertFalse(result.isSuccess());
     }
 
     @Test
     void startGame_rejectsTooManyPlayers() {
         Game game = new Game();
 
-        assertThrows(IllegalArgumentException.class, () -> {
-            game.startGame(5, Locale.ENGLISH);
-        });
+        ActionResult result = game.startGame(5, Locale.ENGLISH);
+        assertFalse(result.isSuccess());
     }
 
     @Test
@@ -136,9 +134,8 @@ class GameTest {
     void failedStartGame_doesNotInitializeTokenBank() {
         Game game = new Game();
 
-        assertThrows(IllegalArgumentException.class, () -> {
-            game.startGame(1, Locale.ENGLISH);
-        });
+        ActionResult result = game.startGame(1, Locale.ENGLISH);
+        assertFalse(result.isSuccess());
 
         assertNull(game.getTokenBank());
     }

@@ -14,6 +14,8 @@
 # Week 5 (04/27/2026-05/03/2026)
 1. [done] Mengxi-Xia(Mengxi Xia): Added TokenBank integration into game setup and implemented Player initial state with full TDD coverage. Link to PR: (https://github.com/nu-cs-sqe/course-project-20252603-team-08-20252603/pull/25, https://github.com/nu-cs-sqe/course-project-20252603-team-08-20252603/pull/24)
 2. [done] avemujicasaki(Sicheng Liu): Implementing CardLoader class that enable loading cards from external json files. Creating BVA test and method for loading card and noble. Link to PR: (https://github.com/nu-cs-sqe/course-project-20252603-team-08-20252603/pull/27, https://github.com/nu-cs-sqe/course-project-20252603-team-08-20252603/pull/26)
+3. [done] zwu454(Zhixuan Wu): Implement ActionResult and MessageProvider with i18n support. Link to PR: (https://github.com/nu-cs-sqe/course-project-20252603-team-08-20252603/pull/36)
+4. [done] zwu454(Zhixuan Wu): Implement RuleValidator and integrate with Game.startGame. Link to PR: (https://github.com/nu-cs-sqe/course-project-20252603-team-08-20252603/pull/39)
 
 # Week X (XX/XX/2026-XX/XX/2026) TEMPLATE (You can change the format to whatever the team likes better)
 **Planning and Progress Tracking**:

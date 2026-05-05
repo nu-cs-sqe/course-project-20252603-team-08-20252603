@@ -9,6 +9,8 @@
 | Test Case 3 | playerCount = 3     | Game starts successfully, phase = PLAYER_TURN | :white_check_mark: |
 | Test Case 4 | playerCount = 4     | Game starts successfully, phase = PLAYER_TURN | :white_check_mark: |
 | Test Case 5 | playerCount = 5     | Throw IllegalArgumentException                | :white_check_mark: |
+| Test Case 17 | playerCount = 3, locale = US | Returns ActionResult (isSuccess=true), phase = PLAYER_TURN | :x:                |
+| Test Case 18 | playerCount = 5, locale = US | Returns ActionResult (isSuccess=false), phase remains SETUP | :x:                |
 
 ---
 

@@ -142,4 +142,20 @@ class GameTest {
 
         assertNull(game.getTokenBank());
     }
+
+    @Test
+    public void testStartGameWithValidPlayers() {
+        Game game = new Game();
+        ActionResult result = game.startGame(3, Locale.US);
+        assertTrue(result.isSuccess());
+        assertEquals(GamePhase.PLAYER_TURN, game.getPhase());
+    }
+
+    @Test
+    public void testStartGameWithInvalidPlayersReturnsFailure() {
+        Game game = new Game();
+        ActionResult result = game.startGame(5, Locale.US);
+        assertFalse(result.isSuccess());
+        assertEquals(GamePhase.SETUP, game.getPhase());
+    }
 }

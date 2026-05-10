@@ -10,20 +10,30 @@ public class Game
     private List<Player> players;
     int currentPlayerIndex;
     private TokenBank tokenBank;
+    private RuleValidator ruleValidator;
 
     public Game(){
         this.phase = GamePhase.SETUP;
     }
 
-    public void startGame(int playerCount, Locale locale) {
-        if (playerCount < 2 || playerCount > 4) {
-            throw new IllegalArgumentException();
+    public ActionResult startGame(int playerCount, Locale locale) {
+        initializeRuleValidator();
+
+        ActionResult validationResult = ruleValidator.validatePlayerCount(playerCount, locale);
+        if (!validationResult.isSuccess()) {
+            return validationResult;
         }
 
         initializePlayers(playerCount);
         initializeTokenBank(playerCount);
         currentPlayerIndex = 0;
         phase = GamePhase.PLAYER_TURN;
+
+        return ActionResult.success();
+    }
+
+    private void initializeRuleValidator() {
+        this.ruleValidator = new RuleValidator();
     }
 
     public GamePhase getPhase() {

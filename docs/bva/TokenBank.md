@@ -25,22 +25,22 @@
 
 ## Method: addTokens(Map<TokenColor, Integer> tokensToAdd)
 
-|              | State of the System                           | Expected output                                 | Implemented? |
-|--------------|-----------------------------------------------|-------------------------------------------------|--------------|
-| Test Case 10 | After initialize(2), add 1 DIAMOND            | DIAMOND token count == 5                        | :x:          |
-| Test Case 11 | After initialize(2), add 2 DIAMOND and 1 RUBY | DIAMOND token count == 6, RUBY token count == 5 | :x:          |
-| Test Case 12 | After initialize(2), add 1 GOLD               | GOLD token count == 6                           | :x:          |
-| Test Case 13 | After initialize(2), add empty token map      | Token counts remain unchanged                   | :x:          |
+|              | State of the System                           | Expected output                                 | Implemented?       |
+|--------------|-----------------------------------------------|-------------------------------------------------|--------------------|
+| Test Case 10 | After initialize(2), add 1 DIAMOND            | DIAMOND token count == 5                        | :white_check_mark: |
+| Test Case 11 | After initialize(2), add 2 DIAMOND and 1 RUBY | DIAMOND token count == 6, RUBY token count == 5 | :white_check_mark: |
+| Test Case 12 | After initialize(2), add 1 GOLD               | GOLD token count == 6                           | :white_check_mark: |
+| Test Case 13 | After initialize(2), add empty token map      | Token counts remain unchanged                   | :white_check_mark: |
 
 ---
 
 ## Method: removeTokens(Map<TokenColor, Integer> tokensToRemove)
 
-|              | State of the System                              | Expected output                                                 | Implemented? |
-|--------------|--------------------------------------------------|-----------------------------------------------------------------|--------------|
-| Test Case 14 | After initialize(2), remove 1 DIAMOND            | DIAMOND token count == 3                                        | :x:          |
-| Test Case 15 | After initialize(2), remove 2 DIAMOND and 1 RUBY | DIAMOND token count == 2, RUBY token count == 3                 | :x:          |
-| Test Case 16 | After initialize(2), remove 1 GOLD               | GOLD token count == 4                                           | :x:          |
-| Test Case 17 | After initialize(2), remove empty token map      | Token counts remain unchanged                                   | :x:          |
-| Test Case 18 | After initialize(2), remove 5 DIAMOND            | Throw IllegalArgumentException and leave token counts unchanged | :x:          |
-| Test Case 19 | New TokenBank object, remove 1 DIAMOND           | Throw IllegalArgumentException and leave token counts unchanged | :x:          |
+|              | State of the System                              | Expected output                                                 | Implemented?       |
+|--------------|--------------------------------------------------|-----------------------------------------------------------------|--------------------|
+| Test Case 14 | After initialize(2), remove 1 DIAMOND            | DIAMOND token count == 3                                        | :white_check_mark: |
+| Test Case 15 | After initialize(2), remove 2 DIAMOND and 1 RUBY | DIAMOND token count == 2, RUBY token count == 3                 | :white_check_mark: |
+| Test Case 16 | After initialize(2), remove 1 GOLD               | GOLD token count == 4                                           | :white_check_mark: |
+| Test Case 17 | After initialize(2), remove empty token map      | Token counts remain unchanged                                   | :white_check_mark: |
+| Test Case 18 | After initialize(2), remove 5 DIAMOND            | Throw IllegalArgumentException and leave token counts unchanged | :white_check_mark: |
+| Test Case 19 | New TokenBank object, remove 1 DIAMOND           | Throw IllegalArgumentException and leave token counts unchanged | :white_check_mark: |

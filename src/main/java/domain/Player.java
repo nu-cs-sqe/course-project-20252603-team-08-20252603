@@ -26,6 +26,12 @@ public class Player {
         return tokens.getOrDefault(color, 0);
     }
 
+    public void addTokens(Map<TokenColor, Integer> tokensToAdd) {
+    }
+
+    public void removeTokens(Map<TokenColor, Integer> tokensToRemove) {
+    }
+
     public List<Card> getDevelopmentCards() {
         return developmentCards;
     }

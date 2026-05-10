@@ -11,12 +11,12 @@
 | Test Case 5  | playerCount = 5              | Throw IllegalArgumentException                                                              | :white_check_mark: |
 | Test Case 17 | playerCount = 3, locale = US | Returns ActionResult (isSuccess=true), phase = PLAYER_TURN                                  | :white_check_mark: |
 | Test Case 18 | playerCount = 5, locale = US | Returns ActionResult (isSuccess=false), phase remains SETUP                                 | :white_check_mark: |
-| Test Case 28 | After startGame(2)           | getFaceUpCards(1).size() == 4, getFaceUpCards(2).size() == 4, getFaceUpCards(3).size() == 4 | :x:                |
-| Test Case 29 | After startGame(2)           | getDeck(1).cards.size() == 36, getDeck(2).cards.size() == 26, getDeck(3).cards.size() == 16 | :x:                |
-| Test Case 30 | After startGame(2)           | getRevealedNobles().size() == 3                                                             | :x:                |
-| Test Case 31 | After startGame(3)           | getRevealedNobles().size() == 4                                                             | :x:                |
-| Test Case 32 | After startGame(4)           | getRevealedNobles().size() == 5                                                             | :x:                |
-| Test Case 33 | After failed startGame(1)    | getFaceUpCards(1), getDeck(1), and getRevealedNobles() are null                             | :x:                |
+| Test Case 28 | After startGame(2)           | getFaceUpCards(1).size() == 4, getFaceUpCards(2).size() == 4, getFaceUpCards(3).size() == 4 | :white_check_mark: |
+| Test Case 29 | After startGame(2)           | getDeck(1).cards.size() == 36, getDeck(2).cards.size() == 26, getDeck(3).cards.size() == 16 | :white_check_mark: |
+| Test Case 30 | After startGame(2)           | getRevealedNobles().size() == 3                                                             | :white_check_mark: |
+| Test Case 31 | After startGame(3)           | getRevealedNobles().size() == 4                                                             | :white_check_mark: |
+| Test Case 32 | After startGame(4)           | getRevealedNobles().size() == 5                                                             | :white_check_mark: |
+| Test Case 33 | After failed startGame(1)    | getFaceUpCards(1), getDeck(1), and getRevealedNobles() are null                             | :white_check_mark: |
 
 ---
 

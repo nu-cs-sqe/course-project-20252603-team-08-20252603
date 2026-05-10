@@ -33,4 +33,13 @@ class NobleLoaderTest {
 
         assertTrue(thrown.getMessage().contains(missingPath));
     }
+
+    @Test
+    void loadFromClasspath_fullProductionNoblesResource_returnsCompleteNobles() throws IOException {
+        NobleLoader loader = new NobleLoader();
+        List<Noble> nobles = loader.loadFromClasspath(NobleLoaderTest.class, "/nobles/nobles.json");
+
+        assertEquals(10, nobles.size());
+        assertTrue(nobles.stream().allMatch(noble -> noble.prestigePoints == 3));
+    }
 }

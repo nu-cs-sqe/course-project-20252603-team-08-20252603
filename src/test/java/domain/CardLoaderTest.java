@@ -45,4 +45,14 @@ class CardLoaderTest {
         assertEquals(30, cards.stream().filter(card -> card.level == 2).count());
         assertEquals(20, cards.stream().filter(card -> card.level == 3).count());
     }
+
+    @Test
+    void loadFromClasspath_invalidTokenColor_throwsIOExceptionWithPathInMessage() {
+        CardLoader loader = new CardLoader();
+        String invalidPath = "/cards/invalid-color-card.json";
+
+        IOException thrown = assertThrows(IOException.class, () -> loader.loadFromClasspath(CardLoaderTest.class, invalidPath));
+
+        assertTrue(thrown.getMessage().contains(invalidPath));
+    }
 }

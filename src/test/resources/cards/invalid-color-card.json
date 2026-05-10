@@ -1,0 +1,10 @@
+[
+  {
+    "level": 1,
+    "bonusColor": "PURPLE",
+    "prestigePoints": 0,
+    "cost": {
+      "DIAMOND": 1
+    }
+  }
+]

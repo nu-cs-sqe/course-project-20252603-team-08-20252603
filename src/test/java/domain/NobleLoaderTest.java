@@ -42,4 +42,14 @@ class NobleLoaderTest {
         assertEquals(10, nobles.size());
         assertTrue(nobles.stream().allMatch(noble -> noble.prestigePoints == 3));
     }
+
+    @Test
+    void loadFromClasspath_invalidTokenColor_throwsIOExceptionWithPathInMessage() {
+        NobleLoader loader = new NobleLoader();
+        String invalidPath = "/nobles/invalid-color-noble.json";
+
+        IOException thrown = assertThrows(IOException.class, () -> loader.loadFromClasspath(NobleLoaderTest.class, invalidPath));
+
+        assertTrue(thrown.getMessage().contains(invalidPath));
+    }
 }

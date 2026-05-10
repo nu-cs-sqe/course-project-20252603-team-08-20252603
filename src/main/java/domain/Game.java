@@ -8,6 +8,15 @@ import java.util.Map;
 
 public class Game
 {
+    private static final int FIRST_PLAYER_INDEX = 0;
+    private static final int NEXT_PLAYER_OFFSET = 1;
+    private static final int MIN_CARD_LEVEL = 1;
+    private static final int MAX_CARD_LEVEL = 3;
+    private static final int FACE_UP_CARDS_PER_LEVEL = 4;
+    private static final int EXTRA_REVEALED_NOBLE_COUNT = 1;
+    private static final String CARDS_RESOURCE_PATH = "/cards/cards.json";
+    private static final String NOBLES_RESOURCE_PATH = "/nobles/nobles.json";
+
     private GamePhase phase;
     private List<Player> players;
     int currentPlayerIndex;
@@ -33,7 +42,7 @@ public class Game
         initializeTokenBank(playerCount);
         initializeCards();
         initializeNobles(playerCount);
-        currentPlayerIndex = 0;
+        currentPlayerIndex = FIRST_PLAYER_INDEX;
         phase = GamePhase.PLAYER_TURN;
 
         return ActionResult.success();
@@ -113,18 +122,18 @@ public class Game
 
         currentPlayer.addTokens(tokensToTake);
         tokenBank.removeTokens(tokensToTake);
-        currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
+        currentPlayerIndex = (currentPlayerIndex + NEXT_PLAYER_OFFSET) % players.size();
 
         return ActionResult.success();
     }
 
     private void initializeCards() {
         try {
-            List<Card> cards = new CardLoader().loadFromClasspath(Game.class, "/cards/cards.json");
+            List<Card> cards = new CardLoader().loadFromClasspath(Game.class, CARDS_RESOURCE_PATH);
             decks = new HashMap<>();
             faceUpCards = new HashMap<>();
 
-            for (int level = 1; level <= 3; level++) {
+            for (int level = MIN_CARD_LEVEL; level <= MAX_CARD_LEVEL; level++) {
                 decks.put(level, new Deck());
                 faceUpCards.put(level, new ArrayList<>());
             }
@@ -133,9 +142,9 @@ public class Game
                 decks.get(card.level).addCard(card);
             }
 
-            for (int level = 1; level <= 3; level++) {
+            for (int level = MIN_CARD_LEVEL; level <= MAX_CARD_LEVEL; level++) {
                 decks.get(level).shuffle();
-                for (int i = 0; i < 4; i++) {
+                for (int i = 0; i < FACE_UP_CARDS_PER_LEVEL; i++) {
                     faceUpCards.get(level).add(decks.get(level).drawCard());
                 }
             }
@@ -146,9 +155,9 @@ public class Game
 
     private void initializeNobles(int playerCount) {
         try {
-            List<Noble> nobles = new NobleLoader().loadFromClasspath(Game.class, "/nobles/nobles.json");
+            List<Noble> nobles = new NobleLoader().loadFromClasspath(Game.class, NOBLES_RESOURCE_PATH);
             revealedNobles = new ArrayList<>();
-            for (int i = 0; i < playerCount + 1; i++) {
+            for (int i = 0; i < playerCount + EXTRA_REVEALED_NOBLE_COUNT; i++) {
                 revealedNobles.add(nobles.get(i));
             }
         } catch (Exception e) {

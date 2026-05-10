@@ -4,6 +4,9 @@ import java.util.EnumMap;
 import java.util.Map;
 
 public class TokenBank {
+    private static final int TWO_PLAYERS = 2;
+    private static final int THREE_PLAYERS = 3;
+    private static final int FOUR_PLAYERS = 4;
     private static final int TWO_PLAYER_TOKEN_COUNT = 4;
     private static final int THREE_PLAYER_TOKEN_COUNT = 5;
     private static final int FOUR_PLAYER_TOKEN_COUNT = 7;
@@ -53,15 +56,15 @@ public class TokenBank {
     }
 
     private int getGemTokenCount(int playerCount) {
-        if (playerCount == 2) {
+        if (playerCount == TWO_PLAYERS) {
             return TWO_PLAYER_TOKEN_COUNT;
         }
 
-        if (playerCount == 3) {
+        if (playerCount == THREE_PLAYERS) {
             return THREE_PLAYER_TOKEN_COUNT;
         }
 
-        if (playerCount == 4) {
+        if (playerCount == FOUR_PLAYERS) {
             return FOUR_PLAYER_TOKEN_COUNT;
         }
 

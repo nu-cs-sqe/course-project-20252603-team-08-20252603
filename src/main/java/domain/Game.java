@@ -3,6 +3,7 @@ package domain;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 public class Game
 {
@@ -64,5 +65,9 @@ public class Game
 
     public TokenBank getTokenBank() {
         return tokenBank;
+    }
+
+    public ActionResult takeTokens(Map<TokenColor, Integer> tokensToTake, Locale locale) {
+        return ActionResult.success();
     }
 }

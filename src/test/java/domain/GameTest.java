@@ -3,6 +3,7 @@ package domain;
 import org.junit.jupiter.api.Test;
 
 import java.util.Locale;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -152,6 +153,148 @@ class GameTest {
     public void testStartGameWithInvalidPlayersReturnsFailure() {
         Game game = new Game();
         ActionResult result = game.startGame(5, Locale.US);
+        assertFalse(result.isSuccess());
+        assertEquals(GamePhase.SETUP, game.getPhase());
+    }
+
+    @Test
+    void takeTokens_validThreeDifferentTokensUpdatesPlayerBankAndCurrentPlayer() {
+        Game game = new Game();
+        game.startGame(2, Locale.US);
+        Player playerZero = game.getCurrentPlayer();
+
+        ActionResult result = game.takeTokens(Map.of(TokenColor.DIAMOND, 1, TokenColor.RUBY, 1, TokenColor.ONYX, 1), Locale.US);
+
+        assertTrue(result.isSuccess());
+        assertEquals(1, playerZero.getTokenCount(TokenColor.DIAMOND));
+        assertEquals(1, playerZero.getTokenCount(TokenColor.RUBY));
+        assertEquals(1, playerZero.getTokenCount(TokenColor.ONYX));
+        assertEquals(3, game.getTokenBank().getTokenCount(TokenColor.DIAMOND));
+        assertEquals(3, game.getTokenBank().getTokenCount(TokenColor.RUBY));
+        assertEquals(3, game.getTokenBank().getTokenCount(TokenColor.ONYX));
+        assertEquals(game.getPlayers().get(1), game.getCurrentPlayer());
+    }
+
+    @Test
+    void takeTokens_validTwoSameTokensUpdatesPlayerBankAndCurrentPlayer() {
+        Game game = new Game();
+        game.startGame(2, Locale.US);
+        Player playerZero = game.getCurrentPlayer();
+
+        ActionResult result = game.takeTokens(Map.of(TokenColor.DIAMOND, 2), Locale.US);
+
+        assertTrue(result.isSuccess());
+        assertEquals(2, playerZero.getTokenCount(TokenColor.DIAMOND));
+        assertEquals(2, game.getTokenBank().getTokenCount(TokenColor.DIAMOND));
+        assertEquals(game.getPlayers().get(1), game.getCurrentPlayer());
+    }
+
+    @Test
+    void takeTokens_twoPlayerGameWrapsCurrentPlayerAfterBothPlayersTakeTokens() {
+        Game game = new Game();
+        game.startGame(2, Locale.US);
+        Player playerZero = game.getPlayers().get(0);
+        Player playerOne = game.getPlayers().get(1);
+
+        ActionResult firstResult = game.takeTokens(Map.of(TokenColor.DIAMOND, 1, TokenColor.RUBY, 1, TokenColor.ONYX, 1), Locale.US);
+        ActionResult secondResult = game.takeTokens(Map.of(TokenColor.SAPPHIRE, 1, TokenColor.EMERALD, 1, TokenColor.ONYX, 1), Locale.US);
+
+        assertTrue(firstResult.isSuccess());
+        assertTrue(secondResult.isSuccess());
+        assertEquals(3, playerZero.getTotalTokenCount());
+        assertEquals(3, playerOne.getTotalTokenCount());
+        assertEquals(game.getPlayers().get(0), game.getCurrentPlayer());
+    }
+
+    @Test
+    void takeTokens_threePlayerGameWrapsCurrentPlayerAfterAllPlayersTakeTokens() {
+        Game game = new Game();
+        game.startGame(3, Locale.US);
+        Player playerZero = game.getPlayers().get(0);
+        Player playerOne = game.getPlayers().get(1);
+        Player playerTwo = game.getPlayers().get(2);
+
+        ActionResult firstResult = game.takeTokens(Map.of(TokenColor.DIAMOND, 1, TokenColor.RUBY, 1, TokenColor.ONYX, 1), Locale.US);
+        ActionResult secondResult = game.takeTokens(Map.of(TokenColor.SAPPHIRE, 1, TokenColor.EMERALD, 1, TokenColor.ONYX, 1), Locale.US);
+        ActionResult thirdResult = game.takeTokens(Map.of(TokenColor.DIAMOND, 1, TokenColor.SAPPHIRE, 1, TokenColor.EMERALD, 1), Locale.US);
+
+        assertTrue(firstResult.isSuccess());
+        assertTrue(secondResult.isSuccess());
+        assertTrue(thirdResult.isSuccess());
+        assertEquals(3, playerZero.getTotalTokenCount());
+        assertEquals(3, playerOne.getTotalTokenCount());
+        assertEquals(3, playerTwo.getTotalTokenCount());
+        assertEquals(game.getPlayers().get(0), game.getCurrentPlayer());
+    }
+
+    @Test
+    void takeTokens_rejectsGoldAndLeavesGameStateUnchanged() {
+        Game game = new Game();
+        game.startGame(2, Locale.US);
+        Player playerZero = game.getCurrentPlayer();
+
+        ActionResult result = game.takeTokens(Map.of(TokenColor.GOLD, 1), Locale.US);
+
+        assertFalse(result.isSuccess());
+        assertEquals(MessageProvider.getMessage("error.invalid_token_selection", Locale.US), result.getMessage());
+        assertEquals(0, playerZero.getTotalTokenCount());
+        assertEquals(5, game.getTokenBank().getTokenCount(TokenColor.GOLD));
+        assertEquals(playerZero, game.getCurrentPlayer());
+    }
+
+    @Test
+    void takeTokens_rejectsTwoSameAndOneDifferentAndLeavesGameStateUnchanged() {
+        Game game = new Game();
+        game.startGame(2, Locale.US);
+        Player playerZero = game.getCurrentPlayer();
+
+        ActionResult result = game.takeTokens(Map.of(TokenColor.DIAMOND, 2, TokenColor.RUBY, 1), Locale.US);
+
+        assertFalse(result.isSuccess());
+        assertEquals(MessageProvider.getMessage("error.invalid_token_selection", Locale.US), result.getMessage());
+        assertEquals(0, playerZero.getTotalTokenCount());
+        assertEquals(4, game.getTokenBank().getTokenCount(TokenColor.DIAMOND));
+        assertEquals(4, game.getTokenBank().getTokenCount(TokenColor.RUBY));
+        assertEquals(playerZero, game.getCurrentPlayer());
+    }
+
+    @Test
+    void takeTokens_rejectsEmptyTokenMapAndLeavesGameStateUnchanged() {
+        Game game = new Game();
+        game.startGame(2, Locale.US);
+        Player playerZero = game.getCurrentPlayer();
+
+        ActionResult result = game.takeTokens(Map.of(), Locale.US);
+
+        assertFalse(result.isSuccess());
+        assertEquals(MessageProvider.getMessage("error.invalid_token_selection", Locale.US), result.getMessage());
+        assertEquals(0, playerZero.getTotalTokenCount());
+        assertEquals(4, game.getTokenBank().getTokenCount(TokenColor.DIAMOND));
+        assertEquals(playerZero, game.getCurrentPlayer());
+    }
+
+    @Test
+    void takeTokens_rejectsActionThatWouldExceedTenTokensAndLeavesGameStateUnchanged() {
+        Game game = new Game();
+        game.startGame(2, Locale.US);
+        Player playerZero = game.getCurrentPlayer();
+        playerZero.addTokens(Map.of(TokenColor.DIAMOND, 4, TokenColor.RUBY, 4, TokenColor.ONYX, 1));
+
+        ActionResult result = game.takeTokens(Map.of(TokenColor.DIAMOND, 2), Locale.US);
+
+        assertFalse(result.isSuccess());
+        assertEquals(MessageProvider.getMessage("error.invalid_token_selection", Locale.US), result.getMessage());
+        assertEquals(9, playerZero.getTotalTokenCount());
+        assertEquals(4, game.getTokenBank().getTokenCount(TokenColor.DIAMOND));
+        assertEquals(playerZero, game.getCurrentPlayer());
+    }
+
+    @Test
+    void takeTokens_beforeStartGameReturnsFailureAndKeepsSetupPhase() {
+        Game game = new Game();
+
+        ActionResult result = game.takeTokens(Map.of(TokenColor.DIAMOND, 1, TokenColor.RUBY, 1, TokenColor.ONYX, 1), Locale.US);
+
         assertFalse(result.isSuccess());
         assertEquals(GamePhase.SETUP, game.getPhase());
     }

@@ -158,6 +158,62 @@ class GameTest {
     }
 
     @Test
+    void startGame_initializesFourFaceUpCardsForEachLevel() {
+        Game game = new Game();
+        game.startGame(2, Locale.US);
+
+        assertEquals(4, game.getFaceUpCards(1).size());
+        assertEquals(4, game.getFaceUpCards(2).size());
+        assertEquals(4, game.getFaceUpCards(3).size());
+    }
+
+    @Test
+    void startGame_initializesRemainingDecksAfterDealingFaceUpCards() {
+        Game game = new Game();
+        game.startGame(2, Locale.US);
+
+        assertEquals(36, game.getDeck(1).cards.size());
+        assertEquals(26, game.getDeck(2).cards.size());
+        assertEquals(16, game.getDeck(3).cards.size());
+    }
+
+    @Test
+    void startGame_twoPlayersRevealsThreeNobles() {
+        Game game = new Game();
+        game.startGame(2, Locale.US);
+
+        assertEquals(3, game.getRevealedNobles().size());
+    }
+
+    @Test
+    void startGame_threePlayersRevealsFourNobles() {
+        Game game = new Game();
+        game.startGame(3, Locale.US);
+
+        assertEquals(4, game.getRevealedNobles().size());
+    }
+
+    @Test
+    void startGame_fourPlayersRevealsFiveNobles() {
+        Game game = new Game();
+        game.startGame(4, Locale.US);
+
+        assertEquals(5, game.getRevealedNobles().size());
+    }
+
+    @Test
+    void failedStartGame_doesNotInitializeTableCardsOrNobles() {
+        Game game = new Game();
+
+        ActionResult result = game.startGame(1, Locale.US);
+
+        assertFalse(result.isSuccess());
+        assertNull(game.getFaceUpCards(1));
+        assertNull(game.getDeck(1));
+        assertNull(game.getRevealedNobles());
+    }
+
+    @Test
     void takeTokens_validThreeDifferentTokensUpdatesPlayerBankAndCurrentPlayer() {
         Game game = new Game();
         game.startGame(2, Locale.US);

@@ -67,6 +67,18 @@ public class Game
         return tokenBank;
     }
 
+    public List<Card> getFaceUpCards(int level) {
+        return null;
+    }
+
+    public Deck getDeck(int level) {
+        return null;
+    }
+
+    public List<Noble> getRevealedNobles() {
+        return null;
+    }
+
     public ActionResult takeTokens(Map<TokenColor, Integer> tokensToTake, Locale locale) {
         if (phase != GamePhase.PLAYER_TURN || players == null || tokenBank == null) {
             String errorMessage = MessageProvider.getMessage("error.invalid_token_selection", locale);

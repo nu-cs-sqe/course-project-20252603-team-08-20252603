@@ -63,6 +63,10 @@ public class Game
         return players.get(currentPlayerIndex);
     }
 
+    public int getCurrentPlayerIndex() {
+        return currentPlayerIndex;
+    }
+
 
     private void initializeTokenBank(int playerCount) {
         tokenBank = new TokenBank();

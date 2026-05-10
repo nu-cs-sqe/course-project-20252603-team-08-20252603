@@ -34,4 +34,15 @@ class CardLoaderTest {
 
         assertTrue(thrown.getMessage().contains(missingPath));
     }
+
+    @Test
+    void loadFromClasspath_fullProductionCardsResource_returnsCompleteDeck() throws IOException {
+        CardLoader loader = new CardLoader();
+        List<Card> cards = loader.loadFromClasspath(CardLoaderTest.class, "/cards/cards.json");
+
+        assertEquals(90, cards.size());
+        assertEquals(40, cards.stream().filter(card -> card.level == 1).count());
+        assertEquals(30, cards.stream().filter(card -> card.level == 2).count());
+        assertEquals(20, cards.stream().filter(card -> card.level == 3).count());
+    }
 }

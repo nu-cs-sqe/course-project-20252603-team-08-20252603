@@ -68,6 +68,25 @@ public class Game
     }
 
     public ActionResult takeTokens(Map<TokenColor, Integer> tokensToTake, Locale locale) {
+        if (phase != GamePhase.PLAYER_TURN || players == null || tokenBank == null) {
+            String errorMessage = MessageProvider.getMessage("error.invalid_token_selection", locale);
+            return ActionResult.failure(errorMessage);
+        }
+
+        if (ruleValidator == null) {
+            initializeRuleValidator();
+        }
+
+        Player currentPlayer = getCurrentPlayer();
+        ActionResult validationResult = ruleValidator.validateTakeTokens(currentPlayer, tokenBank, tokensToTake, locale);
+        if (!validationResult.isSuccess()) {
+            return validationResult;
+        }
+
+        currentPlayer.addTokens(tokensToTake);
+        tokenBank.removeTokens(tokensToTake);
+        currentPlayerIndex = (currentPlayerIndex + 1) % players.size();
+
         return ActionResult.success();
     }
 }

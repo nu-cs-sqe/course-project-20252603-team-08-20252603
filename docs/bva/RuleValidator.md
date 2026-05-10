@@ -13,16 +13,16 @@
 
 ### Method under test: `validateTakeTokens(Player player, TokenBank bank, Map<TokenColor, Integer> tokensToTake, Locale locale)`
 
-| ID   | State of the System                                                                 | Expected output                                                     | Implemented? |
-|------|-------------------------------------------------------------------------------------|---------------------------------------------------------------------|--------------|
-| TC5  | Player has 0 tokens, bank has tokens, take 1 DIAMOND, 1 RUBY, and 1 ONYX            | `isSuccess()` is true                                               | :x:          |
-| TC6  | Player has 0 tokens, bank has 4 DIAMOND, take 2 DIAMOND                             | `isSuccess()` is true                                               | :x:          |
-| TC7  | Player has 0 tokens, take 1 GOLD                                                    | `isSuccess()` is false, returns US invalid token selection message  | :x:          |
-| TC8  | Player has 0 tokens, take 2 DIAMOND and 1 RUBY                                      | `isSuccess()` is false, returns US invalid token selection message  | :x:          |
-| TC9  | Player has 0 tokens, bank has only 3 DIAMOND, take 2 DIAMOND                        | `isSuccess()` is false, returns US invalid token selection message  | :x:          |
-| TC10 | Player has 0 tokens, bank has 0 DIAMOND, take 1 DIAMOND, 1 RUBY, and 1 ONYX         | `isSuccess()` is false, returns US invalid token selection message  | :x:          |
-| TC11 | Player has 8 tokens, bank has tokens, take 1 DIAMOND, 1 RUBY, and 1 ONYX            | `isSuccess()` is false, returns US invalid token selection message  | :x:          |
-| TC12 | Player has 9 tokens, bank has tokens, take 2 DIAMOND                                | `isSuccess()` is false, returns US invalid token selection message  | :x:          |
-| TC13 | Player has 0 tokens, bank has tokens, take empty token map                          | `isSuccess()` is false, returns US invalid token selection message  | :x:          |
-| TC14 | Player has 0 tokens, bank has tokens, take 1 DIAMOND and 1 RUBY                     | `isSuccess()` is false, returns US invalid token selection message  | :x:          |
-| TC15 | Player has 0 tokens, bank has tokens, take 1 DIAMOND, 1 RUBY, 1 ONYX, and 1 EMERALD | `isSuccess()` is false, returns US invalid token selection message  | :x:          |
+| ID   | State of the System                                                                 | Expected output                                                    | Implemented?       |
+|------|-------------------------------------------------------------------------------------|--------------------------------------------------------------------|--------------------|
+| TC5  | Player has 0 tokens, bank has tokens, take 1 DIAMOND, 1 RUBY, and 1 ONYX            | `isSuccess()` is true                                              | :white_check_mark: |
+| TC6  | Player has 0 tokens, bank has 4 DIAMOND, take 2 DIAMOND                             | `isSuccess()` is true                                              | :white_check_mark: |
+| TC7  | Player has 0 tokens, take 1 GOLD                                                    | `isSuccess()` is false, returns US invalid token selection message | :white_check_mark: |
+| TC8  | Player has 0 tokens, take 2 DIAMOND and 1 RUBY                                      | `isSuccess()` is false, returns US invalid token selection message | :white_check_mark: |
+| TC9  | Player has 0 tokens, bank has only 3 DIAMOND, take 2 DIAMOND                        | `isSuccess()` is false, returns US invalid token selection message | :white_check_mark: |
+| TC10 | Player has 0 tokens, bank has 0 DIAMOND, take 1 DIAMOND, 1 RUBY, and 1 ONYX         | `isSuccess()` is false, returns US invalid token selection message | :white_check_mark: |
+| TC11 | Player has 8 tokens, bank has tokens, take 1 DIAMOND, 1 RUBY, and 1 ONYX            | `isSuccess()` is false, returns US invalid token selection message | :white_check_mark: |
+| TC12 | Player has 9 tokens, bank has tokens, take 2 DIAMOND                                | `isSuccess()` is false, returns US invalid token selection message | :white_check_mark: |
+| TC13 | Player has 0 tokens, bank has tokens, take empty token map                          | `isSuccess()` is false, returns US invalid token selection message | :white_check_mark: |
+| TC14 | Player has 0 tokens, bank has tokens, take 1 DIAMOND and 1 RUBY                     | `isSuccess()` is false, returns US invalid token selection message | :white_check_mark: |
+| TC15 | Player has 0 tokens, bank has tokens, take 1 DIAMOND, 1 RUBY, 1 ONYX, and 1 EMERALD | `isSuccess()` is false, returns US invalid token selection message | :white_check_mark: |

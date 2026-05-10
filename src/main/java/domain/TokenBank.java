@@ -30,6 +30,12 @@ public class TokenBank {
         return tokens.getOrDefault(color, 0);
     }
 
+    public void addTokens(Map<TokenColor, Integer> tokensToAdd) {
+    }
+
+    public void removeTokens(Map<TokenColor, Integer> tokensToRemove) {
+    }
+
     private int getGemTokenCount(int playerCount) {
         if (playerCount == 2) {
             return TWO_PLAYER_TOKEN_COUNT;

@@ -1,0 +1,12 @@
+[
+  {"prestigePoints":3,"requirements":{"SAPPHIRE":3,"EMERALD":3,"RUBY":3}},
+  {"prestigePoints":3,"requirements":{"DIAMOND":3,"SAPPHIRE":3,"EMERALD":3}},
+  {"prestigePoints":3,"requirements":{"DIAMOND":3,"SAPPHIRE":3,"ONYX":3}},
+  {"prestigePoints":3,"requirements":{"DIAMOND":3,"RUBY":3,"ONYX":3}},
+  {"prestigePoints":3,"requirements":{"EMERALD":3,"RUBY":3,"ONYX":3}},
+  {"prestigePoints":3,"requirements":{"DIAMOND":4,"SAPPHIRE":4}},
+  {"prestigePoints":3,"requirements":{"SAPPHIRE":4,"EMERALD":4}},
+  {"prestigePoints":3,"requirements":{"EMERALD":4,"RUBY":4}},
+  {"prestigePoints":3,"requirements":{"RUBY":4,"ONYX":4}},
+  {"prestigePoints":3,"requirements":{"DIAMOND":4,"ONYX":4}}
+]

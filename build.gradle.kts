@@ -1,5 +1,6 @@
 plugins {
     id("java")
+    id("application")
 }
 
 group = "nu.csse.sqe"
@@ -27,4 +28,12 @@ tasks.compileJava {
 
 tasks.test {
     useJUnitPlatform()
+}
+
+application {
+    mainClass.set("ui.Main")
+}
+
+tasks.named<JavaExec>("run") {
+    standardInput = System.`in`
 }

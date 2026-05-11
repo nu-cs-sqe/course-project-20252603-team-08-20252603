@@ -4,6 +4,9 @@ import java.util.EnumMap;
 import java.util.Map;
 
 public class TokenBank {
+    private static final int TWO_PLAYERS = 2;
+    private static final int THREE_PLAYERS = 3;
+    private static final int FOUR_PLAYERS = 4;
     private static final int TWO_PLAYER_TOKEN_COUNT = 4;
     private static final int THREE_PLAYER_TOKEN_COUNT = 5;
     private static final int FOUR_PLAYER_TOKEN_COUNT = 7;
@@ -30,16 +33,38 @@ public class TokenBank {
         return tokens.getOrDefault(color, 0);
     }
 
+    public void addTokens(Map<TokenColor, Integer> tokensToAdd) {
+        for (Map.Entry<TokenColor, Integer> entry : tokensToAdd.entrySet()) {
+            TokenColor color = entry.getKey();
+            int count = entry.getValue();
+            tokens.put(color, getTokenCount(color) + count);
+        }
+    }
+
+    public void removeTokens(Map<TokenColor, Integer> tokensToRemove) {
+        for (Map.Entry<TokenColor, Integer> entry : tokensToRemove.entrySet()) {
+            if (getTokenCount(entry.getKey()) < entry.getValue()) {
+                throw new IllegalArgumentException();
+            }
+        }
+
+        for (Map.Entry<TokenColor, Integer> entry : tokensToRemove.entrySet()) {
+            TokenColor color = entry.getKey();
+            int count = entry.getValue();
+            tokens.put(color, getTokenCount(color) - count);
+        }
+    }
+
     private int getGemTokenCount(int playerCount) {
-        if (playerCount == 2) {
+        if (playerCount == TWO_PLAYERS) {
             return TWO_PLAYER_TOKEN_COUNT;
         }
 
-        if (playerCount == 3) {
+        if (playerCount == THREE_PLAYERS) {
             return THREE_PLAYER_TOKEN_COUNT;
         }
 
-        if (playerCount == 4) {
+        if (playerCount == FOUR_PLAYERS) {
             return FOUR_PLAYER_TOKEN_COUNT;
         }
 

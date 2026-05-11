@@ -2,6 +2,8 @@ package domain;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.Map;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class PlayerTest {
@@ -75,4 +77,103 @@ class PlayerTest {
 
         assertEquals(0, player.getTotalTokenCount());
     }
+
+    @Test
+    void addTokens_addsSingleToken() {
+        Player player = new Player();
+
+        player.addTokens(Map.of(TokenColor.DIAMOND, 1));
+
+        assertEquals(1, player.getTokenCount(TokenColor.DIAMOND));
+        assertEquals(1, player.getTotalTokenCount());
+    }
+
+    @Test
+    void addTokens_addsMultipleColors() {
+        Player player = new Player();
+
+        player.addTokens(Map.of(TokenColor.DIAMOND, 2, TokenColor.RUBY, 1));
+
+        assertEquals(2, player.getTokenCount(TokenColor.DIAMOND));
+        assertEquals(1, player.getTokenCount(TokenColor.RUBY));
+        assertEquals(3, player.getTotalTokenCount());
+    }
+
+    @Test
+    void addTokens_accumulatesExistingTokens() {
+        Player player = new Player();
+
+        player.addTokens(Map.of(TokenColor.DIAMOND, 1));
+        player.addTokens(Map.of(TokenColor.DIAMOND, 2));
+
+        assertEquals(3, player.getTokenCount(TokenColor.DIAMOND));
+        assertEquals(3, player.getTotalTokenCount());
+    }
+
+    @Test
+    void addTokens_emptyMapLeavesTokensUnchanged() {
+        Player player = new Player();
+
+        player.addTokens(Map.of());
+
+        assertEquals(0, player.getTotalTokenCount());
+    }
+
+    @Test
+    void removeTokens_removesSingleToken() {
+        Player player = new Player();
+        player.addTokens(Map.of(TokenColor.DIAMOND, 2));
+
+        player.removeTokens(Map.of(TokenColor.DIAMOND, 1));
+
+        assertEquals(1, player.getTokenCount(TokenColor.DIAMOND));
+        assertEquals(1, player.getTotalTokenCount());
+    }
+
+    @Test
+    void removeTokens_removesAllRequestedTokens() {
+        Player player = new Player();
+        player.addTokens(Map.of(TokenColor.DIAMOND, 2, TokenColor.RUBY, 1));
+
+        player.removeTokens(Map.of(TokenColor.DIAMOND, 2, TokenColor.RUBY, 1));
+
+        assertEquals(0, player.getTokenCount(TokenColor.DIAMOND));
+        assertEquals(0, player.getTokenCount(TokenColor.RUBY));
+        assertEquals(0, player.getTotalTokenCount());
+    }
+
+    @Test
+    void removeTokens_rejectsRemovingMoreThanPlayerHas() {
+        Player player = new Player();
+        player.addTokens(Map.of(TokenColor.DIAMOND, 1));
+
+        assertThrows(IllegalArgumentException.class, () -> {
+            player.removeTokens(Map.of(TokenColor.DIAMOND, 2));
+        });
+        assertEquals(1, player.getTokenCount(TokenColor.DIAMOND));
+        assertEquals(1, player.getTotalTokenCount());
+    }
+
+    @Test
+    void removeTokens_rejectsRemovingTokenFromEmptyPlayer() {
+        Player player = new Player();
+
+        assertThrows(IllegalArgumentException.class, () -> {
+            player.removeTokens(Map.of(TokenColor.DIAMOND, 1));
+        });
+        assertEquals(0, player.getTokenCount(TokenColor.DIAMOND));
+        assertEquals(0, player.getTotalTokenCount());
+    }
+
+    @Test
+    void removeTokens_emptyMapLeavesTokensUnchanged() {
+        Player player = new Player();
+        player.addTokens(Map.of(TokenColor.DIAMOND, 1));
+
+        player.removeTokens(Map.of());
+
+        assertEquals(1, player.getTokenCount(TokenColor.DIAMOND));
+        assertEquals(1, player.getTotalTokenCount());
+    }
+
 }

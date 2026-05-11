@@ -26,6 +26,28 @@ public class Player {
         return tokens.getOrDefault(color, 0);
     }
 
+    public void addTokens(Map<TokenColor, Integer> tokensToAdd) {
+        for (Map.Entry<TokenColor, Integer> entry : tokensToAdd.entrySet()) {
+            TokenColor color = entry.getKey();
+            int count = entry.getValue();
+            tokens.put(color, getTokenCount(color) + count);
+        }
+    }
+
+    public void removeTokens(Map<TokenColor, Integer> tokensToRemove) {
+        for (Map.Entry<TokenColor, Integer> entry : tokensToRemove.entrySet()) {
+            if (getTokenCount(entry.getKey()) < entry.getValue()) {
+                throw new IllegalArgumentException();
+            }
+        }
+
+        for (Map.Entry<TokenColor, Integer> entry : tokensToRemove.entrySet()) {
+            TokenColor color = entry.getKey();
+            int count = entry.getValue();
+            tokens.put(color, getTokenCount(color) - count);
+        }
+    }
+
     public List<Card> getDevelopmentCards() {
         return developmentCards;
     }

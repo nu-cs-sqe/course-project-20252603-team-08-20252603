@@ -33,4 +33,23 @@ class NobleLoaderTest {
 
         assertTrue(thrown.getMessage().contains(missingPath));
     }
+
+    @Test
+    void loadFromClasspath_fullProductionNoblesResource_returnsCompleteNobles() throws IOException {
+        NobleLoader loader = new NobleLoader();
+        List<Noble> nobles = loader.loadFromClasspath(NobleLoaderTest.class, "/nobles/nobles.json");
+
+        assertEquals(10, nobles.size());
+        assertTrue(nobles.stream().allMatch(noble -> noble.prestigePoints == 3));
+    }
+
+    @Test
+    void loadFromClasspath_invalidTokenColor_throwsIOExceptionWithPathInMessage() {
+        NobleLoader loader = new NobleLoader();
+        String invalidPath = "/nobles/invalid-color-noble.json";
+
+        IOException thrown = assertThrows(IOException.class, () -> loader.loadFromClasspath(NobleLoaderTest.class, invalidPath));
+
+        assertTrue(thrown.getMessage().contains(invalidPath));
+    }
 }

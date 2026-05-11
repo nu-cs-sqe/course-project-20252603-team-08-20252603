@@ -2,8 +2,10 @@ package domain;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonIOException;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.google.gson.JsonSyntaxException;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -38,6 +40,8 @@ public class CardLoader {
                 cards.add(new Card(level, bonusColor, cost, prestigePoints));
             }
             return cards;
+        } catch (JsonIOException | JsonSyntaxException | IllegalArgumentException | IllegalStateException | NullPointerException e) {
+            throw new IOException("Invalid card resource: " + resourcePath, e);
         }
     }
 }

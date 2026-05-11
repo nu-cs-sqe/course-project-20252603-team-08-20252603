@@ -42,3 +42,26 @@
 |              | State of the System | Expected output        | Implemented?       |
 |--------------|---------------------|------------------------|--------------------|
 | Test Case 10 | New Player object   | total token count == 0 | :white_check_mark: |
+
+---
+
+## Method: addTokens(Map<TokenColor, Integer> tokensToAdd)
+
+|              | State of the System                         | Expected output                                                         | Implemented?       |
+|--------------|---------------------------------------------|-------------------------------------------------------------------------|--------------------|
+| Test Case 11 | New Player object, add 1 DIAMOND            | DIAMOND token count == 1, total token count == 1                        | :white_check_mark: |
+| Test Case 12 | New Player object, add 2 DIAMOND and 1 RUBY | DIAMOND token count == 2, RUBY token count == 1, total token count == 3 | :white_check_mark: |
+| Test Case 13 | Player has 1 DIAMOND, add 2 DIAMOND         | DIAMOND token count == 3, total token count == 3                        | :white_check_mark: |
+| Test Case 14 | New Player object, add empty token map      | All token counts remain 0, total token count == 0                       | :white_check_mark: |
+
+---
+
+## Method: removeTokens(Map<TokenColor, Integer> tokensToRemove)
+
+|              | State of the System                                | Expected output                                                         | Implemented?       |
+|--------------|----------------------------------------------------|-------------------------------------------------------------------------|--------------------|
+| Test Case 15 | Player has 2 DIAMOND, remove 1 DIAMOND             | DIAMOND token count == 1, total token count == 1                        | :white_check_mark: |
+| Test Case 16 | Player has 2 DIAMOND and 1 RUBY, remove all tokens | DIAMOND token count == 0, RUBY token count == 0, total token count == 0 | :white_check_mark: |
+| Test Case 17 | Player has 1 DIAMOND, remove 2 DIAMOND             | Throw IllegalArgumentException and leave token counts unchanged         | :white_check_mark: |
+| Test Case 18 | New Player object, remove 1 DIAMOND                | Throw IllegalArgumentException and leave token counts unchanged         | :white_check_mark: |
+| Test Case 19 | Player has 1 DIAMOND, remove empty token map       | DIAMOND token count == 1, total token count == 1                        | :white_check_mark: |

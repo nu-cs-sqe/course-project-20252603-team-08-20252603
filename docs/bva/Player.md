@@ -65,3 +65,12 @@
 | Test Case 17 | Player has 1 DIAMOND, remove 2 DIAMOND             | Throw IllegalArgumentException and leave token counts unchanged         | :white_check_mark: |
 | Test Case 18 | New Player object, remove 1 DIAMOND                | Throw IllegalArgumentException and leave token counts unchanged         | :white_check_mark: |
 | Test Case 19 | Player has 1 DIAMOND, remove empty token map       | DIAMOND token count == 1, total token count == 1                        | :white_check_mark: |
+
+---
+
+## Method: addReservedCard(Card card)
+
+|              | State of the System                            | Expected output                                   | Implemented? |
+|--------------|------------------------------------------------|---------------------------------------------------|--------------|
+| Test Case 20 | New Player object, add one reserved card       | reservedCards.size() == 1 and contains the card   | :x:          |
+| Test Case 21 | Player has one reserved card, add another card | reservedCards.size() == 2 and contains both cards | :x:          |

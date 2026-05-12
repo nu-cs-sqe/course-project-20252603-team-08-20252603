@@ -31,12 +31,12 @@
 
 ### Method under test: `validateReserveCard(Player player, List<Card> faceUpCards, int cardIndex, Locale locale)`
 
-| ID   | State of the System                                                | Expected output                                                 | Implemented? |
-|------|--------------------------------------------------------------------|-----------------------------------------------------------------|--------------|
-| TC16 | Player has 0 reserved cards, face-up cards has 4 cards, index = 0  | `isSuccess()` is true                                           | :x:          |
-| TC17 | Player has 2 reserved cards, face-up cards has 4 cards, index = 3  | `isSuccess()` is true                                           | :x:          |
-| TC18 | Player has 3 reserved cards, face-up cards has 4 cards, index = 0  | `isSuccess()` is false, returns US invalid reserve card message | :x:          |
-| TC19 | Player has 0 reserved cards, face-up cards is null, index = 0      | `isSuccess()` is false, returns US invalid reserve card message | :x:          |
-| TC20 | Player has 0 reserved cards, face-up cards is empty, index = 0     | `isSuccess()` is false, returns US invalid reserve card message | :x:          |
-| TC21 | Player has 0 reserved cards, face-up cards has 4 cards, index = -1 | `isSuccess()` is false, returns US invalid reserve card message | :x:          |
-| TC22 | Player has 0 reserved cards, face-up cards has 4 cards, index = 4  | `isSuccess()` is false, returns US invalid reserve card message | :x:          |
+| ID   | State of the System                                                | Expected output                                                 | Implemented?       |
+|------|--------------------------------------------------------------------|-----------------------------------------------------------------|--------------------|
+| TC16 | Player has 0 reserved cards, face-up cards has 4 cards, index = 0  | `isSuccess()` is true                                           | :white_check_mark: |
+| TC17 | Player has 2 reserved cards, face-up cards has 4 cards, index = 3  | `isSuccess()` is true                                           | :white_check_mark: |
+| TC18 | Player has 3 reserved cards, face-up cards has 4 cards, index = 0  | `isSuccess()` is false, returns US invalid reserve card message | :white_check_mark: |
+| TC19 | Player has 0 reserved cards, face-up cards is null, index = 0      | `isSuccess()` is false, returns US invalid reserve card message | :white_check_mark: |
+| TC20 | Player has 0 reserved cards, face-up cards is empty, index = 0     | `isSuccess()` is false, returns US invalid reserve card message | :white_check_mark: |
+| TC21 | Player has 0 reserved cards, face-up cards has 4 cards, index = -1 | `isSuccess()` is false, returns US invalid reserve card message | :white_check_mark: |
+| TC22 | Player has 0 reserved cards, face-up cards has 4 cards, index = 4  | `isSuccess()` is false, returns US invalid reserve card message | :white_check_mark: |

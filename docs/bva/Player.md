@@ -70,7 +70,7 @@
 
 ## Method: addReservedCard(Card card)
 
-|              | State of the System                            | Expected output                                   | Implemented? |
-|--------------|------------------------------------------------|---------------------------------------------------|--------------|
-| Test Case 20 | New Player object, add one reserved card       | reservedCards.size() == 1 and contains the card   | :x:          |
-| Test Case 21 | Player has one reserved card, add another card | reservedCards.size() == 2 and contains both cards | :x:          |
+|              | State of the System                            | Expected output                                   | Implemented?       |
+|--------------|------------------------------------------------|---------------------------------------------------|--------------------|
+| Test Case 20 | New Player object, add one reserved card       | reservedCards.size() == 1 and contains the card   | :white_check_mark: |
+| Test Case 21 | Player has one reserved card, add another card | reservedCards.size() == 2 and contains both cards | :white_check_mark: |

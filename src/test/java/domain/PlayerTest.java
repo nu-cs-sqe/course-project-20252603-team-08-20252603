@@ -176,4 +176,29 @@ class PlayerTest {
         assertEquals(1, player.getTotalTokenCount());
     }
 
+    @Test
+    void addReservedCard_addsOneReservedCard() {
+        Player player = new Player();
+        Card card = new Card();
+
+        player.addReservedCard(card);
+
+        assertEquals(1, player.getReservedCards().size());
+        assertTrue(player.getReservedCards().contains(card));
+    }
+
+    @Test
+    void addReservedCard_addsAnotherReservedCard() {
+        Player player = new Player();
+        Card firstCard = new Card();
+        Card secondCard = new Card();
+
+        player.addReservedCard(firstCard);
+        player.addReservedCard(secondCard);
+
+        assertEquals(2, player.getReservedCards().size());
+        assertTrue(player.getReservedCards().contains(firstCard));
+        assertTrue(player.getReservedCards().contains(secondCard));
+    }
+
 }

@@ -48,6 +48,9 @@ public class Player {
         }
     }
 
+    public void addReservedCard(Card card) {
+    }
+
     public List<Card> getDevelopmentCards() {
         return developmentCards;
     }

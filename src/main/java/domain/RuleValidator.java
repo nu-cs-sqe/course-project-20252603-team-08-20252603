@@ -1,6 +1,7 @@
 package domain;
 
 import java.util.Locale;
+import java.util.List;
 import java.util.Map;
 
 public class RuleValidator {
@@ -48,5 +49,23 @@ public class RuleValidator {
         }
 
         return ActionResult.failure(errorMessage);
+    }
+
+    public ActionResult validateReserveCard(Player player, List<Card> faceUpCards, int cardIndex, Locale locale) {
+        String errorMessage = MessageProvider.getMessage("error.invalid_reserve_card", locale);
+
+        if (player.getReservedCards().size() >= 3) {
+            return ActionResult.failure(errorMessage);
+        }
+
+        if (faceUpCards == null || faceUpCards.isEmpty()) {
+            return ActionResult.failure(errorMessage);
+        }
+
+        if (cardIndex < 0 || cardIndex >= faceUpCards.size()) {
+            return ActionResult.failure(errorMessage);
+        }
+
+        return ActionResult.success();
     }
 }

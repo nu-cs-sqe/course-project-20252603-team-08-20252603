@@ -354,4 +354,106 @@ class GameTest {
         assertFalse(result.isSuccess());
         assertEquals(GamePhase.SETUP, game.getPhase());
     }
+
+    @Test
+    void reserveFaceUpCard_validCardReservesCardTakesGoldRefillsMarketAndAdvancesCurrentPlayer() {
+        Game game = new Game();
+        game.startGame(2, Locale.US);
+        Player playerZero = game.getCurrentPlayer();
+        Card originalCard = game.getFaceUpCards(1).get(0);
+        int deckSizeBefore = game.getDeck(1).cards.size();
+
+        ActionResult result = game.reserveFaceUpCard(1, 0, Locale.US);
+
+        assertTrue(result.isSuccess());
+        assertEquals(1, playerZero.getReservedCards().size());
+        assertEquals(originalCard, playerZero.getReservedCards().get(0));
+        assertEquals(4, game.getFaceUpCards(1).size());
+        assertEquals(deckSizeBefore - 1, game.getDeck(1).cards.size());
+        assertEquals(1, playerZero.getTokenCount(TokenColor.GOLD));
+        assertEquals(4, game.getTokenBank().getTokenCount(TokenColor.GOLD));
+        assertEquals(game.getPlayers().get(1), game.getCurrentPlayer());
+    }
+
+    @Test
+    void reserveFaceUpCard_whenBankHasNoGoldStillReservesCardWithoutGoldAndAdvancesCurrentPlayer() {
+        Game game = new Game();
+        game.startGame(2, Locale.US);
+        Player playerZero = game.getCurrentPlayer();
+        game.getTokenBank().removeTokens(Map.of(TokenColor.GOLD, 5));
+
+        ActionResult result = game.reserveFaceUpCard(1, 0, Locale.US);
+
+        assertTrue(result.isSuccess());
+        assertEquals(1, playerZero.getReservedCards().size());
+        assertEquals(0, playerZero.getTokenCount(TokenColor.GOLD));
+        assertEquals(0, game.getTokenBank().getTokenCount(TokenColor.GOLD));
+        assertEquals(game.getPlayers().get(1), game.getCurrentPlayer());
+    }
+
+    @Test
+    void reserveFaceUpCard_rejectsPlayerWithThreeReservedCardsAndLeavesStateUnchanged() {
+        Game game = new Game();
+        game.startGame(2, Locale.US);
+        Player playerZero = game.getCurrentPlayer();
+        playerZero.addReservedCard(new Card());
+        playerZero.addReservedCard(new Card());
+        playerZero.addReservedCard(new Card());
+        Card originalCard = game.getFaceUpCards(1).get(0);
+        int deckSizeBefore = game.getDeck(1).cards.size();
+
+        ActionResult result = game.reserveFaceUpCard(1, 0, Locale.US);
+
+        assertFalse(result.isSuccess());
+        assertEquals(MessageProvider.getMessage("error.invalid_reserve_card", Locale.US), result.getMessage());
+        assertEquals(3, playerZero.getReservedCards().size());
+        assertEquals(originalCard, game.getFaceUpCards(1).get(0));
+        assertEquals(deckSizeBefore, game.getDeck(1).cards.size());
+        assertEquals(5, game.getTokenBank().getTokenCount(TokenColor.GOLD));
+        assertEquals(playerZero, game.getCurrentPlayer());
+    }
+
+    @Test
+    void reserveFaceUpCard_rejectsInvalidLevelAndLeavesStateUnchanged() {
+        Game game = new Game();
+        game.startGame(2, Locale.US);
+        Player playerZero = game.getCurrentPlayer();
+
+        ActionResult result = game.reserveFaceUpCard(4, 0, Locale.US);
+
+        assertFalse(result.isSuccess());
+        assertEquals(MessageProvider.getMessage("error.invalid_reserve_card", Locale.US), result.getMessage());
+        assertEquals(0, playerZero.getReservedCards().size());
+        assertEquals(5, game.getTokenBank().getTokenCount(TokenColor.GOLD));
+        assertEquals(playerZero, game.getCurrentPlayer());
+    }
+
+    @Test
+    void reserveFaceUpCard_rejectsInvalidIndexAndLeavesStateUnchanged() {
+        Game game = new Game();
+        game.startGame(2, Locale.US);
+        Player playerZero = game.getCurrentPlayer();
+        Card originalCard = game.getFaceUpCards(1).get(0);
+        int deckSizeBefore = game.getDeck(1).cards.size();
+
+        ActionResult result = game.reserveFaceUpCard(1, 4, Locale.US);
+
+        assertFalse(result.isSuccess());
+        assertEquals(MessageProvider.getMessage("error.invalid_reserve_card", Locale.US), result.getMessage());
+        assertEquals(0, playerZero.getReservedCards().size());
+        assertEquals(originalCard, game.getFaceUpCards(1).get(0));
+        assertEquals(deckSizeBefore, game.getDeck(1).cards.size());
+        assertEquals(5, game.getTokenBank().getTokenCount(TokenColor.GOLD));
+        assertEquals(playerZero, game.getCurrentPlayer());
+    }
+
+    @Test
+    void reserveFaceUpCard_beforeStartGameReturnsFailureAndKeepsSetupPhase() {
+        Game game = new Game();
+
+        ActionResult result = game.reserveFaceUpCard(1, 0, Locale.US);
+
+        assertFalse(result.isSuccess());
+        assertEquals(GamePhase.SETUP, game.getPhase());
+    }
 }

@@ -127,6 +127,41 @@ public class Game
         return ActionResult.success();
     }
 
+    public ActionResult reserveFaceUpCard(int level, int cardIndex, Locale locale) {
+        if (phase != GamePhase.PLAYER_TURN || players == null || tokenBank == null || faceUpCards == null || decks == null) {
+            String errorMessage = MessageProvider.getMessage("error.invalid_reserve_card", locale);
+            return ActionResult.failure(errorMessage);
+        }
+
+        if (ruleValidator == null) {
+            initializeRuleValidator();
+        }
+
+        List<Card> cards = faceUpCards.get(level);
+        Player currentPlayer = getCurrentPlayer();
+        ActionResult validationResult = ruleValidator.validateReserveCard(currentPlayer, cards, cardIndex, locale);
+        if (!validationResult.isSuccess()) {
+            return validationResult;
+        }
+
+        Card reservedCard = cards.remove(cardIndex);
+        currentPlayer.addReservedCard(reservedCard);
+
+        Deck deck = decks.get(level);
+        if (deck != null && !deck.isEmpty()) {
+            cards.add(deck.drawCard());
+        }
+
+        if (tokenBank.getTokenCount(TokenColor.GOLD) > 0) {
+            currentPlayer.addTokens(Map.of(TokenColor.GOLD, 1));
+            tokenBank.removeTokens(Map.of(TokenColor.GOLD, 1));
+        }
+
+        currentPlayerIndex = (currentPlayerIndex + NEXT_PLAYER_OFFSET) % players.size();
+
+        return ActionResult.success();
+    }
+
     private void initializeCards() {
         try {
             List<Card> cards = new CardLoader().loadFromClasspath(Game.class, CARDS_RESOURCE_PATH);

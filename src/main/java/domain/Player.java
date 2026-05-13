@@ -48,6 +48,10 @@ public class Player {
         }
     }
 
+    public void addReservedCard(Card card) {
+        reservedCards.add(card);
+    }
+
     public List<Card> getDevelopmentCards() {
         return developmentCards;
     }

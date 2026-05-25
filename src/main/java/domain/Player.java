@@ -52,6 +52,13 @@ public class Player {
         reservedCards.add(card);
     }
 
+    public void addDevelopmentCard(Card card) {
+    }
+
+    public int getBonusCount(TokenColor color) {
+        return 0;
+    }
+
     public List<Card> getDevelopmentCards() {
         return developmentCards;
     }

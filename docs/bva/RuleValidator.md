@@ -40,3 +40,23 @@
 | TC20 | Player has 0 reserved cards, face-up cards is empty, index = 0     | `isSuccess()` is false, returns US invalid reserve card message | :white_check_mark: |
 | TC21 | Player has 0 reserved cards, face-up cards has 4 cards, index = -1 | `isSuccess()` is false, returns US invalid reserve card message | :white_check_mark: |
 | TC22 | Player has 0 reserved cards, face-up cards has 4 cards, index = 4  | `isSuccess()` is false, returns US invalid reserve card message | :white_check_mark: |
+
+---
+
+### Method under test: `validateBuyCard(Player player, Card card, Locale locale)`
+
+| ID   | State of the System                                                                                              | Expected output                                             | Implemented? |
+|------|------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------|--------------|
+| TC23 | Player has 0 tokens and 0 bonuses, card is null                                                                  | `isSuccess()` is false, returns US invalid buy card message | :x:          |
+| TC24 | Player has 0 tokens and 0 bonuses, card costs empty map                                                          | `isSuccess()` is true                                       | :x:          |
+| TC25 | Player has 1 DIAMOND token and 0 bonuses, card costs 1 DIAMOND                                                   | `isSuccess()` is true                                       | :x:          |
+| TC26 | Player has 0 DIAMOND tokens and 1 DIAMOND bonus, card costs 1 DIAMOND                                            | `isSuccess()` is true                                       | :x:          |
+| TC27 | Player has 0 DIAMOND tokens and 2 DIAMOND bonuses, card costs 1 DIAMOND                                          | `isSuccess()` is true                                       | :x:          |
+| TC28 | Player has 0 DIAMOND tokens, 0 bonuses, and 1 GOLD token, card costs 1 DIAMOND                                   | `isSuccess()` is true                                       | :x:          |
+| TC29 | Player has 1 DIAMOND token, 0 SAPPHIRE tokens, and 1 GOLD token, card costs 1 DIAMOND and 1 SAPPHIRE             | `isSuccess()` is true                                       | :x:          |
+| TC30 | Player has 0 DIAMOND tokens, 0 bonuses, and 0 GOLD tokens, card costs 1 DIAMOND                                  | `isSuccess()` is false, returns US invalid buy card message | :x:          |
+| TC31 | Player has 0 DIAMOND tokens, 0 bonuses, and 1 GOLD token, card costs 2 DIAMOND                                   | `isSuccess()` is false, returns US invalid buy card message | :x:          |
+| TC32 | Player has 1 DIAMOND token, 1 DIAMOND bonus, and 1 GOLD token, card costs 3 DIAMOND                              | `isSuccess()` is true                                       | :x:          |
+| TC33 | Player has 1 DIAMOND token, 1 DIAMOND bonus, and 0 GOLD tokens, card costs 3 DIAMOND                             | `isSuccess()` is false, returns US invalid buy card message | :x:          |
+| TC34 | Player has 1 DIAMOND token, 1 SAPPHIRE token, and 0 bonuses, card costs 1 DIAMOND and 1 SAPPHIRE                 | `isSuccess()` is true                                       | :x:          |
+| TC35 | Player has 1 DIAMOND token, 0 SAPPHIRE tokens, 0 bonuses, and 0 GOLD tokens, card costs 1 DIAMOND and 1 SAPPHIRE | `isSuccess()` is false, returns US invalid buy card message | :x:          |

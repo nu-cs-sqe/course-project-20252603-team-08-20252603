@@ -20,6 +20,9 @@
 # Week 6 (05/04/2026-05/10/2026)
 1. [done] Mengxi-Xia(Mengxi Xia): Implement UI and logic for starting the first round. Add 90 cards and 10 nobel cards. Now the code can be run using ./gradle run to start the first round. Fixed Week 5 code based on feedback. Link to PR: (https://github.com/nu-cs-sqe/course-project-20252603-team-08-20252603/pull/42)
 
+# Week 7 (05/11/2026-05/17/2026)
+1. [done] Mengxi-Xia(Mengxi Xia): Implement player reserve card, game engine deal with player reserve card and card reservation rule validator. Link to PR: (https://github.com/nu-cs-sqe/course-project-20252603-team-08-20252603/pull/44)
+
 # Week X (XX/XX/2026-XX/XX/2026) TEMPLATE (You can change the format to whatever the team likes better)
 **Planning and Progress Tracking**:
 1. [done] Person: Task (Links to PR)

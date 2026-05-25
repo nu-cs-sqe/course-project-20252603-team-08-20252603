@@ -74,3 +74,26 @@
 |--------------|------------------------------------------------|---------------------------------------------------|--------------------|
 | Test Case 20 | New Player object, add one reserved card       | reservedCards.size() == 1 and contains the card   | :white_check_mark: |
 | Test Case 21 | Player has one reserved card, add another card | reservedCards.size() == 2 and contains both cards | :white_check_mark: |
+
+---
+
+## Method: addDevelopmentCard(Card card)
+
+|              | State of the System                               | Expected output                                                                                      | Implemented?       |
+|--------------|---------------------------------------------------|------------------------------------------------------------------------------------------------------|--------------------|
+| Test Case 22 | New Player object, add one 0-point card           | developmentCards.size() == 1, contains the card, prestigePoints == 0                                 | :white_check_mark: |
+| Test Case 23 | New Player object, add one 1-point card           | developmentCards.size() == 1, contains the card, prestigePoints == 1                                 | :white_check_mark: |
+| Test Case 24 | Player has one development card, add another card | developmentCards.size() == 2, contains both cards, prestigePoints equals the sum of both card points | :white_check_mark: |
+
+---
+
+## Method: getBonusCount(TokenColor color)
+
+|              | State of the System                                               | Expected output                 | Implemented?       |
+|--------------|-------------------------------------------------------------------|---------------------------------|--------------------|
+| Test Case 25 | New Player object, color = DIAMOND                                | bonus count == 0                | :white_check_mark: |
+| Test Case 26 | Player has one DIAMOND development card, color = DIAMOND          | bonus count == 1                | :white_check_mark: |
+| Test Case 27 | Player has two DIAMOND development cards, color = DIAMOND         | bonus count == 2                | :white_check_mark: |
+| Test Case 28 | Player has one RUBY development card, color = DIAMOND             | bonus count == 0                | :white_check_mark: |
+| Test Case 29 | Player has one DIAMOND reserved card, color = DIAMOND             | bonus count == 0                | :white_check_mark: |
+| Test Case 30 | Player has one DIAMOND development card and color = GOLD          | bonus count == 0                | :white_check_mark: |

@@ -52,6 +52,25 @@ public class Player {
         reservedCards.add(card);
     }
 
+    public void addDevelopmentCard(Card card) {
+        developmentCards.add(card);
+        prestigePoints += card.prestigePoints;
+    }
+
+    public int getBonusCount(TokenColor color) {
+        if (color == TokenColor.GOLD) {
+            return 0;
+        }
+
+        int bonusCount = 0;
+        for (Card card : developmentCards) {
+            if (card.bonusColor == color) {
+                bonusCount++;
+            }
+        }
+        return bonusCount;
+    }
+
     public List<Card> getDevelopmentCards() {
         return developmentCards;
     }

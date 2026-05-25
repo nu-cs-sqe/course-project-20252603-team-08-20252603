@@ -64,6 +64,13 @@ public class ConsoleGame {
                 } else {
                     out.println(actionResult.getMessage());
                 }
+            } else if (line.toLowerCase(Locale.US).startsWith("buy ")) {
+                ActionResult actionResult = buyFaceUpCard(game, line.substring(4), locale);
+                if (actionResult.isSuccess()) {
+                    out.println(message("ui.action_succeeded", locale));
+                } else {
+                    out.println(actionResult.getMessage());
+                }
             } else {
                 out.println(message("ui.unknown_action", locale));
             }
@@ -168,6 +175,21 @@ public class ConsoleGame {
             int level = Integer.parseInt(parts[0]);
             int cardIndex = Integer.parseInt(parts[1]);
             return game.reserveFaceUpCard(level, cardIndex, locale);
+        } catch (NumberFormatException e) {
+            return ActionResult.failure(message("ui.unknown_action", locale));
+        }
+    }
+
+    private ActionResult buyFaceUpCard(Game game, String input, Locale locale) {
+        String[] parts = input.trim().split("\\s+");
+        if (parts.length != 2) {
+            return ActionResult.failure(message("ui.unknown_action", locale));
+        }
+
+        try {
+            int level = Integer.parseInt(parts[0]);
+            int cardIndex = Integer.parseInt(parts[1]);
+            return game.buyFaceUpCard(level, cardIndex, locale);
         } catch (NumberFormatException e) {
             return ActionResult.failure(message("ui.unknown_action", locale));
         }

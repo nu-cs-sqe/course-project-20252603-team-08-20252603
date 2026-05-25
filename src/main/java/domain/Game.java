@@ -162,6 +162,69 @@ public class Game
         return ActionResult.success();
     }
 
+    public ActionResult buyFaceUpCard(int level, int cardIndex, Locale locale) {
+        if (phase != GamePhase.PLAYER_TURN || players == null || tokenBank == null || faceUpCards == null || decks == null) {
+            String errorMessage = MessageProvider.getMessage("error.invalid_buy_card", locale);
+            return ActionResult.failure(errorMessage);
+        }
+
+        if (ruleValidator == null) {
+            initializeRuleValidator();
+        }
+
+        List<Card> cards = faceUpCards.get(level);
+        if (cards == null || cardIndex < 0 || cardIndex >= cards.size()) {
+            String errorMessage = MessageProvider.getMessage("error.invalid_buy_card", locale);
+            return ActionResult.failure(errorMessage);
+        }
+
+        Player currentPlayer = getCurrentPlayer();
+        Card card = cards.get(cardIndex);
+        ActionResult validationResult = ruleValidator.validateBuyCard(currentPlayer, card, locale);
+        if (!validationResult.isSuccess()) {
+            return validationResult;
+        }
+
+        Map<TokenColor, Integer> payment = calculatePayment(currentPlayer, card);
+        currentPlayer.removeTokens(payment);
+        tokenBank.addTokens(payment);
+
+        Card boughtCard = cards.remove(cardIndex);
+        currentPlayer.addDevelopmentCard(boughtCard);
+
+        Deck deck = decks.get(level);
+        if (deck != null && !deck.isEmpty()) {
+            cards.add(deck.drawCard());
+        }
+
+        currentPlayerIndex = (currentPlayerIndex + NEXT_PLAYER_OFFSET) % players.size();
+
+        return ActionResult.success();
+    }
+
+    private Map<TokenColor, Integer> calculatePayment(Player player, Card card) {
+        Map<TokenColor, Integer> payment = new HashMap<>();
+        int goldNeeded = 0;
+
+        for (Map.Entry<TokenColor, Integer> entry : card.cost.entrySet()) {
+            TokenColor color = entry.getKey();
+            int remainingCost = entry.getValue() - player.getBonusCount(color);
+            if (remainingCost > 0) {
+                int gemTokensUsed = Math.min(player.getTokenCount(color), remainingCost);
+                if (gemTokensUsed > 0) {
+                    payment.put(color, gemTokensUsed);
+                }
+                goldNeeded += remainingCost - gemTokensUsed;
+            }
+        }
+
+        if (goldNeeded > 0) {
+            payment.put(TokenColor.GOLD, goldNeeded);
+        }
+
+        return payment;
+    }
+
     private void initializeCards() {
         try {
             List<Card> cards = new CardLoader().loadFromClasspath(Game.class, CARDS_RESOURCE_PATH);

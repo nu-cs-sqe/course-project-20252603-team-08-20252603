@@ -201,4 +201,102 @@ class PlayerTest {
         assertTrue(player.getReservedCards().contains(secondCard));
     }
 
+    @Test
+    void addDevelopmentCard_addsOneZeroPointDevelopmentCard() {
+        Player player = new Player();
+        Card card = new Card(1, TokenColor.DIAMOND, Map.of(TokenColor.RUBY, 1), 0);
+
+        player.addDevelopmentCard(card);
+
+        assertEquals(1, player.getDevelopmentCards().size());
+        assertTrue(player.getDevelopmentCards().contains(card));
+        assertEquals(0, player.getPrestigePoints());
+    }
+
+    @Test
+    void addDevelopmentCard_addsOnePointDevelopmentCardAndPrestigePoint() {
+        Player player = new Player();
+        Card card = new Card(1, TokenColor.DIAMOND, Map.of(TokenColor.RUBY, 1), 1);
+
+        player.addDevelopmentCard(card);
+
+        assertEquals(1, player.getDevelopmentCards().size());
+        assertTrue(player.getDevelopmentCards().contains(card));
+        assertEquals(1, player.getPrestigePoints());
+    }
+
+    @Test
+    void addDevelopmentCard_addsAnotherDevelopmentCardAndAccumulatesPrestigePoints() {
+        Player player = new Player();
+        Card firstCard = new Card(1, TokenColor.DIAMOND, Map.of(TokenColor.RUBY, 1), 1);
+        Card secondCard = new Card(2, TokenColor.SAPPHIRE, Map.of(TokenColor.ONYX, 2), 2);
+
+        player.addDevelopmentCard(firstCard);
+        player.addDevelopmentCard(secondCard);
+
+        assertEquals(2, player.getDevelopmentCards().size());
+        assertTrue(player.getDevelopmentCards().contains(firstCard));
+        assertTrue(player.getDevelopmentCards().contains(secondCard));
+        assertEquals(3, player.getPrestigePoints());
+    }
+
+    @Test
+    void getBonusCount_returnsZeroForNewPlayer() {
+        Player player = new Player();
+
+        assertEquals(0, player.getBonusCount(TokenColor.DIAMOND));
+    }
+
+    @Test
+    void getBonusCount_countsOneMatchingDevelopmentCard() {
+        Player player = new Player();
+        Card card = new Card(1, TokenColor.DIAMOND, Map.of(TokenColor.RUBY, 1), 0);
+
+        player.addDevelopmentCard(card);
+
+        assertEquals(1, player.getBonusCount(TokenColor.DIAMOND));
+    }
+
+    @Test
+    void getBonusCount_countsTwoMatchingDevelopmentCards() {
+        Player player = new Player();
+        Card firstCard = new Card(1, TokenColor.DIAMOND, Map.of(TokenColor.RUBY, 1), 0);
+        Card secondCard = new Card(1, TokenColor.DIAMOND, Map.of(TokenColor.ONYX, 1), 0);
+
+        player.addDevelopmentCard(firstCard);
+        player.addDevelopmentCard(secondCard);
+
+        assertEquals(2, player.getBonusCount(TokenColor.DIAMOND));
+    }
+
+    @Test
+    void getBonusCount_doesNotCountDifferentColorDevelopmentCard() {
+        Player player = new Player();
+        Card card = new Card(1, TokenColor.RUBY, Map.of(TokenColor.DIAMOND, 1), 0);
+
+        player.addDevelopmentCard(card);
+
+        assertEquals(0, player.getBonusCount(TokenColor.DIAMOND));
+    }
+
+    @Test
+    void getBonusCount_doesNotCountReservedCard() {
+        Player player = new Player();
+        Card card = new Card(1, TokenColor.DIAMOND, Map.of(TokenColor.RUBY, 1), 0);
+
+        player.addReservedCard(card);
+
+        assertEquals(0, player.getBonusCount(TokenColor.DIAMOND));
+    }
+
+    @Test
+    void getBonusCount_returnsZeroForGold() {
+        Player player = new Player();
+        Card card = new Card(1, TokenColor.DIAMOND, Map.of(TokenColor.RUBY, 1), 0);
+
+        player.addDevelopmentCard(card);
+
+        assertEquals(0, player.getBonusCount(TokenColor.GOLD));
+    }
+
 }

@@ -68,4 +68,8 @@ public class RuleValidator {
 
         return ActionResult.success();
     }
+
+    public ActionResult validateBuyCard(Player player, Card card, Locale locale) {
+        return ActionResult.success();
+    }
 }

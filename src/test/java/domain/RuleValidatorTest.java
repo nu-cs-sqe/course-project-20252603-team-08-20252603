@@ -269,4 +269,151 @@ public class RuleValidatorTest {
         assertEquals(MessageProvider.getMessage("error.invalid_reserve_card", Locale.US), result.getMessage());
     }
 
+    @Test
+    public void validateBuyCard_rejectsNullCard() {
+        Player player = new Player();
+
+        ActionResult result = validator.validateBuyCard(player, null, Locale.US);
+
+        assertFalse(result.isSuccess());
+        assertEquals(MessageProvider.getMessage("error.invalid_buy_card", Locale.US), result.getMessage());
+    }
+
+    @Test
+    public void validateBuyCard_acceptsCardWithEmptyCost() {
+        Player player = new Player();
+        Card card = new Card(1, TokenColor.DIAMOND, Map.of(), 0);
+
+        ActionResult result = validator.validateBuyCard(player, card, Locale.US);
+
+        assertTrue(result.isSuccess());
+    }
+
+    @Test
+    public void validateBuyCard_acceptsCardPaidWithSingleGemToken() {
+        Player player = new Player();
+        player.addTokens(Map.of(TokenColor.DIAMOND, 1));
+        Card card = new Card(1, TokenColor.RUBY, Map.of(TokenColor.DIAMOND, 1), 0);
+
+        ActionResult result = validator.validateBuyCard(player, card, Locale.US);
+
+        assertTrue(result.isSuccess());
+    }
+
+    @Test
+    public void validateBuyCard_acceptsCardPaidByMatchingBonus() {
+        Player player = new Player();
+        player.addDevelopmentCard(new Card(1, TokenColor.DIAMOND, Map.of(), 0));
+        Card card = new Card(1, TokenColor.RUBY, Map.of(TokenColor.DIAMOND, 1), 0);
+
+        ActionResult result = validator.validateBuyCard(player, card, Locale.US);
+
+        assertTrue(result.isSuccess());
+    }
+
+    @Test
+    public void validateBuyCard_acceptsCardWhenBonusExceedsCost() {
+        Player player = new Player();
+        player.addDevelopmentCard(new Card(1, TokenColor.DIAMOND, Map.of(), 0));
+        player.addDevelopmentCard(new Card(1, TokenColor.DIAMOND, Map.of(), 0));
+        Card card = new Card(1, TokenColor.RUBY, Map.of(TokenColor.DIAMOND, 1), 0);
+
+        ActionResult result = validator.validateBuyCard(player, card, Locale.US);
+
+        assertTrue(result.isSuccess());
+    }
+
+    @Test
+    public void validateBuyCard_acceptsCardPaidWithGoldToken() {
+        Player player = new Player();
+        player.addTokens(Map.of(TokenColor.GOLD, 1));
+        Card card = new Card(1, TokenColor.RUBY, Map.of(TokenColor.DIAMOND, 1), 0);
+
+        ActionResult result = validator.validateBuyCard(player, card, Locale.US);
+
+        assertTrue(result.isSuccess());
+    }
+
+    @Test
+    public void validateBuyCard_acceptsCardPaidWithGemAndGoldTokens() {
+        Player player = new Player();
+        player.addTokens(Map.of(TokenColor.DIAMOND, 1, TokenColor.GOLD, 1));
+        Card card = new Card(1, TokenColor.RUBY, Map.of(TokenColor.DIAMOND, 1, TokenColor.SAPPHIRE, 1), 0);
+
+        ActionResult result = validator.validateBuyCard(player, card, Locale.US);
+
+        assertTrue(result.isSuccess());
+    }
+
+    @Test
+    public void validateBuyCard_rejectsCardWhenGemAndGoldTokensAreMissing() {
+        Player player = new Player();
+        Card card = new Card(1, TokenColor.RUBY, Map.of(TokenColor.DIAMOND, 1), 0);
+
+        ActionResult result = validator.validateBuyCard(player, card, Locale.US);
+
+        assertFalse(result.isSuccess());
+        assertEquals(MessageProvider.getMessage("error.invalid_buy_card", Locale.US), result.getMessage());
+    }
+
+    @Test
+    public void validateBuyCard_rejectsCardWhenGoldTokenCannotCoverFullShortage() {
+        Player player = new Player();
+        player.addTokens(Map.of(TokenColor.GOLD, 1));
+        Card card = new Card(1, TokenColor.RUBY, Map.of(TokenColor.DIAMOND, 2), 0);
+
+        ActionResult result = validator.validateBuyCard(player, card, Locale.US);
+
+        assertFalse(result.isSuccess());
+        assertEquals(MessageProvider.getMessage("error.invalid_buy_card", Locale.US), result.getMessage());
+    }
+
+    @Test
+    public void validateBuyCard_acceptsCardPaidWithBonusGemAndGoldToken() {
+        Player player = new Player();
+        player.addDevelopmentCard(new Card(1, TokenColor.DIAMOND, Map.of(), 0));
+        player.addTokens(Map.of(TokenColor.DIAMOND, 1, TokenColor.GOLD, 1));
+        Card card = new Card(1, TokenColor.RUBY, Map.of(TokenColor.DIAMOND, 3), 0);
+
+        ActionResult result = validator.validateBuyCard(player, card, Locale.US);
+
+        assertTrue(result.isSuccess());
+    }
+
+    @Test
+    public void validateBuyCard_rejectsCardWhenBonusAndGemTokenStillLeaveShortage() {
+        Player player = new Player();
+        player.addDevelopmentCard(new Card(1, TokenColor.DIAMOND, Map.of(), 0));
+        player.addTokens(Map.of(TokenColor.DIAMOND, 1));
+        Card card = new Card(1, TokenColor.RUBY, Map.of(TokenColor.DIAMOND, 3), 0);
+
+        ActionResult result = validator.validateBuyCard(player, card, Locale.US);
+
+        assertFalse(result.isSuccess());
+        assertEquals(MessageProvider.getMessage("error.invalid_buy_card", Locale.US), result.getMessage());
+    }
+
+    @Test
+    public void validateBuyCard_acceptsCardPaidWithTwoGemColors() {
+        Player player = new Player();
+        player.addTokens(Map.of(TokenColor.DIAMOND, 1, TokenColor.SAPPHIRE, 1));
+        Card card = new Card(1, TokenColor.RUBY, Map.of(TokenColor.DIAMOND, 1, TokenColor.SAPPHIRE, 1), 0);
+
+        ActionResult result = validator.validateBuyCard(player, card, Locale.US);
+
+        assertTrue(result.isSuccess());
+    }
+
+    @Test
+    public void validateBuyCard_rejectsCardWhenOneRequiredColorIsMissing() {
+        Player player = new Player();
+        player.addTokens(Map.of(TokenColor.DIAMOND, 1));
+        Card card = new Card(1, TokenColor.RUBY, Map.of(TokenColor.DIAMOND, 1, TokenColor.SAPPHIRE, 1), 0);
+
+        ActionResult result = validator.validateBuyCard(player, card, Locale.US);
+
+        assertFalse(result.isSuccess());
+        assertEquals(MessageProvider.getMessage("error.invalid_buy_card", Locale.US), result.getMessage());
+    }
+
 }

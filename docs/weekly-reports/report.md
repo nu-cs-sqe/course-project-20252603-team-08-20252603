@@ -23,6 +23,9 @@
 # Week 7 (05/11/2026-05/17/2026)
 1. [done] Mengxi-Xia(Mengxi Xia): Implement player reserve card, game engine deal with player reserve card and card reservation rule validator. Link to PR: (https://github.com/nu-cs-sqe/course-project-20252603-team-08-20252603/pull/44)
 
+# Week 8 (05/17/2026-05/24/2026)
+1. [done] Mengxi-Xia(Mengxi Xia): Add jacoco and pitest. Implement player buy card UI and game logic. Link to PR: (https://github.com/nu-cs-sqe/course-project-20252603-team-08-20252603/pull/48, https://github.com/nu-cs-sqe/course-project-20252603-team-08-20252603/pull/47)
+
 # Week X (XX/XX/2026-XX/XX/2026) TEMPLATE (You can change the format to whatever the team likes better)
 **Planning and Progress Tracking**:
 1. [done] Person: Task (Links to PR)

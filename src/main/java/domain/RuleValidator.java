@@ -70,6 +70,27 @@ public class RuleValidator {
     }
 
     public ActionResult validateBuyCard(Player player, Card card, Locale locale) {
-        return ActionResult.success();
+        String errorMessage = MessageProvider.getMessage("error.invalid_buy_card", locale);
+
+        if (card == null) {
+            return ActionResult.failure(errorMessage);
+        }
+
+        int goldNeeded = 0;
+        for (Map.Entry<TokenColor, Integer> entry : card.cost.entrySet()) {
+            TokenColor color = entry.getKey();
+            int cost = entry.getValue();
+            int remainingCost = cost - player.getBonusCount(color);
+            if (remainingCost > 0) {
+                int gemTokensUsed = Math.min(player.getTokenCount(color), remainingCost);
+                goldNeeded += remainingCost - gemTokensUsed;
+            }
+        }
+
+        if (goldNeeded <= player.getTokenCount(TokenColor.GOLD)) {
+            return ActionResult.success();
+        }
+
+        return ActionResult.failure(errorMessage);
     }
 }

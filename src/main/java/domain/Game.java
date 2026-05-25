@@ -162,6 +162,10 @@ public class Game
         return ActionResult.success();
     }
 
+    public ActionResult buyFaceUpCard(int level, int cardIndex, Locale locale) {
+        return ActionResult.success();
+    }
+
     private void initializeCards() {
         try {
             List<Card> cards = new CardLoader().loadFromClasspath(Game.class, CARDS_RESOURCE_PATH);

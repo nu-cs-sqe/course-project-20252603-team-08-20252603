@@ -456,4 +456,157 @@ class GameTest {
         assertFalse(result.isSuccess());
         assertEquals(GamePhase.SETUP, game.getPhase());
     }
+
+    @Test
+    void buyFaceUpCard_validCardPaidWithGemTokensBuysCardRefillsMarketAndAdvancesCurrentPlayer() {
+        Game game = new Game();
+        game.startGame(2, Locale.US);
+        Player playerZero = game.getCurrentPlayer();
+        Card card = new Card(1, TokenColor.DIAMOND, Map.of(TokenColor.RUBY, 1), 1);
+        game.getFaceUpCards(1).set(0, card);
+        playerZero.addTokens(Map.of(TokenColor.RUBY, 1));
+        game.getTokenBank().removeTokens(Map.of(TokenColor.RUBY, 1));
+        int deckSizeBefore = game.getDeck(1).cards.size();
+
+        ActionResult result = game.buyFaceUpCard(1, 0, Locale.US);
+
+        assertTrue(result.isSuccess());
+        assertEquals(1, playerZero.getDevelopmentCards().size());
+        assertEquals(card, playerZero.getDevelopmentCards().get(0));
+        assertEquals(0, playerZero.getTokenCount(TokenColor.RUBY));
+        assertEquals(4, game.getTokenBank().getTokenCount(TokenColor.RUBY));
+        assertEquals(1, playerZero.getPrestigePoints());
+        assertEquals(4, game.getFaceUpCards(1).size());
+        assertEquals(deckSizeBefore - 1, game.getDeck(1).cards.size());
+        assertEquals(game.getPlayers().get(1), game.getCurrentPlayer());
+    }
+
+    @Test
+    void buyFaceUpCard_validCardUsesBonusToReduceCost() {
+        Game game = new Game();
+        game.startGame(2, Locale.US);
+        Player playerZero = game.getCurrentPlayer();
+        playerZero.addDevelopmentCard(new Card(1, TokenColor.RUBY, Map.of(), 0));
+        Card card = new Card(1, TokenColor.DIAMOND, Map.of(TokenColor.RUBY, 2), 0);
+        game.getFaceUpCards(1).set(0, card);
+        playerZero.addTokens(Map.of(TokenColor.RUBY, 1));
+        game.getTokenBank().removeTokens(Map.of(TokenColor.RUBY, 1));
+
+        ActionResult result = game.buyFaceUpCard(1, 0, Locale.US);
+
+        assertTrue(result.isSuccess());
+        assertEquals(2, playerZero.getDevelopmentCards().size());
+        assertEquals(card, playerZero.getDevelopmentCards().get(1));
+        assertEquals(0, playerZero.getTokenCount(TokenColor.RUBY));
+        assertEquals(4, game.getTokenBank().getTokenCount(TokenColor.RUBY));
+        assertEquals(game.getPlayers().get(1), game.getCurrentPlayer());
+    }
+
+    @Test
+    void buyFaceUpCard_validCardUsesGoldForMissingGemToken() {
+        Game game = new Game();
+        game.startGame(2, Locale.US);
+        Player playerZero = game.getCurrentPlayer();
+        Card card = new Card(1, TokenColor.DIAMOND, Map.of(TokenColor.RUBY, 1, TokenColor.SAPPHIRE, 1), 0);
+        game.getFaceUpCards(1).set(0, card);
+        playerZero.addTokens(Map.of(TokenColor.RUBY, 1, TokenColor.GOLD, 1));
+        game.getTokenBank().removeTokens(Map.of(TokenColor.RUBY, 1, TokenColor.GOLD, 1));
+
+        ActionResult result = game.buyFaceUpCard(1, 0, Locale.US);
+
+        assertTrue(result.isSuccess());
+        assertEquals(1, playerZero.getDevelopmentCards().size());
+        assertEquals(card, playerZero.getDevelopmentCards().get(0));
+        assertEquals(0, playerZero.getTokenCount(TokenColor.RUBY));
+        assertEquals(0, playerZero.getTokenCount(TokenColor.GOLD));
+        assertEquals(4, game.getTokenBank().getTokenCount(TokenColor.RUBY));
+        assertEquals(5, game.getTokenBank().getTokenCount(TokenColor.GOLD));
+        assertEquals(game.getPlayers().get(1), game.getCurrentPlayer());
+    }
+
+    @Test
+    void buyFaceUpCard_whenDeckIsEmptyDoesNotRefillMarket() {
+        Game game = new Game();
+        game.startGame(2, Locale.US);
+        Player playerZero = game.getCurrentPlayer();
+        Card card = new Card(1, TokenColor.DIAMOND, Map.of(), 0);
+        game.getFaceUpCards(1).set(0, card);
+        game.getDeck(1).cards.clear();
+
+        ActionResult result = game.buyFaceUpCard(1, 0, Locale.US);
+
+        assertTrue(result.isSuccess());
+        assertEquals(1, playerZero.getDevelopmentCards().size());
+        assertEquals(card, playerZero.getDevelopmentCards().get(0));
+        assertEquals(3, game.getFaceUpCards(1).size());
+        assertEquals(0, game.getDeck(1).cards.size());
+        assertEquals(game.getPlayers().get(1), game.getCurrentPlayer());
+    }
+
+    @Test
+    void buyFaceUpCard_rejectsUnaffordableCardAndLeavesStateUnchanged() {
+        Game game = new Game();
+        game.startGame(2, Locale.US);
+        Player playerZero = game.getCurrentPlayer();
+        Card card = new Card(1, TokenColor.DIAMOND, Map.of(TokenColor.RUBY, 1), 1);
+        game.getFaceUpCards(1).set(0, card);
+        int deckSizeBefore = game.getDeck(1).cards.size();
+
+        ActionResult result = game.buyFaceUpCard(1, 0, Locale.US);
+
+        assertFalse(result.isSuccess());
+        assertEquals(MessageProvider.getMessage("error.invalid_buy_card", Locale.US), result.getMessage());
+        assertEquals(0, playerZero.getDevelopmentCards().size());
+        assertEquals(0, playerZero.getPrestigePoints());
+        assertEquals(card, game.getFaceUpCards(1).get(0));
+        assertEquals(deckSizeBefore, game.getDeck(1).cards.size());
+        assertEquals(4, game.getTokenBank().getTokenCount(TokenColor.RUBY));
+        assertEquals(playerZero, game.getCurrentPlayer());
+    }
+
+    @Test
+    void buyFaceUpCard_rejectsInvalidLevelAndLeavesStateUnchanged() {
+        Game game = new Game();
+        game.startGame(2, Locale.US);
+        Player playerZero = game.getCurrentPlayer();
+        playerZero.addTokens(Map.of(TokenColor.RUBY, 1));
+        game.getTokenBank().removeTokens(Map.of(TokenColor.RUBY, 1));
+
+        ActionResult result = game.buyFaceUpCard(4, 0, Locale.US);
+
+        assertFalse(result.isSuccess());
+        assertEquals(MessageProvider.getMessage("error.invalid_buy_card", Locale.US), result.getMessage());
+        assertEquals(0, playerZero.getDevelopmentCards().size());
+        assertEquals(1, playerZero.getTokenCount(TokenColor.RUBY));
+        assertEquals(3, game.getTokenBank().getTokenCount(TokenColor.RUBY));
+        assertEquals(playerZero, game.getCurrentPlayer());
+    }
+
+    @Test
+    void buyFaceUpCard_rejectsInvalidIndexAndLeavesStateUnchanged() {
+        Game game = new Game();
+        game.startGame(2, Locale.US);
+        Player playerZero = game.getCurrentPlayer();
+        Card originalCard = game.getFaceUpCards(1).get(0);
+        int deckSizeBefore = game.getDeck(1).cards.size();
+
+        ActionResult result = game.buyFaceUpCard(1, 4, Locale.US);
+
+        assertFalse(result.isSuccess());
+        assertEquals(MessageProvider.getMessage("error.invalid_buy_card", Locale.US), result.getMessage());
+        assertEquals(0, playerZero.getDevelopmentCards().size());
+        assertEquals(originalCard, game.getFaceUpCards(1).get(0));
+        assertEquals(deckSizeBefore, game.getDeck(1).cards.size());
+        assertEquals(playerZero, game.getCurrentPlayer());
+    }
+
+    @Test
+    void buyFaceUpCard_beforeStartGameReturnsFailureAndKeepsSetupPhase() {
+        Game game = new Game();
+
+        ActionResult result = game.buyFaceUpCard(1, 0, Locale.US);
+
+        assertFalse(result.isSuccess());
+        assertEquals(GamePhase.SETUP, game.getPhase());
+    }
 }

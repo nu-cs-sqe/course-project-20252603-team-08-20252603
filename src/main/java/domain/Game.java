@@ -1,6 +1,7 @@
 package domain;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -65,7 +66,7 @@ public class Game
     }
 
     public List<Player> getPlayers() {
-        return players;
+        return Collections.unmodifiableList(players);
     }
 
     public Player getCurrentPlayer() {
@@ -101,7 +102,10 @@ public class Game
     }
 
     public List<Noble> getRevealedNobles() {
-        return revealedNobles;
+        if (revealedNobles == null) {
+            return null;
+        }
+        return Collections.unmodifiableList(revealedNobles);
     }
 
     public ActionResult takeTokens(Map<TokenColor, Integer> tokensToTake, Locale locale) {

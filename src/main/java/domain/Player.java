@@ -1,6 +1,7 @@
 package domain;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
@@ -72,11 +73,11 @@ public class Player {
     }
 
     public List<Card> getDevelopmentCards() {
-        return developmentCards;
+        return Collections.unmodifiableList(developmentCards);
     }
 
     public List<Card> getReservedCards() {
-        return reservedCards;
+        return Collections.unmodifiableList(reservedCards);
     }
 
     public int getTotalTokenCount() {

@@ -38,7 +38,7 @@ public class NobleLoader {
                 nobles.add(new Noble(requirements, prestigePoints));
             }
             return nobles;
-        } catch (JsonIOException | JsonSyntaxException | IllegalArgumentException | IllegalStateException | NullPointerException e) {
+        } catch (JsonIOException | JsonSyntaxException | IllegalArgumentException | IllegalStateException e) {
             throw new IOException("Invalid noble resource: " + resourcePath, e);
         }
     }

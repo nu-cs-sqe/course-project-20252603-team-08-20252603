@@ -9,6 +9,7 @@ import domain.TokenColor;
 
 import java.io.InputStream;
 import java.io.PrintStream;
+import java.nio.charset.StandardCharsets;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Locale;
@@ -31,7 +32,7 @@ public class ConsoleGame {
     }
 
     public void run() {
-        Scanner scanner = new Scanner(in);
+        Scanner scanner = new Scanner(in, StandardCharsets.UTF_8.name());
         Locale locale = readLocale(scanner);
         Game game = new Game();
         int playerCount = readPlayerCount(scanner, locale);

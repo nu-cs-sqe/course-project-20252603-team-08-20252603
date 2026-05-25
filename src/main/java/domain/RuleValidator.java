@@ -48,8 +48,8 @@ public class RuleValidator {
         }
 
         if (totalTokensToTake == TWO_TOKEN_TAKE_COUNT && tokensToTake.size() == 1) {
-            TokenColor color = tokensToTake.keySet().iterator().next();
-            if (tokensToTake.get(color) == TWO_TOKEN_TAKE_COUNT && bank.getTokenCount(color) >= MIN_BANK_TOKENS_FOR_DOUBLE_TAKE) {
+            Map.Entry<TokenColor, Integer> entry = tokensToTake.entrySet().iterator().next();
+            if (entry.getValue() == TWO_TOKEN_TAKE_COUNT && bank.getTokenCount(entry.getKey()) >= MIN_BANK_TOKENS_FOR_DOUBLE_TAKE) {
                 return ActionResult.success();
             }
         }

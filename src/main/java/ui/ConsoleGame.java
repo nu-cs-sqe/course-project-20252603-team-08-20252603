@@ -16,6 +16,12 @@ import java.util.Map;
 import java.util.Scanner;
 
 public class ConsoleGame {
+    private static final String TAKE_COMMAND_PREFIX = "take ";
+    private static final String RESERVE_COMMAND_PREFIX = "reserve ";
+    private static final String BUY_COMMAND_PREFIX = "buy ";
+    private static final int MIN_CARD_LEVEL = 1;
+    private static final int MAX_CARD_LEVEL = 3;
+
     private final InputStream in;
     private final PrintStream out;
 
@@ -50,22 +56,22 @@ public class ConsoleGame {
                 return;
             }
 
-            if (line.toLowerCase(Locale.US).startsWith("take ")) {
-                ActionResult actionResult = game.takeTokens(parseTokens(line.substring(5)), locale);
+            if (line.toLowerCase(Locale.US).startsWith(TAKE_COMMAND_PREFIX)) {
+                ActionResult actionResult = game.takeTokens(parseTokens(line.substring(TAKE_COMMAND_PREFIX.length())), locale);
                 if (actionResult.isSuccess()) {
                     out.println(message("ui.action_succeeded", locale));
                 } else {
                     out.println(actionResult.getMessage());
                 }
-            } else if (line.toLowerCase(Locale.US).startsWith("reserve ")) {
-                ActionResult actionResult = reserveFaceUpCard(game, line.substring(8), locale);
+            } else if (line.toLowerCase(Locale.US).startsWith(RESERVE_COMMAND_PREFIX)) {
+                ActionResult actionResult = reserveFaceUpCard(game, line.substring(RESERVE_COMMAND_PREFIX.length()), locale);
                 if (actionResult.isSuccess()) {
                     out.println(message("ui.action_succeeded", locale));
                 } else {
                     out.println(actionResult.getMessage());
                 }
-            } else if (line.toLowerCase(Locale.US).startsWith("buy ")) {
-                ActionResult actionResult = buyFaceUpCard(game, line.substring(4), locale);
+            } else if (line.toLowerCase(Locale.US).startsWith(BUY_COMMAND_PREFIX)) {
+                ActionResult actionResult = buyFaceUpCard(game, line.substring(BUY_COMMAND_PREFIX.length()), locale);
                 if (actionResult.isSuccess()) {
                     out.println(message("ui.action_succeeded", locale));
                 } else {
@@ -123,7 +129,7 @@ public class ConsoleGame {
 
     private void printCards(Game game, Locale locale) {
         out.println(message("ui.face_up_cards", locale));
-        for (int level = 1; level <= 3; level++) {
+        for (int level = MIN_CARD_LEVEL; level <= MAX_CARD_LEVEL; level++) {
             out.println("  " + message("ui.level", locale) + " " + level + ":");
             List<Card> cards = game.getFaceUpCards(level);
             for (int i = 0; i < cards.size(); i++) {

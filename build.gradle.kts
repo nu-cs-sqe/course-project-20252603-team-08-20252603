@@ -66,6 +66,7 @@ spotbugs {
     showProgress = true
     effort = Effort.DEFAULT
     reportLevel = Confidence.DEFAULT
+    excludeFilter.set(file("config/spotbugs/exclude.xml"))
     reportsDir = file("spotbugs")
     maxHeapSize = "1g"
     extraArgs = listOf("-nested:false")

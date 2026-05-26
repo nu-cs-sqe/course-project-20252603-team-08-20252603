@@ -84,7 +84,10 @@ public class Game
     }
 
     public TokenBank getTokenBank() {
-        return tokenBank;
+        if (tokenBank == null) {
+            return null;
+        }
+        return new TokenBank(tokenBank);
     }
 
     public List<Card> getFaceUpCards(int level) {

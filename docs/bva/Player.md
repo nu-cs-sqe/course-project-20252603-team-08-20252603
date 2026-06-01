@@ -108,3 +108,22 @@
 | Test Case 32 | Player has two reserved cards, remove first card     | reservedCards.size() == 1 and only second card remains      | :white_check_mark: |
 | Test Case 33 | Player has two reserved cards, remove second card    | reservedCards.size() == 1 and only first card remains       | :white_check_mark: |
 | Test Case 34 | Player has one reserved card, remove unreserved card | Throw IllegalArgumentException and reserved cards unchanged | :white_check_mark: |
+
+---
+
+## Method: getNobles()
+
+|              | State of the System | Expected output      | Implemented? |
+|--------------|---------------------|----------------------|--------------|
+| Test Case 35 | New Player object   | noble list is empty  | :x:          |
+
+---
+
+## Method: addNoble(Noble noble)
+
+|              | State of the System                                     | Expected output                                                                                | Implemented? |
+|--------------|---------------------------------------------------------|------------------------------------------------------------------------------------------------|--------------|
+| Test Case 36 | New Player object, add one 3-point noble                | nobles.size() == 1, contains the noble, prestigePoints == 3                                    | :x:          |
+| Test Case 37 | New Player object, add one 0-point noble                | nobles.size() == 1, contains the noble, prestigePoints == 0                                    | :x:          |
+| Test Case 38 | Player has one noble, add another noble                 | nobles.size() == 2, contains both nobles, prestigePoints equals the sum of both noble points   | :x:          |
+| Test Case 39 | Player has one development card, add one 3-point noble  | developmentCards is unchanged, nobles contains the noble, prestigePoints includes both sources | :x:          |

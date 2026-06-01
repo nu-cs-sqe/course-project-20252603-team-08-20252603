@@ -2,5 +2,6 @@ package domain;
 
 public enum GamePhase {
     SETUP,
-    PLAYER_TURN
+    PLAYER_TURN,
+    GAME_OVER
 }

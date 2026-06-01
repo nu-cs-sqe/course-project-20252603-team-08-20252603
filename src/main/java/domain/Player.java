@@ -10,12 +10,14 @@ public class Player {
     private final Map<TokenColor, Integer> tokens;
     private final List<Card> developmentCards;
     private final List<Card> reservedCards;
+    private final List<Noble> nobles;
     private int prestigePoints;
 
     public Player() {
         this.tokens = new EnumMap<>(TokenColor.class);
         this.developmentCards = new ArrayList<>();
         this.reservedCards = new ArrayList<>();
+        this.nobles = new ArrayList<>();
         this.prestigePoints = 0;
     }
 
@@ -53,9 +55,20 @@ public class Player {
         reservedCards.add(card);
     }
 
+    public void removeReservedCard(Card card) {
+        if (!reservedCards.remove(card)) {
+            throw new IllegalArgumentException();
+        }
+    }
+
     public void addDevelopmentCard(Card card) {
         developmentCards.add(card);
         prestigePoints += card.prestigePoints;
+    }
+
+    public void addNoble(Noble noble) {
+        nobles.add(noble);
+        prestigePoints += noble.prestigePoints;
     }
 
     public int getBonusCount(TokenColor color) {
@@ -78,6 +91,10 @@ public class Player {
 
     public List<Card> getReservedCards() {
         return Collections.unmodifiableList(reservedCards);
+    }
+
+    public List<Noble> getNobles() {
+        return Collections.unmodifiableList(nobles);
     }
 
     public int getTotalTokenCount() {

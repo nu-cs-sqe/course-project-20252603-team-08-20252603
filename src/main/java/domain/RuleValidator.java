@@ -99,4 +99,20 @@ public class RuleValidator {
 
         return ActionResult.failure(errorMessage);
     }
+
+    public ActionResult validateNobleVisit(Player player, Noble noble, Locale locale) {
+        String errorMessage = MessageProvider.getMessage("error.invalid_noble_visit", locale);
+
+        if (player == null || noble == null || noble.requirements == null) {
+            return ActionResult.failure(errorMessage);
+        }
+
+        for (Map.Entry<TokenColor, Integer> entry : noble.requirements.entrySet()) {
+            if (player.getBonusCount(entry.getKey()) < entry.getValue()) {
+                return ActionResult.failure(errorMessage);
+            }
+        }
+
+        return ActionResult.success();
+    }
 }

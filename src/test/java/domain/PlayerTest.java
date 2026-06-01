@@ -72,6 +72,13 @@ class PlayerTest {
     }
 
     @Test
+    void newPlayer_startsWithNoNobles() {
+        Player player = new Player();
+
+        assertTrue(player.getNobles().isEmpty());
+    }
+
+    @Test
     void newPlayer_startsWithZeroTotalTokens() {
         Player player = new Player();
 
@@ -202,6 +209,61 @@ class PlayerTest {
     }
 
     @Test
+    void removeReservedCard_removesOnlyReservedCard() {
+        Player player = new Player();
+        Card card = new Card();
+        player.addReservedCard(card);
+
+        player.removeReservedCard(card);
+
+        assertTrue(player.getReservedCards().isEmpty());
+    }
+
+    @Test
+    void removeReservedCard_removesFirstReservedCardAndLeavesSecondCard() {
+        Player player = new Player();
+        Card firstCard = new Card();
+        Card secondCard = new Card();
+        player.addReservedCard(firstCard);
+        player.addReservedCard(secondCard);
+
+        player.removeReservedCard(firstCard);
+
+        assertEquals(1, player.getReservedCards().size());
+        assertFalse(player.getReservedCards().contains(firstCard));
+        assertTrue(player.getReservedCards().contains(secondCard));
+    }
+
+    @Test
+    void removeReservedCard_removesSecondReservedCardAndLeavesFirstCard() {
+        Player player = new Player();
+        Card firstCard = new Card();
+        Card secondCard = new Card();
+        player.addReservedCard(firstCard);
+        player.addReservedCard(secondCard);
+
+        player.removeReservedCard(secondCard);
+
+        assertEquals(1, player.getReservedCards().size());
+        assertTrue(player.getReservedCards().contains(firstCard));
+        assertFalse(player.getReservedCards().contains(secondCard));
+    }
+
+    @Test
+    void removeReservedCard_rejectsCardThatIsNotReservedAndLeavesReservedCardsUnchanged() {
+        Player player = new Player();
+        Card reservedCard = new Card();
+        Card unreservedCard = new Card();
+        player.addReservedCard(reservedCard);
+
+        assertThrows(IllegalArgumentException.class, () -> {
+            player.removeReservedCard(unreservedCard);
+        });
+        assertEquals(1, player.getReservedCards().size());
+        assertTrue(player.getReservedCards().contains(reservedCard));
+    }
+
+    @Test
     void addDevelopmentCard_addsOneZeroPointDevelopmentCard() {
         Player player = new Player();
         Card card = new Card(1, TokenColor.DIAMOND, Map.of(TokenColor.RUBY, 1), 0);
@@ -297,6 +359,61 @@ class PlayerTest {
         player.addDevelopmentCard(card);
 
         assertEquals(0, player.getBonusCount(TokenColor.GOLD));
+    }
+
+    @Test
+    void addNoble_addsOneThreePointNobleAndPrestigePoints() {
+        Player player = new Player();
+        Noble noble = new Noble(Map.of(TokenColor.DIAMOND, 3), 3);
+
+        player.addNoble(noble);
+
+        assertEquals(1, player.getNobles().size());
+        assertTrue(player.getNobles().contains(noble));
+        assertEquals(3, player.getPrestigePoints());
+    }
+
+    @Test
+    void addNoble_addsOneZeroPointNoble() {
+        Player player = new Player();
+        Noble noble = new Noble(Map.of(TokenColor.DIAMOND, 3), 0);
+
+        player.addNoble(noble);
+
+        assertEquals(1, player.getNobles().size());
+        assertTrue(player.getNobles().contains(noble));
+        assertEquals(0, player.getPrestigePoints());
+    }
+
+    @Test
+    void addNoble_addsAnotherNobleAndAccumulatesPrestigePoints() {
+        Player player = new Player();
+        Noble firstNoble = new Noble(Map.of(TokenColor.DIAMOND, 3), 3);
+        Noble secondNoble = new Noble(Map.of(TokenColor.RUBY, 3), 3);
+
+        player.addNoble(firstNoble);
+        player.addNoble(secondNoble);
+
+        assertEquals(2, player.getNobles().size());
+        assertTrue(player.getNobles().contains(firstNoble));
+        assertTrue(player.getNobles().contains(secondNoble));
+        assertEquals(6, player.getPrestigePoints());
+    }
+
+    @Test
+    void addNoble_addsNobleWithoutChangingDevelopmentCardsAndIncludesBothPrestigeSources() {
+        Player player = new Player();
+        Card card = new Card(1, TokenColor.DIAMOND, Map.of(TokenColor.RUBY, 1), 1);
+        Noble noble = new Noble(Map.of(TokenColor.DIAMOND, 3), 3);
+
+        player.addDevelopmentCard(card);
+        player.addNoble(noble);
+
+        assertEquals(1, player.getDevelopmentCards().size());
+        assertTrue(player.getDevelopmentCards().contains(card));
+        assertEquals(1, player.getNobles().size());
+        assertTrue(player.getNobles().contains(noble));
+        assertEquals(4, player.getPrestigePoints());
     }
 
 }

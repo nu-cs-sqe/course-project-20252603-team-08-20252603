@@ -97,3 +97,33 @@
 | Test Case 28 | Player has one RUBY development card, color = DIAMOND             | bonus count == 0                | :white_check_mark: |
 | Test Case 29 | Player has one DIAMOND reserved card, color = DIAMOND             | bonus count == 0                | :white_check_mark: |
 | Test Case 30 | Player has one DIAMOND development card and color = GOLD          | bonus count == 0                | :white_check_mark: |
+
+---
+
+## Method: removeReservedCard(Card card)
+
+|              | State of the System                                  | Expected output                                             | Implemented?       |
+|--------------|------------------------------------------------------|-------------------------------------------------------------|--------------------|
+| Test Case 31 | Player has one reserved card, remove that card       | reservedCards.size() == 0 and reserved card is removed      | :white_check_mark: |
+| Test Case 32 | Player has two reserved cards, remove first card     | reservedCards.size() == 1 and only second card remains      | :white_check_mark: |
+| Test Case 33 | Player has two reserved cards, remove second card    | reservedCards.size() == 1 and only first card remains       | :white_check_mark: |
+| Test Case 34 | Player has one reserved card, remove unreserved card | Throw IllegalArgumentException and reserved cards unchanged | :white_check_mark: |
+
+---
+
+## Method: getNobles()
+
+|              | State of the System | Expected output     | Implemented?       |
+|--------------|---------------------|---------------------|--------------------|
+| Test Case 35 | New Player object   | noble list is empty | :white_check_mark: |
+
+---
+
+## Method: addNoble(Noble noble)
+
+|              | State of the System                                    | Expected output                                                                                | Implemented?       |
+|--------------|--------------------------------------------------------|------------------------------------------------------------------------------------------------|--------------------|
+| Test Case 36 | New Player object, add one 3-point noble               | nobles.size() == 1, contains the noble, prestigePoints == 3                                    | :white_check_mark: |
+| Test Case 37 | New Player object, add one 0-point noble               | nobles.size() == 1, contains the noble, prestigePoints == 0                                    | :white_check_mark: |
+| Test Case 38 | Player has one noble, add another noble                | nobles.size() == 2, contains both nobles, prestigePoints equals the sum of both noble points   | :white_check_mark: |
+| Test Case 39 | Player has one development card, add one 3-point noble | developmentCards is unchanged, nobles contains the noble, prestigePoints includes both sources | :white_check_mark: |

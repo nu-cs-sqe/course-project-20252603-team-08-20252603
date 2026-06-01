@@ -113,17 +113,17 @@
 
 ## Method: getNobles()
 
-|              | State of the System | Expected output      | Implemented? |
-|--------------|---------------------|----------------------|--------------|
-| Test Case 35 | New Player object   | noble list is empty  | :x:          |
+|              | State of the System | Expected output     | Implemented?       |
+|--------------|---------------------|---------------------|--------------------|
+| Test Case 35 | New Player object   | noble list is empty | :white_check_mark: |
 
 ---
 
 ## Method: addNoble(Noble noble)
 
-|              | State of the System                                     | Expected output                                                                                | Implemented? |
-|--------------|---------------------------------------------------------|------------------------------------------------------------------------------------------------|--------------|
-| Test Case 36 | New Player object, add one 3-point noble                | nobles.size() == 1, contains the noble, prestigePoints == 3                                    | :x:          |
-| Test Case 37 | New Player object, add one 0-point noble                | nobles.size() == 1, contains the noble, prestigePoints == 0                                    | :x:          |
-| Test Case 38 | Player has one noble, add another noble                 | nobles.size() == 2, contains both nobles, prestigePoints equals the sum of both noble points   | :x:          |
-| Test Case 39 | Player has one development card, add one 3-point noble  | developmentCards is unchanged, nobles contains the noble, prestigePoints includes both sources | :x:          |
+|              | State of the System                                    | Expected output                                                                                | Implemented?       |
+|--------------|--------------------------------------------------------|------------------------------------------------------------------------------------------------|--------------------|
+| Test Case 36 | New Player object, add one 3-point noble               | nobles.size() == 1, contains the noble, prestigePoints == 3                                    | :white_check_mark: |
+| Test Case 37 | New Player object, add one 0-point noble               | nobles.size() == 1, contains the noble, prestigePoints == 0                                    | :white_check_mark: |
+| Test Case 38 | Player has one noble, add another noble                | nobles.size() == 2, contains both nobles, prestigePoints equals the sum of both noble points   | :white_check_mark: |
+| Test Case 39 | Player has one development card, add one 3-point noble | developmentCards is unchanged, nobles contains the noble, prestigePoints includes both sources | :white_check_mark: |

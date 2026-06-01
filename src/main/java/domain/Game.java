@@ -10,11 +10,13 @@ import java.util.Map;
 public class Game
 {
     private static final int FIRST_PLAYER_INDEX = 0;
+    private static final int NO_WINNER_INDEX = -1;
     private static final int NEXT_PLAYER_OFFSET = 1;
     private static final int MIN_CARD_LEVEL = 1;
     private static final int MAX_CARD_LEVEL = 3;
     private static final int FACE_UP_CARDS_PER_LEVEL = 4;
     private static final int EXTRA_REVEALED_NOBLE_COUNT = 1;
+    private static final int WINNING_PRESTIGE_POINTS = 15;
     private static final String CARDS_RESOURCE_PATH = "/cards/cards.json";
     private static final String NOBLES_RESOURCE_PATH = "/nobles/nobles.json";
 
@@ -26,6 +28,7 @@ public class Game
     private Map<Integer, Deck> decks;
     private Map<Integer, List<Card>> faceUpCards;
     private List<Noble> revealedNobles;
+    private int winnerIndex;
 
     public Game(){
         this.phase = GamePhase.SETUP;
@@ -44,6 +47,7 @@ public class Game
         initializeCards();
         initializeNobles(playerCount);
         currentPlayerIndex = FIRST_PLAYER_INDEX;
+        winnerIndex = NO_WINNER_INDEX;
         phase = GamePhase.PLAYER_TURN;
 
         return ActionResult.success();
@@ -58,7 +62,10 @@ public class Game
     }
 
     public Player getWinner() {
-        return null;
+        if (players == null || winnerIndex == NO_WINNER_INDEX) {
+            return null;
+        }
+        return players.get(winnerIndex);
     }
 
     private void initializePlayers(int playerCount) {
@@ -204,6 +211,10 @@ public class Game
         currentPlayer.addDevelopmentCard(boughtCard);
         visitAvailableNoble(currentPlayer, locale);
 
+        if (finishGameIfWinner(currentPlayer)) {
+            return ActionResult.success();
+        }
+
         Deck deck = decks.get(level);
         if (deck != null && !deck.isEmpty()) {
             cards.add(deck.drawCard());
@@ -243,6 +254,11 @@ public class Game
         currentPlayer.removeReservedCard(card);
         currentPlayer.addDevelopmentCard(card);
         visitAvailableNoble(currentPlayer, locale);
+
+        if (finishGameIfWinner(currentPlayer)) {
+            return ActionResult.success();
+        }
+
         currentPlayerIndex = (currentPlayerIndex + NEXT_PLAYER_OFFSET) % players.size();
 
         return ActionResult.success();
@@ -269,6 +285,16 @@ public class Game
         }
 
         return payment;
+    }
+
+    private boolean finishGameIfWinner(Player player) {
+        if (player.getPrestigePoints() >= WINNING_PRESTIGE_POINTS) {
+            winnerIndex = currentPlayerIndex;
+            phase = GamePhase.GAME_OVER;
+            return true;
+        }
+
+        return false;
     }
 
     private void visitAvailableNoble(Player player, Locale locale) {

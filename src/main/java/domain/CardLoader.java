@@ -40,7 +40,7 @@ public class CardLoader {
                 cards.add(new Card(level, bonusColor, cost, prestigePoints));
             }
             return cards;
-        } catch (JsonIOException | JsonSyntaxException | IllegalArgumentException | IllegalStateException | NullPointerException e) {
+        } catch (JsonIOException | JsonSyntaxException | IllegalArgumentException | IllegalStateException e) {
             throw new IOException("Invalid card resource: " + resourcePath, e);
         }
     }

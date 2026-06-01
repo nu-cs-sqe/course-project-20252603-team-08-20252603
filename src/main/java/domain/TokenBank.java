@@ -18,6 +18,13 @@ public class TokenBank {
         this.tokens = new EnumMap<>(TokenColor.class);
     }
 
+    TokenBank(TokenBank source) {
+        this.tokens = new EnumMap<>(TokenColor.class);
+        for (Map.Entry<TokenColor, Integer> entry : source.tokens.entrySet()) {
+            tokens.put(entry.getKey(), entry.getValue());
+        }
+    }
+
     public void initialize(int playerCount) {
         int tokenCount = getGemTokenCount(playerCount);
 

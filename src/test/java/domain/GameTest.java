@@ -142,6 +142,17 @@ class GameTest {
     }
 
     @Test
+    void getTokenBank_returnsSnapshotThatDoesNotMutateGameTokenBank() {
+        Game game = new Game();
+        game.startGame(2, Locale.US);
+
+        TokenBank tokenBank = game.getTokenBank();
+        tokenBank.removeTokens(Map.of(TokenColor.DIAMOND, 1));
+
+        assertEquals(4, game.getTokenBank().getTokenCount(TokenColor.DIAMOND));
+    }
+
+    @Test
     public void testStartGameWithValidPlayers() {
         Game game = new Game();
         ActionResult result = game.startGame(3, Locale.US);
@@ -379,16 +390,20 @@ class GameTest {
     void reserveFaceUpCard_whenBankHasNoGoldStillReservesCardWithoutGoldAndAdvancesCurrentPlayer() {
         Game game = new Game();
         game.startGame(2, Locale.US);
-        Player playerZero = game.getCurrentPlayer();
-        game.getTokenBank().removeTokens(Map.of(TokenColor.GOLD, 5));
+        Player playerOne = game.getPlayers().get(1);
+        game.reserveFaceUpCard(1, 0, Locale.US);
+        game.reserveFaceUpCard(1, 0, Locale.US);
+        game.reserveFaceUpCard(1, 0, Locale.US);
+        game.reserveFaceUpCard(1, 0, Locale.US);
+        game.reserveFaceUpCard(1, 0, Locale.US);
 
         ActionResult result = game.reserveFaceUpCard(1, 0, Locale.US);
 
         assertTrue(result.isSuccess());
-        assertEquals(1, playerZero.getReservedCards().size());
-        assertEquals(0, playerZero.getTokenCount(TokenColor.GOLD));
+        assertEquals(3, playerOne.getReservedCards().size());
+        assertEquals(2, playerOne.getTokenCount(TokenColor.GOLD));
         assertEquals(0, game.getTokenBank().getTokenCount(TokenColor.GOLD));
-        assertEquals(game.getPlayers().get(1), game.getCurrentPlayer());
+        assertEquals(game.getPlayers().get(0), game.getCurrentPlayer());
     }
 
     @Test
@@ -464,8 +479,8 @@ class GameTest {
         Player playerZero = game.getCurrentPlayer();
         Card card = new Card(1, TokenColor.DIAMOND, Map.of(TokenColor.RUBY, 1), 1);
         game.getFaceUpCards(1).set(0, card);
-        playerZero.addTokens(Map.of(TokenColor.RUBY, 1));
-        game.getTokenBank().removeTokens(Map.of(TokenColor.RUBY, 1));
+        game.takeTokens(Map.of(TokenColor.RUBY, 1, TokenColor.DIAMOND, 1, TokenColor.ONYX, 1), Locale.US);
+        game.takeTokens(Map.of(TokenColor.SAPPHIRE, 1, TokenColor.EMERALD, 1, TokenColor.ONYX, 1), Locale.US);
         int deckSizeBefore = game.getDeck(1).cards.size();
 
         ActionResult result = game.buyFaceUpCard(1, 0, Locale.US);
@@ -489,8 +504,8 @@ class GameTest {
         playerZero.addDevelopmentCard(new Card(1, TokenColor.RUBY, Map.of(), 0));
         Card card = new Card(1, TokenColor.DIAMOND, Map.of(TokenColor.RUBY, 2), 0);
         game.getFaceUpCards(1).set(0, card);
-        playerZero.addTokens(Map.of(TokenColor.RUBY, 1));
-        game.getTokenBank().removeTokens(Map.of(TokenColor.RUBY, 1));
+        game.takeTokens(Map.of(TokenColor.RUBY, 1, TokenColor.DIAMOND, 1, TokenColor.ONYX, 1), Locale.US);
+        game.takeTokens(Map.of(TokenColor.SAPPHIRE, 1, TokenColor.EMERALD, 1, TokenColor.ONYX, 1), Locale.US);
 
         ActionResult result = game.buyFaceUpCard(1, 0, Locale.US);
 
@@ -509,8 +524,10 @@ class GameTest {
         Player playerZero = game.getCurrentPlayer();
         Card card = new Card(1, TokenColor.DIAMOND, Map.of(TokenColor.RUBY, 1, TokenColor.SAPPHIRE, 1), 0);
         game.getFaceUpCards(1).set(0, card);
-        playerZero.addTokens(Map.of(TokenColor.RUBY, 1, TokenColor.GOLD, 1));
-        game.getTokenBank().removeTokens(Map.of(TokenColor.RUBY, 1, TokenColor.GOLD, 1));
+        game.reserveFaceUpCard(1, 1, Locale.US);
+        game.takeTokens(Map.of(TokenColor.DIAMOND, 1, TokenColor.EMERALD, 1, TokenColor.ONYX, 1), Locale.US);
+        game.takeTokens(Map.of(TokenColor.RUBY, 1, TokenColor.DIAMOND, 1, TokenColor.ONYX, 1), Locale.US);
+        game.takeTokens(Map.of(TokenColor.SAPPHIRE, 1, TokenColor.EMERALD, 1, TokenColor.ONYX, 1), Locale.US);
 
         ActionResult result = game.buyFaceUpCard(1, 0, Locale.US);
 
@@ -569,8 +586,8 @@ class GameTest {
         Game game = new Game();
         game.startGame(2, Locale.US);
         Player playerZero = game.getCurrentPlayer();
-        playerZero.addTokens(Map.of(TokenColor.RUBY, 1));
-        game.getTokenBank().removeTokens(Map.of(TokenColor.RUBY, 1));
+        game.takeTokens(Map.of(TokenColor.RUBY, 1, TokenColor.DIAMOND, 1, TokenColor.ONYX, 1), Locale.US);
+        game.takeTokens(Map.of(TokenColor.SAPPHIRE, 1, TokenColor.EMERALD, 1, TokenColor.ONYX, 1), Locale.US);
 
         ActionResult result = game.buyFaceUpCard(4, 0, Locale.US);
 

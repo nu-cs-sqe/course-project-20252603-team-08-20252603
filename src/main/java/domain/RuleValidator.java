@@ -5,9 +5,15 @@ import java.util.List;
 import java.util.Map;
 
 public class RuleValidator {
+    private static final int MAX_PLAYER_COUNT = 4;
+    private static final int PLAYER_TOKEN_LIMIT = 10;
+    private static final int THREE_TOKEN_TAKE_COUNT = 3;
+    private static final int TWO_TOKEN_TAKE_COUNT = 2;
+    private static final int MIN_BANK_TOKENS_FOR_DOUBLE_TAKE = 4;
+    private static final int RESERVED_CARD_LIMIT = 3;
 
     public ActionResult validatePlayerCount(int count, Locale locale) {
-        if (count >= 2 && count <= 4) {
+        if (count >= 2 && count <= MAX_PLAYER_COUNT) {
             return ActionResult.success();
         }
         String errorMessage = MessageProvider.getMessage("error.invalid_player_count", locale);
@@ -33,17 +39,17 @@ public class RuleValidator {
             totalTokensToTake += count;
         }
 
-        if (player.getTotalTokenCount() + totalTokensToTake > 10) {
+        if (player.getTotalTokenCount() + totalTokensToTake > PLAYER_TOKEN_LIMIT) {
             return ActionResult.failure(errorMessage);
         }
 
-        if (totalTokensToTake == 3 && tokensToTake.size() == 3) {
+        if (totalTokensToTake == THREE_TOKEN_TAKE_COUNT && tokensToTake.size() == THREE_TOKEN_TAKE_COUNT) {
             return ActionResult.success();
         }
 
-        if (totalTokensToTake == 2 && tokensToTake.size() == 1) {
-            TokenColor color = tokensToTake.keySet().iterator().next();
-            if (tokensToTake.get(color) == 2 && bank.getTokenCount(color) >= 4) {
+        if (totalTokensToTake == TWO_TOKEN_TAKE_COUNT && tokensToTake.size() == 1) {
+            Map.Entry<TokenColor, Integer> entry = tokensToTake.entrySet().iterator().next();
+            if (entry.getValue() == TWO_TOKEN_TAKE_COUNT && bank.getTokenCount(entry.getKey()) >= MIN_BANK_TOKENS_FOR_DOUBLE_TAKE) {
                 return ActionResult.success();
             }
         }
@@ -54,7 +60,7 @@ public class RuleValidator {
     public ActionResult validateReserveCard(Player player, List<Card> faceUpCards, int cardIndex, Locale locale) {
         String errorMessage = MessageProvider.getMessage("error.invalid_reserve_card", locale);
 
-        if (player.getReservedCards().size() >= 3) {
+        if (player.getReservedCards().size() >= RESERVED_CARD_LIMIT) {
             return ActionResult.failure(errorMessage);
         }
 

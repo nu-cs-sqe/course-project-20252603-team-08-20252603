@@ -20,6 +20,7 @@ public class ConsoleGame {
     private static final String TAKE_COMMAND_PREFIX = "take ";
     private static final String RESERVE_COMMAND_PREFIX = "reserve ";
     private static final String BUY_COMMAND_PREFIX = "buy ";
+    private static final String RESERVED_BUY_PREFIX = "reserved ";
     private static final int MIN_CARD_LEVEL = 1;
     private static final int MAX_CARD_LEVEL = 3;
 
@@ -72,7 +73,7 @@ public class ConsoleGame {
                     out.println(actionResult.getMessage());
                 }
             } else if (line.toLowerCase(Locale.US).startsWith(BUY_COMMAND_PREFIX)) {
-                ActionResult actionResult = buyFaceUpCard(game, line.substring(BUY_COMMAND_PREFIX.length()), locale);
+                ActionResult actionResult = buyCard(game, line.substring(BUY_COMMAND_PREFIX.length()), locale);
                 if (actionResult.isSuccess()) {
                     out.println(message("ui.action_succeeded", locale));
                 } else {
@@ -118,6 +119,7 @@ public class ConsoleGame {
         out.println(message("ui.current_player", locale) + " " + message("ui.player", locale) + " " + (game.getCurrentPlayerIndex() + 1));
         printTokenBank(game, locale);
         printCards(game, locale);
+        printReservedCards(game, locale);
         printNobles(game, locale);
     }
 
@@ -146,6 +148,15 @@ public class ConsoleGame {
         for (int i = 0; i < nobles.size(); i++) {
             Noble noble = nobles.get(i);
             out.println("  [" + i + "] " + message("ui.points", locale) + "=" + noble.prestigePoints + ", " + message("ui.requirements", locale) + "=" + formatCost(noble.requirements));
+        }
+    }
+
+    private void printReservedCards(Game game, Locale locale) {
+        out.println(message("ui.reserved_cards", locale));
+        List<Card> cards = game.getCurrentPlayer().getReservedCards();
+        for (int i = 0; i < cards.size(); i++) {
+            Card card = cards.get(i);
+            out.println("  [" + i + "] " + message("ui.bonus", locale) + "=" + card.bonusColor + ", " + message("ui.points", locale) + "=" + card.prestigePoints + ", " + message("ui.cost", locale) + "=" + formatCost(card.cost));
         }
     }
 
@@ -187,7 +198,11 @@ public class ConsoleGame {
         }
     }
 
-    private ActionResult buyFaceUpCard(Game game, String input, Locale locale) {
+    private ActionResult buyCard(Game game, String input, Locale locale) {
+        if (input.toLowerCase(Locale.US).startsWith(RESERVED_BUY_PREFIX)) {
+            return buyReservedCard(game, input.substring(RESERVED_BUY_PREFIX.length()), locale);
+        }
+
         String[] parts = input.trim().split("\\s+");
         if (parts.length != 2) {
             return ActionResult.failure(message("ui.unknown_action", locale));
@@ -197,6 +212,20 @@ public class ConsoleGame {
             int level = Integer.parseInt(parts[0]);
             int cardIndex = Integer.parseInt(parts[1]);
             return game.buyFaceUpCard(level, cardIndex, locale);
+        } catch (NumberFormatException e) {
+            return ActionResult.failure(message("ui.unknown_action", locale));
+        }
+    }
+
+    private ActionResult buyReservedCard(Game game, String input, Locale locale) {
+        String[] parts = input.trim().split("\\s+");
+        if (parts.length != 1) {
+            return ActionResult.failure(message("ui.unknown_action", locale));
+        }
+
+        try {
+            int reservedIndex = Integer.parseInt(parts[0]);
+            return game.buyReservedCard(reservedIndex, locale);
         } catch (NumberFormatException e) {
             return ActionResult.failure(message("ui.unknown_action", locale));
         }

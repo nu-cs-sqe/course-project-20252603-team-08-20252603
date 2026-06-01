@@ -99,4 +99,9 @@ public class RuleValidator {
 
         return ActionResult.failure(errorMessage);
     }
+
+    public ActionResult validateNobleVisit(Player player, Noble noble, Locale locale) {
+        String errorMessage = MessageProvider.getMessage("error.invalid_noble_visit", locale);
+        return ActionResult.failure(errorMessage);
+    }
 }

@@ -416,4 +416,109 @@ public class RuleValidatorTest {
         assertEquals(MessageProvider.getMessage("error.invalid_buy_card", Locale.US), result.getMessage());
     }
 
+    @Test
+    public void validateNobleVisit_acceptsSingleColorRequirementAtBoundary() {
+        Player player = new Player();
+        player.addDevelopmentCard(new Card(1, TokenColor.DIAMOND, Map.of(), 0));
+        player.addDevelopmentCard(new Card(1, TokenColor.DIAMOND, Map.of(), 0));
+        player.addDevelopmentCard(new Card(1, TokenColor.DIAMOND, Map.of(), 0));
+        Noble noble = new Noble(Map.of(TokenColor.DIAMOND, 3), 3);
+
+        ActionResult result = validator.validateNobleVisit(player, noble, Locale.US);
+
+        assertTrue(result.isSuccess());
+    }
+
+    @Test
+    public void validateNobleVisit_rejectsSingleColorRequirementBelowBoundary() {
+        Player player = new Player();
+        player.addDevelopmentCard(new Card(1, TokenColor.DIAMOND, Map.of(), 0));
+        player.addDevelopmentCard(new Card(1, TokenColor.DIAMOND, Map.of(), 0));
+        Noble noble = new Noble(Map.of(TokenColor.DIAMOND, 3), 3);
+
+        ActionResult result = validator.validateNobleVisit(player, noble, Locale.US);
+
+        assertFalse(result.isSuccess());
+        assertEquals(MessageProvider.getMessage("error.invalid_noble_visit", Locale.US), result.getMessage());
+    }
+
+    @Test
+    public void validateNobleVisit_acceptsMultipleColorRequirementsAtBoundary() {
+        Player player = new Player();
+        player.addDevelopmentCard(new Card(1, TokenColor.DIAMOND, Map.of(), 0));
+        player.addDevelopmentCard(new Card(1, TokenColor.DIAMOND, Map.of(), 0));
+        player.addDevelopmentCard(new Card(1, TokenColor.DIAMOND, Map.of(), 0));
+        player.addDevelopmentCard(new Card(1, TokenColor.RUBY, Map.of(), 0));
+        player.addDevelopmentCard(new Card(1, TokenColor.RUBY, Map.of(), 0));
+        player.addDevelopmentCard(new Card(1, TokenColor.RUBY, Map.of(), 0));
+        Noble noble = new Noble(Map.of(TokenColor.DIAMOND, 3, TokenColor.RUBY, 3), 3);
+
+        ActionResult result = validator.validateNobleVisit(player, noble, Locale.US);
+
+        assertTrue(result.isSuccess());
+    }
+
+    @Test
+    public void validateNobleVisit_rejectsWhenOneRequiredColorIsBelowBoundary() {
+        Player player = new Player();
+        player.addDevelopmentCard(new Card(1, TokenColor.DIAMOND, Map.of(), 0));
+        player.addDevelopmentCard(new Card(1, TokenColor.DIAMOND, Map.of(), 0));
+        player.addDevelopmentCard(new Card(1, TokenColor.DIAMOND, Map.of(), 0));
+        player.addDevelopmentCard(new Card(1, TokenColor.RUBY, Map.of(), 0));
+        player.addDevelopmentCard(new Card(1, TokenColor.RUBY, Map.of(), 0));
+        Noble noble = new Noble(Map.of(TokenColor.DIAMOND, 3, TokenColor.RUBY, 3), 3);
+
+        ActionResult result = validator.validateNobleVisit(player, noble, Locale.US);
+
+        assertFalse(result.isSuccess());
+        assertEquals(MessageProvider.getMessage("error.invalid_noble_visit", Locale.US), result.getMessage());
+    }
+
+    @Test
+    public void validateNobleVisit_acceptsEmptyRequirements() {
+        Player player = new Player();
+        Noble noble = new Noble(Map.of(), 3);
+
+        ActionResult result = validator.validateNobleVisit(player, noble, Locale.US);
+
+        assertTrue(result.isSuccess());
+    }
+
+    @Test
+    public void validateNobleVisit_rejectsNullPlayer() {
+        Noble noble = new Noble(Map.of(TokenColor.DIAMOND, 3), 3);
+
+        ActionResult result = validator.validateNobleVisit(null, noble, Locale.US);
+
+        assertFalse(result.isSuccess());
+        assertEquals(MessageProvider.getMessage("error.invalid_noble_visit", Locale.US), result.getMessage());
+    }
+
+    @Test
+    public void validateNobleVisit_rejectsNullNoble() {
+        Player player = new Player();
+        player.addDevelopmentCard(new Card(1, TokenColor.DIAMOND, Map.of(), 0));
+        player.addDevelopmentCard(new Card(1, TokenColor.DIAMOND, Map.of(), 0));
+        player.addDevelopmentCard(new Card(1, TokenColor.DIAMOND, Map.of(), 0));
+
+        ActionResult result = validator.validateNobleVisit(player, null, Locale.US);
+
+        assertFalse(result.isSuccess());
+        assertEquals(MessageProvider.getMessage("error.invalid_noble_visit", Locale.US), result.getMessage());
+    }
+
+    @Test
+    public void validateNobleVisit_rejectsNullRequirements() {
+        Player player = new Player();
+        player.addDevelopmentCard(new Card(1, TokenColor.DIAMOND, Map.of(), 0));
+        player.addDevelopmentCard(new Card(1, TokenColor.DIAMOND, Map.of(), 0));
+        player.addDevelopmentCard(new Card(1, TokenColor.DIAMOND, Map.of(), 0));
+        Noble noble = new Noble(null, 3);
+
+        ActionResult result = validator.validateNobleVisit(player, noble, Locale.US);
+
+        assertFalse(result.isSuccess());
+        assertEquals(MessageProvider.getMessage("error.invalid_noble_visit", Locale.US), result.getMessage());
+    }
+
 }

@@ -3,6 +3,7 @@ package ui;
 import domain.ActionResult;
 import domain.Card;
 import domain.Game;
+import domain.GamePhase;
 import domain.MessageProvider;
 import domain.Noble;
 import domain.TokenColor;
@@ -47,6 +48,10 @@ public class ConsoleGame {
         out.println(message("ui.game_started", locale));
         while (true) {
             printTable(game, locale);
+            if (game.getPhase() == GamePhase.GAME_OVER) {
+                printGameOver(game, locale);
+                return;
+            }
             out.println(message("ui.enter_action", locale));
             if (!scanner.hasNextLine()) {
                 return;
@@ -122,6 +127,12 @@ public class ConsoleGame {
         printCards(game, locale);
         printReservedCards(game, locale);
         printNobles(game, locale);
+    }
+
+    private void printGameOver(Game game, Locale locale) {
+        out.println(message("ui.game_over", locale));
+        int winnerIndex = game.getPlayers().indexOf(game.getWinner()) + 1;
+        out.println(message("ui.winner", locale) + " " + message("ui.player", locale) + " " + winnerIndex);
     }
 
     private void printCurrentPlayerStatus(Game game, Locale locale) {

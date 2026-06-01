@@ -65,13 +65,13 @@
 
 ### Method under test: `validateNobleVisit(Player player, Noble noble, Locale locale)`
 
-| ID   | State of the System                                                              | Expected output                                                | Implemented? |
-|------|----------------------------------------------------------------------------------|----------------------------------------------------------------|--------------|
-| TC36 | Player has 3 DIAMOND bonuses, noble requires 3 DIAMOND                           | `isSuccess()` is true                                          | :x:          |
-| TC37 | Player has 2 DIAMOND bonuses, noble requires 3 DIAMOND                           | `isSuccess()` is false, returns US invalid noble visit message | :x:          |
-| TC38 | Player has 3 DIAMOND bonuses and 3 RUBY bonuses, noble requires both colors      | `isSuccess()` is true                                          | :x:          |
-| TC39 | Player has 3 DIAMOND bonuses and 2 RUBY bonuses, noble requires 3 of both colors | `isSuccess()` is false, returns US invalid noble visit message | :x:          |
-| TC40 | Player has 0 bonuses, noble requirements are empty                               | `isSuccess()` is true                                          | :x:          |
-| TC41 | Player is null, noble requires 3 DIAMOND                                         | `isSuccess()` is false, returns US invalid noble visit message | :x:          |
-| TC42 | Player has 3 DIAMOND bonuses, noble is null                                      | `isSuccess()` is false, returns US invalid noble visit message | :x:          |
-| TC43 | Player has 3 DIAMOND bonuses, noble requirements are null                        | `isSuccess()` is false, returns US invalid noble visit message | :x:          |
+| ID   | State of the System                                                              | Expected output                                                | Implemented?       |
+|------|----------------------------------------------------------------------------------|----------------------------------------------------------------|--------------------|
+| TC36 | Player has 3 DIAMOND bonuses, noble requires 3 DIAMOND                           | `isSuccess()` is true                                          | :white_check_mark: |
+| TC37 | Player has 2 DIAMOND bonuses, noble requires 3 DIAMOND                           | `isSuccess()` is false, returns US invalid noble visit message | :white_check_mark: |
+| TC38 | Player has 3 DIAMOND bonuses and 3 RUBY bonuses, noble requires both colors      | `isSuccess()` is true                                          | :white_check_mark: |
+| TC39 | Player has 3 DIAMOND bonuses and 2 RUBY bonuses, noble requires 3 of both colors | `isSuccess()` is false, returns US invalid noble visit message | :white_check_mark: |
+| TC40 | Player has 0 bonuses, noble requirements are empty                               | `isSuccess()` is true                                          | :white_check_mark: |
+| TC41 | Player is null, noble requires 3 DIAMOND                                         | `isSuccess()` is false, returns US invalid noble visit message | :white_check_mark: |
+| TC42 | Player has 3 DIAMOND bonuses, noble is null                                      | `isSuccess()` is false, returns US invalid noble visit message | :white_check_mark: |
+| TC43 | Player has 3 DIAMOND bonuses, noble requirements are null                        | `isSuccess()` is false, returns US invalid noble visit message | :white_check_mark: |

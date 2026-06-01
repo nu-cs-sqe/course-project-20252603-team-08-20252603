@@ -57,6 +57,10 @@ public class Game
         return phase;
     }
 
+    public Player getWinner() {
+        return null;
+    }
+
     private void initializePlayers(int playerCount) {
         players = new ArrayList<>(playerCount);
 

@@ -97,3 +97,14 @@
 | Test Case 28 | Player has one RUBY development card, color = DIAMOND             | bonus count == 0                | :white_check_mark: |
 | Test Case 29 | Player has one DIAMOND reserved card, color = DIAMOND             | bonus count == 0                | :white_check_mark: |
 | Test Case 30 | Player has one DIAMOND development card and color = GOLD          | bonus count == 0                | :white_check_mark: |
+
+---
+
+## Method: removeReservedCard(Card card)
+
+|              | State of the System                                  | Expected output                                             | Implemented? |
+|--------------|------------------------------------------------------|-------------------------------------------------------------|--------------|
+| Test Case 31 | Player has one reserved card, remove that card       | reservedCards.size() == 0 and reserved card is removed      | :x:          |
+| Test Case 32 | Player has two reserved cards, remove first card     | reservedCards.size() == 1 and only second card remains      | :x:          |
+| Test Case 33 | Player has two reserved cards, remove second card    | reservedCards.size() == 1 and only first card remains       | :x:          |
+| Test Case 34 | Player has one reserved card, remove unreserved card | Throw IllegalArgumentException and reserved cards unchanged | :x:          |

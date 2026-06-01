@@ -117,10 +117,21 @@ public class ConsoleGame {
     private void printTable(Game game, Locale locale) {
         out.println();
         out.println(message("ui.current_player", locale) + " " + message("ui.player", locale) + " " + (game.getCurrentPlayerIndex() + 1));
+        printCurrentPlayerStatus(game, locale);
         printTokenBank(game, locale);
         printCards(game, locale);
         printReservedCards(game, locale);
         printNobles(game, locale);
+    }
+
+    private void printCurrentPlayerStatus(Game game, Locale locale) {
+        out.println(message("ui.prestige_points", locale) + " " + game.getCurrentPlayer().getPrestigePoints());
+        out.println(message("ui.owned_nobles", locale));
+        List<Noble> nobles = game.getCurrentPlayer().getNobles();
+        for (int i = 0; i < nobles.size(); i++) {
+            Noble noble = nobles.get(i);
+            out.println("  [" + i + "] " + message("ui.points", locale) + "=" + noble.prestigePoints + ", " + message("ui.requirements", locale) + "=" + formatCost(noble.requirements));
+        }
     }
 
     private void printTokenBank(Game game, Locale locale) {

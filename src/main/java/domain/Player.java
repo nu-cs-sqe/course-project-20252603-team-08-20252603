@@ -53,6 +53,9 @@ public class Player {
         reservedCards.add(card);
     }
 
+    public void removeReservedCard(Card card) {
+    }
+
     public void addDevelopmentCard(Card card) {
         developmentCards.add(card);
         prestigePoints += card.prestigePoints;

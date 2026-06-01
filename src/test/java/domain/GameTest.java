@@ -626,4 +626,163 @@ class GameTest {
         assertFalse(result.isSuccess());
         assertEquals(GamePhase.SETUP, game.getPhase());
     }
+
+    @Test
+    void buyReservedCard_validCardPaidWithGemTokensBuysReservedCardAndAdvancesCurrentPlayer() {
+        Game game = new Game();
+        game.startGame(2, Locale.US);
+        Player playerZero = game.getCurrentPlayer();
+        Card card = new Card(1, TokenColor.DIAMOND, Map.of(TokenColor.RUBY, 1), 1);
+        game.getFaceUpCards(1).set(0, card);
+        game.reserveFaceUpCard(1, 0, Locale.US);
+        game.takeTokens(Map.of(TokenColor.SAPPHIRE, 1, TokenColor.EMERALD, 1, TokenColor.ONYX, 1), Locale.US);
+        game.takeTokens(Map.of(TokenColor.RUBY, 1, TokenColor.DIAMOND, 1, TokenColor.ONYX, 1), Locale.US);
+        game.takeTokens(Map.of(TokenColor.SAPPHIRE, 1, TokenColor.EMERALD, 1, TokenColor.DIAMOND, 1), Locale.US);
+
+        ActionResult result = game.buyReservedCard(0, Locale.US);
+
+        assertTrue(result.isSuccess());
+        assertEquals(0, playerZero.getReservedCards().size());
+        assertEquals(1, playerZero.getDevelopmentCards().size());
+        assertEquals(card, playerZero.getDevelopmentCards().get(0));
+        assertEquals(0, playerZero.getTokenCount(TokenColor.RUBY));
+        assertEquals(1, playerZero.getTokenCount(TokenColor.GOLD));
+        assertEquals(1, playerZero.getPrestigePoints());
+        assertEquals(4, game.getTokenBank().getTokenCount(TokenColor.RUBY));
+        assertEquals(4, game.getTokenBank().getTokenCount(TokenColor.GOLD));
+        assertEquals(game.getPlayers().get(1), game.getCurrentPlayer());
+    }
+
+    @Test
+    void buyReservedCard_validCardUsesBonusToReduceCost() {
+        Game game = new Game();
+        game.startGame(2, Locale.US);
+        Player playerZero = game.getCurrentPlayer();
+        playerZero.addDevelopmentCard(new Card(1, TokenColor.RUBY, Map.of(), 0));
+        Card card = new Card(1, TokenColor.DIAMOND, Map.of(TokenColor.RUBY, 2), 0);
+        game.getFaceUpCards(1).set(0, card);
+        game.reserveFaceUpCard(1, 0, Locale.US);
+        game.takeTokens(Map.of(TokenColor.SAPPHIRE, 1, TokenColor.EMERALD, 1, TokenColor.ONYX, 1), Locale.US);
+        game.takeTokens(Map.of(TokenColor.RUBY, 1, TokenColor.DIAMOND, 1, TokenColor.ONYX, 1), Locale.US);
+        game.takeTokens(Map.of(TokenColor.SAPPHIRE, 1, TokenColor.EMERALD, 1, TokenColor.DIAMOND, 1), Locale.US);
+
+        ActionResult result = game.buyReservedCard(0, Locale.US);
+
+        assertTrue(result.isSuccess());
+        assertEquals(0, playerZero.getReservedCards().size());
+        assertEquals(2, playerZero.getDevelopmentCards().size());
+        assertEquals(card, playerZero.getDevelopmentCards().get(1));
+        assertEquals(0, playerZero.getTokenCount(TokenColor.RUBY));
+        assertEquals(4, game.getTokenBank().getTokenCount(TokenColor.RUBY));
+        assertEquals(game.getPlayers().get(1), game.getCurrentPlayer());
+    }
+
+    @Test
+    void buyReservedCard_validCardUsesGoldForMissingGemToken() {
+        Game game = new Game();
+        game.startGame(2, Locale.US);
+        Player playerZero = game.getCurrentPlayer();
+        Card card = new Card(1, TokenColor.DIAMOND, Map.of(TokenColor.RUBY, 1, TokenColor.SAPPHIRE, 1), 0);
+        game.getFaceUpCards(1).set(0, card);
+        game.reserveFaceUpCard(1, 0, Locale.US);
+        game.takeTokens(Map.of(TokenColor.SAPPHIRE, 1, TokenColor.EMERALD, 1, TokenColor.ONYX, 1), Locale.US);
+        game.takeTokens(Map.of(TokenColor.RUBY, 1, TokenColor.DIAMOND, 1, TokenColor.ONYX, 1), Locale.US);
+        game.takeTokens(Map.of(TokenColor.SAPPHIRE, 1, TokenColor.EMERALD, 1, TokenColor.DIAMOND, 1), Locale.US);
+
+        ActionResult result = game.buyReservedCard(0, Locale.US);
+
+        assertTrue(result.isSuccess());
+        assertEquals(0, playerZero.getReservedCards().size());
+        assertEquals(1, playerZero.getDevelopmentCards().size());
+        assertEquals(card, playerZero.getDevelopmentCards().get(0));
+        assertEquals(0, playerZero.getTokenCount(TokenColor.RUBY));
+        assertEquals(0, playerZero.getTokenCount(TokenColor.GOLD));
+        assertEquals(4, game.getTokenBank().getTokenCount(TokenColor.RUBY));
+        assertEquals(5, game.getTokenBank().getTokenCount(TokenColor.GOLD));
+        assertEquals(game.getPlayers().get(1), game.getCurrentPlayer());
+    }
+
+    @Test
+    void buyReservedCard_rejectsUnaffordableReservedCardAndLeavesStateUnchanged() {
+        Game game = new Game();
+        game.startGame(2, Locale.US);
+        Player playerZero = game.getCurrentPlayer();
+        Card card = new Card(1, TokenColor.DIAMOND, Map.of(TokenColor.RUBY, 1), 1);
+        playerZero.addReservedCard(card);
+
+        ActionResult result = game.buyReservedCard(0, Locale.US);
+
+        assertFalse(result.isSuccess());
+        assertEquals(MessageProvider.getMessage("error.invalid_buy_card", Locale.US), result.getMessage());
+        assertEquals(1, playerZero.getReservedCards().size());
+        assertEquals(card, playerZero.getReservedCards().get(0));
+        assertEquals(0, playerZero.getDevelopmentCards().size());
+        assertEquals(0, playerZero.getTokenCount(TokenColor.RUBY));
+        assertEquals(0, playerZero.getTokenCount(TokenColor.GOLD));
+        assertEquals(4, game.getTokenBank().getTokenCount(TokenColor.RUBY));
+        assertEquals(5, game.getTokenBank().getTokenCount(TokenColor.GOLD));
+        assertEquals(playerZero, game.getCurrentPlayer());
+    }
+
+    @Test
+    void buyReservedCard_rejectsEmptyReservedCardsAndLeavesStateUnchanged() {
+        Game game = new Game();
+        game.startGame(2, Locale.US);
+        Player playerZero = game.getCurrentPlayer();
+
+        ActionResult result = game.buyReservedCard(0, Locale.US);
+
+        assertFalse(result.isSuccess());
+        assertEquals(MessageProvider.getMessage("error.invalid_buy_card", Locale.US), result.getMessage());
+        assertEquals(0, playerZero.getReservedCards().size());
+        assertEquals(0, playerZero.getDevelopmentCards().size());
+        assertEquals(5, game.getTokenBank().getTokenCount(TokenColor.GOLD));
+        assertEquals(playerZero, game.getCurrentPlayer());
+    }
+
+    @Test
+    void buyReservedCard_rejectsNegativeIndexAndLeavesStateUnchanged() {
+        Game game = new Game();
+        game.startGame(2, Locale.US);
+        Player playerZero = game.getCurrentPlayer();
+        Card card = new Card(1, TokenColor.DIAMOND, Map.of(), 0);
+        playerZero.addReservedCard(card);
+
+        ActionResult result = game.buyReservedCard(-1, Locale.US);
+
+        assertFalse(result.isSuccess());
+        assertEquals(MessageProvider.getMessage("error.invalid_buy_card", Locale.US), result.getMessage());
+        assertEquals(1, playerZero.getReservedCards().size());
+        assertEquals(card, playerZero.getReservedCards().get(0));
+        assertEquals(0, playerZero.getDevelopmentCards().size());
+        assertEquals(playerZero, game.getCurrentPlayer());
+    }
+
+    @Test
+    void buyReservedCard_rejectsIndexEqualToReservedCardsSizeAndLeavesStateUnchanged() {
+        Game game = new Game();
+        game.startGame(2, Locale.US);
+        Player playerZero = game.getCurrentPlayer();
+        Card card = new Card(1, TokenColor.DIAMOND, Map.of(), 0);
+        playerZero.addReservedCard(card);
+
+        ActionResult result = game.buyReservedCard(1, Locale.US);
+
+        assertFalse(result.isSuccess());
+        assertEquals(MessageProvider.getMessage("error.invalid_buy_card", Locale.US), result.getMessage());
+        assertEquals(1, playerZero.getReservedCards().size());
+        assertEquals(card, playerZero.getReservedCards().get(0));
+        assertEquals(0, playerZero.getDevelopmentCards().size());
+        assertEquals(playerZero, game.getCurrentPlayer());
+    }
+
+    @Test
+    void buyReservedCard_beforeStartGameReturnsFailureAndKeepsSetupPhase() {
+        Game game = new Game();
+
+        ActionResult result = game.buyReservedCard(0, Locale.US);
+
+        assertFalse(result.isSuccess());
+        assertEquals(GamePhase.SETUP, game.getPhase());
+    }
 }

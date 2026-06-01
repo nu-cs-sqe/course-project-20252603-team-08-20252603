@@ -209,6 +209,11 @@ public class Game
         return ActionResult.success();
     }
 
+    public ActionResult buyReservedCard(int reservedIndex, Locale locale) {
+        String errorMessage = MessageProvider.getMessage("error.invalid_buy_card", locale);
+        return ActionResult.failure(errorMessage);
+    }
+
     private Map<TokenColor, Integer> calculatePayment(Player player, Card card) {
         Map<TokenColor, Integer> payment = new HashMap<>();
         int goldNeeded = 0;

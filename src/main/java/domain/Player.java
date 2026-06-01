@@ -64,6 +64,9 @@ public class Player {
         prestigePoints += card.prestigePoints;
     }
 
+    public void addNoble(Noble noble) {
+    }
+
     public int getBonusCount(TokenColor color) {
         if (color == TokenColor.GOLD) {
             return 0;
@@ -84,6 +87,10 @@ public class Player {
 
     public List<Card> getReservedCards() {
         return Collections.unmodifiableList(reservedCards);
+    }
+
+    public List<Noble> getNobles() {
+        return Collections.emptyList();
     }
 
     public int getTotalTokenCount() {

@@ -72,6 +72,13 @@ class PlayerTest {
     }
 
     @Test
+    void newPlayer_startsWithNoNobles() {
+        Player player = new Player();
+
+        assertTrue(player.getNobles().isEmpty());
+    }
+
+    @Test
     void newPlayer_startsWithZeroTotalTokens() {
         Player player = new Player();
 
@@ -352,6 +359,61 @@ class PlayerTest {
         player.addDevelopmentCard(card);
 
         assertEquals(0, player.getBonusCount(TokenColor.GOLD));
+    }
+
+    @Test
+    void addNoble_addsOneThreePointNobleAndPrestigePoints() {
+        Player player = new Player();
+        Noble noble = new Noble(Map.of(TokenColor.DIAMOND, 3), 3);
+
+        player.addNoble(noble);
+
+        assertEquals(1, player.getNobles().size());
+        assertTrue(player.getNobles().contains(noble));
+        assertEquals(3, player.getPrestigePoints());
+    }
+
+    @Test
+    void addNoble_addsOneZeroPointNoble() {
+        Player player = new Player();
+        Noble noble = new Noble(Map.of(TokenColor.DIAMOND, 3), 0);
+
+        player.addNoble(noble);
+
+        assertEquals(1, player.getNobles().size());
+        assertTrue(player.getNobles().contains(noble));
+        assertEquals(0, player.getPrestigePoints());
+    }
+
+    @Test
+    void addNoble_addsAnotherNobleAndAccumulatesPrestigePoints() {
+        Player player = new Player();
+        Noble firstNoble = new Noble(Map.of(TokenColor.DIAMOND, 3), 3);
+        Noble secondNoble = new Noble(Map.of(TokenColor.RUBY, 3), 3);
+
+        player.addNoble(firstNoble);
+        player.addNoble(secondNoble);
+
+        assertEquals(2, player.getNobles().size());
+        assertTrue(player.getNobles().contains(firstNoble));
+        assertTrue(player.getNobles().contains(secondNoble));
+        assertEquals(6, player.getPrestigePoints());
+    }
+
+    @Test
+    void addNoble_addsNobleWithoutChangingDevelopmentCardsAndIncludesBothPrestigeSources() {
+        Player player = new Player();
+        Card card = new Card(1, TokenColor.DIAMOND, Map.of(TokenColor.RUBY, 1), 1);
+        Noble noble = new Noble(Map.of(TokenColor.DIAMOND, 3), 3);
+
+        player.addDevelopmentCard(card);
+        player.addNoble(noble);
+
+        assertEquals(1, player.getDevelopmentCards().size());
+        assertTrue(player.getDevelopmentCards().contains(card));
+        assertEquals(1, player.getNobles().size());
+        assertTrue(player.getNobles().contains(noble));
+        assertEquals(4, player.getPrestigePoints());
     }
 
 }

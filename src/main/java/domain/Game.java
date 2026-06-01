@@ -198,6 +198,7 @@ public class Game
 
         Card boughtCard = cards.remove(cardIndex);
         currentPlayer.addDevelopmentCard(boughtCard);
+        visitAvailableNoble(currentPlayer, locale);
 
         Deck deck = decks.get(level);
         if (deck != null && !deck.isEmpty()) {
@@ -237,6 +238,7 @@ public class Game
         tokenBank.addTokens(payment);
         currentPlayer.removeReservedCard(card);
         currentPlayer.addDevelopmentCard(card);
+        visitAvailableNoble(currentPlayer, locale);
         currentPlayerIndex = (currentPlayerIndex + NEXT_PLAYER_OFFSET) % players.size();
 
         return ActionResult.success();
@@ -263,6 +265,20 @@ public class Game
         }
 
         return payment;
+    }
+
+    private void visitAvailableNoble(Player player, Locale locale) {
+        if (revealedNobles == null) {
+            return;
+        }
+
+        for (Noble noble : new ArrayList<>(revealedNobles)) {
+            if (ruleValidator.validateNobleVisit(player, noble, locale).isSuccess()) {
+                player.addNoble(noble);
+                revealedNobles.remove(noble);
+                return;
+            }
+        }
     }
 
     private void initializeCards() {

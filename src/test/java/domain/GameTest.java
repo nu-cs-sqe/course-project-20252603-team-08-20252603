@@ -628,6 +628,115 @@ class GameTest {
     }
 
     @Test
+    void buyFaceUpCard_whenBoughtCardSatisfiesOneNobleAddsNobleToPlayerAndRemovesItFromRevealedNobles() {
+        Game game = new Game();
+        game.startGame(2, Locale.US);
+        Player playerZero = game.getCurrentPlayer();
+        Noble noble = game.getRevealedNobles().get(0);
+        playerZero.addDevelopmentCard(new Card(1, TokenColor.SAPPHIRE, Map.of(), 0));
+        playerZero.addDevelopmentCard(new Card(1, TokenColor.SAPPHIRE, Map.of(), 0));
+        playerZero.addDevelopmentCard(new Card(1, TokenColor.SAPPHIRE, Map.of(), 0));
+        playerZero.addDevelopmentCard(new Card(1, TokenColor.EMERALD, Map.of(), 0));
+        playerZero.addDevelopmentCard(new Card(1, TokenColor.EMERALD, Map.of(), 0));
+        playerZero.addDevelopmentCard(new Card(1, TokenColor.EMERALD, Map.of(), 0));
+        playerZero.addDevelopmentCard(new Card(1, TokenColor.RUBY, Map.of(), 0));
+        playerZero.addDevelopmentCard(new Card(1, TokenColor.RUBY, Map.of(), 0));
+        Card card = new Card(1, TokenColor.RUBY, Map.of(), 1);
+        game.getFaceUpCards(1).set(0, card);
+
+        ActionResult result = game.buyFaceUpCard(1, 0, Locale.US);
+
+        assertTrue(result.isSuccess());
+        assertEquals(1, playerZero.getNobles().size());
+        assertEquals(noble, playerZero.getNobles().get(0));
+        assertFalse(game.getRevealedNobles().contains(noble));
+        assertEquals(2, game.getRevealedNobles().size());
+        assertEquals(4, playerZero.getPrestigePoints());
+        assertEquals(game.getPlayers().get(1), game.getCurrentPlayer());
+    }
+
+    @Test
+    void buyFaceUpCard_whenNoNobleIsSatisfiedLeavesRevealedNoblesUnchanged() {
+        Game game = new Game();
+        game.startGame(2, Locale.US);
+        Player playerZero = game.getCurrentPlayer();
+        Noble firstNoble = game.getRevealedNobles().get(0);
+        Noble secondNoble = game.getRevealedNobles().get(1);
+        Noble thirdNoble = game.getRevealedNobles().get(2);
+        Card card = new Card(1, TokenColor.DIAMOND, Map.of(), 0);
+        game.getFaceUpCards(1).set(0, card);
+
+        ActionResult result = game.buyFaceUpCard(1, 0, Locale.US);
+
+        assertTrue(result.isSuccess());
+        assertEquals(0, playerZero.getNobles().size());
+        assertEquals(3, game.getRevealedNobles().size());
+        assertEquals(firstNoble, game.getRevealedNobles().get(0));
+        assertEquals(secondNoble, game.getRevealedNobles().get(1));
+        assertEquals(thirdNoble, game.getRevealedNobles().get(2));
+        assertEquals(game.getPlayers().get(1), game.getCurrentPlayer());
+    }
+
+    @Test
+    void buyFaceUpCard_whenMultipleNoblesAreSatisfiedAddsOnlyFirstSatisfiedNoble() {
+        Game game = new Game();
+        game.startGame(2, Locale.US);
+        Player playerZero = game.getCurrentPlayer();
+        Noble firstNoble = game.getRevealedNobles().get(0);
+        Noble secondNoble = game.getRevealedNobles().get(1);
+        playerZero.addDevelopmentCard(new Card(1, TokenColor.SAPPHIRE, Map.of(), 0));
+        playerZero.addDevelopmentCard(new Card(1, TokenColor.SAPPHIRE, Map.of(), 0));
+        playerZero.addDevelopmentCard(new Card(1, TokenColor.SAPPHIRE, Map.of(), 0));
+        playerZero.addDevelopmentCard(new Card(1, TokenColor.EMERALD, Map.of(), 0));
+        playerZero.addDevelopmentCard(new Card(1, TokenColor.EMERALD, Map.of(), 0));
+        playerZero.addDevelopmentCard(new Card(1, TokenColor.EMERALD, Map.of(), 0));
+        playerZero.addDevelopmentCard(new Card(1, TokenColor.RUBY, Map.of(), 0));
+        playerZero.addDevelopmentCard(new Card(1, TokenColor.RUBY, Map.of(), 0));
+        playerZero.addDevelopmentCard(new Card(1, TokenColor.DIAMOND, Map.of(), 0));
+        playerZero.addDevelopmentCard(new Card(1, TokenColor.DIAMOND, Map.of(), 0));
+        playerZero.addDevelopmentCard(new Card(1, TokenColor.DIAMOND, Map.of(), 0));
+        Card card = new Card(1, TokenColor.RUBY, Map.of(), 0);
+        game.getFaceUpCards(1).set(0, card);
+
+        ActionResult result = game.buyFaceUpCard(1, 0, Locale.US);
+
+        assertTrue(result.isSuccess());
+        assertEquals(1, playerZero.getNobles().size());
+        assertEquals(firstNoble, playerZero.getNobles().get(0));
+        assertFalse(game.getRevealedNobles().contains(firstNoble));
+        assertTrue(game.getRevealedNobles().contains(secondNoble));
+        assertEquals(2, game.getRevealedNobles().size());
+        assertEquals(game.getPlayers().get(1), game.getCurrentPlayer());
+    }
+
+    @Test
+    void buyFaceUpCard_whenPurchaseFailsDoesNotVisitSatisfiedNoble() {
+        Game game = new Game();
+        game.startGame(2, Locale.US);
+        Player playerZero = game.getCurrentPlayer();
+        Noble noble = game.getRevealedNobles().get(0);
+        playerZero.addDevelopmentCard(new Card(1, TokenColor.SAPPHIRE, Map.of(), 0));
+        playerZero.addDevelopmentCard(new Card(1, TokenColor.SAPPHIRE, Map.of(), 0));
+        playerZero.addDevelopmentCard(new Card(1, TokenColor.SAPPHIRE, Map.of(), 0));
+        playerZero.addDevelopmentCard(new Card(1, TokenColor.EMERALD, Map.of(), 0));
+        playerZero.addDevelopmentCard(new Card(1, TokenColor.EMERALD, Map.of(), 0));
+        playerZero.addDevelopmentCard(new Card(1, TokenColor.EMERALD, Map.of(), 0));
+        playerZero.addDevelopmentCard(new Card(1, TokenColor.RUBY, Map.of(), 0));
+        playerZero.addDevelopmentCard(new Card(1, TokenColor.RUBY, Map.of(), 0));
+        playerZero.addDevelopmentCard(new Card(1, TokenColor.RUBY, Map.of(), 0));
+        Card card = new Card(1, TokenColor.DIAMOND, Map.of(TokenColor.RUBY, 4), 0);
+        game.getFaceUpCards(1).set(0, card);
+
+        ActionResult result = game.buyFaceUpCard(1, 0, Locale.US);
+
+        assertFalse(result.isSuccess());
+        assertEquals(0, playerZero.getNobles().size());
+        assertEquals(3, game.getRevealedNobles().size());
+        assertTrue(game.getRevealedNobles().contains(noble));
+        assertEquals(playerZero, game.getCurrentPlayer());
+    }
+
+    @Test
     void buyReservedCard_validCardPaidWithGemTokensBuysReservedCardAndAdvancesCurrentPlayer() {
         Game game = new Game();
         game.startGame(2, Locale.US);
@@ -784,5 +893,61 @@ class GameTest {
 
         assertFalse(result.isSuccess());
         assertEquals(GamePhase.SETUP, game.getPhase());
+    }
+
+    @Test
+    void buyReservedCard_whenBoughtCardSatisfiesOneNobleAddsNobleToPlayerAndRemovesItFromRevealedNobles() {
+        Game game = new Game();
+        game.startGame(2, Locale.US);
+        Player playerZero = game.getCurrentPlayer();
+        Noble noble = game.getRevealedNobles().get(0);
+        playerZero.addDevelopmentCard(new Card(1, TokenColor.SAPPHIRE, Map.of(), 0));
+        playerZero.addDevelopmentCard(new Card(1, TokenColor.SAPPHIRE, Map.of(), 0));
+        playerZero.addDevelopmentCard(new Card(1, TokenColor.SAPPHIRE, Map.of(), 0));
+        playerZero.addDevelopmentCard(new Card(1, TokenColor.EMERALD, Map.of(), 0));
+        playerZero.addDevelopmentCard(new Card(1, TokenColor.EMERALD, Map.of(), 0));
+        playerZero.addDevelopmentCard(new Card(1, TokenColor.EMERALD, Map.of(), 0));
+        playerZero.addDevelopmentCard(new Card(1, TokenColor.RUBY, Map.of(), 0));
+        playerZero.addDevelopmentCard(new Card(1, TokenColor.RUBY, Map.of(), 0));
+        Card card = new Card(1, TokenColor.RUBY, Map.of(), 1);
+        game.getFaceUpCards(1).set(0, card);
+        game.reserveFaceUpCard(1, 0, Locale.US);
+        game.takeTokens(Map.of(TokenColor.SAPPHIRE, 1, TokenColor.EMERALD, 1, TokenColor.ONYX, 1), Locale.US);
+
+        ActionResult result = game.buyReservedCard(0, Locale.US);
+
+        assertTrue(result.isSuccess());
+        assertEquals(0, playerZero.getReservedCards().size());
+        assertEquals(1, playerZero.getNobles().size());
+        assertEquals(noble, playerZero.getNobles().get(0));
+        assertFalse(game.getRevealedNobles().contains(noble));
+        assertEquals(2, game.getRevealedNobles().size());
+        assertEquals(4, playerZero.getPrestigePoints());
+        assertEquals(game.getPlayers().get(1), game.getCurrentPlayer());
+    }
+
+    @Test
+    void buyReservedCard_whenNoNobleIsSatisfiedLeavesRevealedNoblesUnchanged() {
+        Game game = new Game();
+        game.startGame(2, Locale.US);
+        Player playerZero = game.getCurrentPlayer();
+        Noble firstNoble = game.getRevealedNobles().get(0);
+        Noble secondNoble = game.getRevealedNobles().get(1);
+        Noble thirdNoble = game.getRevealedNobles().get(2);
+        Card card = new Card(1, TokenColor.DIAMOND, Map.of(), 0);
+        game.getFaceUpCards(1).set(0, card);
+        game.reserveFaceUpCard(1, 0, Locale.US);
+        game.takeTokens(Map.of(TokenColor.SAPPHIRE, 1, TokenColor.EMERALD, 1, TokenColor.ONYX, 1), Locale.US);
+
+        ActionResult result = game.buyReservedCard(0, Locale.US);
+
+        assertTrue(result.isSuccess());
+        assertEquals(0, playerZero.getReservedCards().size());
+        assertEquals(0, playerZero.getNobles().size());
+        assertEquals(3, game.getRevealedNobles().size());
+        assertEquals(firstNoble, game.getRevealedNobles().get(0));
+        assertEquals(secondNoble, game.getRevealedNobles().get(1));
+        assertEquals(thirdNoble, game.getRevealedNobles().get(2));
+        assertEquals(game.getPlayers().get(1), game.getCurrentPlayer());
     }
 }

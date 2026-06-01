@@ -54,6 +54,9 @@ public class Player {
     }
 
     public void removeReservedCard(Card card) {
+        if (!reservedCards.remove(card)) {
+            throw new IllegalArgumentException();
+        }
     }
 
     public void addDevelopmentCard(Card card) {

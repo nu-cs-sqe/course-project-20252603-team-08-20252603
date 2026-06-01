@@ -210,8 +210,36 @@ public class Game
     }
 
     public ActionResult buyReservedCard(int reservedIndex, Locale locale) {
-        String errorMessage = MessageProvider.getMessage("error.invalid_buy_card", locale);
-        return ActionResult.failure(errorMessage);
+        if (phase != GamePhase.PLAYER_TURN || players == null || tokenBank == null) {
+            String errorMessage = MessageProvider.getMessage("error.invalid_buy_card", locale);
+            return ActionResult.failure(errorMessage);
+        }
+
+        if (ruleValidator == null) {
+            initializeRuleValidator();
+        }
+
+        Player currentPlayer = getCurrentPlayer();
+        List<Card> reservedCards = currentPlayer.getReservedCards();
+        if (reservedIndex < 0 || reservedIndex >= reservedCards.size()) {
+            String errorMessage = MessageProvider.getMessage("error.invalid_buy_card", locale);
+            return ActionResult.failure(errorMessage);
+        }
+
+        Card card = reservedCards.get(reservedIndex);
+        ActionResult validationResult = ruleValidator.validateBuyCard(currentPlayer, card, locale);
+        if (!validationResult.isSuccess()) {
+            return validationResult;
+        }
+
+        Map<TokenColor, Integer> payment = calculatePayment(currentPlayer, card);
+        currentPlayer.removeTokens(payment);
+        tokenBank.addTokens(payment);
+        currentPlayer.removeReservedCard(card);
+        currentPlayer.addDevelopmentCard(card);
+        currentPlayerIndex = (currentPlayerIndex + NEXT_PLAYER_OFFSET) % players.size();
+
+        return ActionResult.success();
     }
 
     private Map<TokenColor, Integer> calculatePayment(Player player, Card card) {

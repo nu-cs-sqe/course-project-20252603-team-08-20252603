@@ -68,6 +68,10 @@ public class Game
         return players.get(winnerIndex);
     }
 
+    public List<Player> getWinners() {
+        return Collections.emptyList();
+    }
+
     private void initializePlayers(int playerCount) {
         players = new ArrayList<>(playerCount);
 

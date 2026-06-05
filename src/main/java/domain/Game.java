@@ -29,6 +29,7 @@ public class Game
     private Map<Integer, List<Card>> faceUpCards;
     private List<Noble> revealedNobles;
     private int winnerIndex;
+    private List<Player> winners;
 
     public Game(){
         this.phase = GamePhase.SETUP;
@@ -48,6 +49,7 @@ public class Game
         initializeNobles(playerCount);
         currentPlayerIndex = FIRST_PLAYER_INDEX;
         winnerIndex = NO_WINNER_INDEX;
+        winners = new ArrayList<>();
         phase = GamePhase.PLAYER_TURN;
 
         return ActionResult.success();
@@ -66,6 +68,13 @@ public class Game
             return null;
         }
         return players.get(winnerIndex);
+    }
+
+    public List<Player> getWinners() {
+        if (winners == null) {
+            return Collections.emptyList();
+        }
+        return Collections.unmodifiableList(winners);
     }
 
     private void initializePlayers(int playerCount) {
@@ -123,7 +132,7 @@ public class Game
     }
 
     public ActionResult takeTokens(Map<TokenColor, Integer> tokensToTake, Locale locale) {
-        if (phase != GamePhase.PLAYER_TURN || players == null || tokenBank == null) {
+        if (!isActionPhase() || players == null || tokenBank == null) {
             String errorMessage = MessageProvider.getMessage("error.invalid_token_selection", locale);
             return ActionResult.failure(errorMessage);
         }
@@ -140,13 +149,13 @@ public class Game
 
         currentPlayer.addTokens(tokensToTake);
         tokenBank.removeTokens(tokensToTake);
-        currentPlayerIndex = (currentPlayerIndex + NEXT_PLAYER_OFFSET) % players.size();
+        completeTurn(currentPlayer);
 
         return ActionResult.success();
     }
 
     public ActionResult reserveFaceUpCard(int level, int cardIndex, Locale locale) {
-        if (phase != GamePhase.PLAYER_TURN || players == null || tokenBank == null || faceUpCards == null || decks == null) {
+        if (!isActionPhase() || players == null || tokenBank == null || faceUpCards == null || decks == null) {
             String errorMessage = MessageProvider.getMessage("error.invalid_reserve_card", locale);
             return ActionResult.failure(errorMessage);
         }
@@ -175,13 +184,13 @@ public class Game
             tokenBank.removeTokens(Map.of(TokenColor.GOLD, 1));
         }
 
-        currentPlayerIndex = (currentPlayerIndex + NEXT_PLAYER_OFFSET) % players.size();
+        completeTurn(currentPlayer);
 
         return ActionResult.success();
     }
 
     public ActionResult buyFaceUpCard(int level, int cardIndex, Locale locale) {
-        if (phase != GamePhase.PLAYER_TURN || players == null || tokenBank == null || faceUpCards == null || decks == null) {
+        if (!isActionPhase() || players == null || tokenBank == null || faceUpCards == null || decks == null) {
             String errorMessage = MessageProvider.getMessage("error.invalid_buy_card", locale);
             return ActionResult.failure(errorMessage);
         }
@@ -211,22 +220,18 @@ public class Game
         currentPlayer.addDevelopmentCard(boughtCard);
         visitAvailableNoble(currentPlayer, locale);
 
-        if (finishGameIfWinner(currentPlayer)) {
-            return ActionResult.success();
-        }
-
         Deck deck = decks.get(level);
         if (deck != null && !deck.isEmpty()) {
             cards.add(deck.drawCard());
         }
 
-        currentPlayerIndex = (currentPlayerIndex + NEXT_PLAYER_OFFSET) % players.size();
+        completeTurn(currentPlayer);
 
         return ActionResult.success();
     }
 
     public ActionResult buyReservedCard(int reservedIndex, Locale locale) {
-        if (phase != GamePhase.PLAYER_TURN || players == null || tokenBank == null) {
+        if (!isActionPhase() || players == null || tokenBank == null) {
             String errorMessage = MessageProvider.getMessage("error.invalid_buy_card", locale);
             return ActionResult.failure(errorMessage);
         }
@@ -254,12 +259,7 @@ public class Game
         currentPlayer.removeReservedCard(card);
         currentPlayer.addDevelopmentCard(card);
         visitAvailableNoble(currentPlayer, locale);
-
-        if (finishGameIfWinner(currentPlayer)) {
-            return ActionResult.success();
-        }
-
-        currentPlayerIndex = (currentPlayerIndex + NEXT_PLAYER_OFFSET) % players.size();
+        completeTurn(currentPlayer);
 
         return ActionResult.success();
     }
@@ -287,14 +287,46 @@ public class Game
         return payment;
     }
 
-    private boolean finishGameIfWinner(Player player) {
-        if (player.getPrestigePoints() >= WINNING_PRESTIGE_POINTS) {
-            winnerIndex = currentPlayerIndex;
-            phase = GamePhase.GAME_OVER;
-            return true;
+    private boolean isActionPhase() {
+        return phase == GamePhase.PLAYER_TURN || phase == GamePhase.FINAL_ROUND;
+    }
+
+    private void completeTurn(Player player) {
+        if (phase == GamePhase.PLAYER_TURN && player.getPrestigePoints() >= WINNING_PRESTIGE_POINTS) {
+            phase = GamePhase.FINAL_ROUND;
         }
 
-        return false;
+        currentPlayerIndex = (currentPlayerIndex + NEXT_PLAYER_OFFSET) % players.size();
+        if (phase == GamePhase.FINAL_ROUND && currentPlayerIndex == FIRST_PLAYER_INDEX) {
+            calculateWinners();
+            phase = GamePhase.GAME_OVER;
+        }
+    }
+
+    private void calculateWinners() {
+        winners.clear();
+        int highestPrestigePoints = Integer.MIN_VALUE;
+        int fewestDevelopmentCards = Integer.MAX_VALUE;
+
+        for (Player player : players) {
+            if (player.getPrestigePoints() > highestPrestigePoints) {
+                highestPrestigePoints = player.getPrestigePoints();
+                fewestDevelopmentCards = player.getDevelopmentCards().size();
+                winners.clear();
+                winners.add(player);
+            } else if (player.getPrestigePoints() == highestPrestigePoints) {
+                int developmentCardCount = player.getDevelopmentCards().size();
+                if (developmentCardCount < fewestDevelopmentCards) {
+                    fewestDevelopmentCards = developmentCardCount;
+                    winners.clear();
+                    winners.add(player);
+                } else if (developmentCardCount == fewestDevelopmentCards) {
+                    winners.add(player);
+                }
+            }
+        }
+
+        winnerIndex = players.indexOf(winners.get(0));
     }
 
     private void visitAvailableNoble(Player player, Locale locale) {

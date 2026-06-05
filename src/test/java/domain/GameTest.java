@@ -57,6 +57,7 @@ class GameTest {
         Game game = new Game();
 
         assertNull(game.getWinner());
+        assertTrue(game.getWinners().isEmpty());
     }
 
     @Test
@@ -66,6 +67,7 @@ class GameTest {
         game.startGame(2, Locale.US);
 
         assertNull(game.getWinner());
+        assertTrue(game.getWinners().isEmpty());
     }
 
 
@@ -753,21 +755,25 @@ class GameTest {
     }
 
     @Test
-    void buyFaceUpCard_whenPlayerReachesFifteenPrestigePointsEndsGameAndSetsWinner() {
+    void buyFaceUpCard_whenPlayerReachesFifteenPrestigePointsStartsFinalRoundAndAdvancesCurrentPlayer() {
         Game game = new Game();
         game.startGame(2, Locale.US);
         Player playerZero = game.getCurrentPlayer();
         playerZero.addDevelopmentCard(new Card(1, TokenColor.DIAMOND, Map.of(), 14));
         Card card = new Card(1, TokenColor.RUBY, Map.of(), 1);
         game.getFaceUpCards(1).set(0, card);
+        int deckSizeBefore = game.getDeck(1).cards.size();
 
         ActionResult result = game.buyFaceUpCard(1, 0, Locale.US);
 
         assertTrue(result.isSuccess());
         assertEquals(15, playerZero.getPrestigePoints());
-        assertEquals(GamePhase.GAME_OVER, game.getPhase());
-        assertEquals(playerZero, game.getWinner());
-        assertEquals(playerZero, game.getCurrentPlayer());
+        assertEquals(GamePhase.FINAL_ROUND, game.getPhase());
+        assertNull(game.getWinner());
+        assertTrue(game.getWinners().isEmpty());
+        assertEquals(4, game.getFaceUpCards(1).size());
+        assertEquals(deckSizeBefore - 1, game.getDeck(1).cards.size());
+        assertEquals(game.getPlayers().get(1), game.getCurrentPlayer());
     }
 
     @Test
@@ -797,6 +803,7 @@ class GameTest {
         Card winningCard = new Card(1, TokenColor.RUBY, Map.of(), 1);
         game.getFaceUpCards(1).set(0, winningCard);
         game.buyFaceUpCard(1, 0, Locale.US);
+        game.takeTokens(Map.of(TokenColor.SAPPHIRE, 1, TokenColor.EMERALD, 1, TokenColor.ONYX, 1), Locale.US);
         Card laterCard = new Card(1, TokenColor.SAPPHIRE, Map.of(), 1);
         game.getFaceUpCards(1).set(0, laterCard);
 
@@ -806,6 +813,8 @@ class GameTest {
         assertEquals(MessageProvider.getMessage("error.invalid_buy_card", Locale.US), result.getMessage());
         assertEquals(GamePhase.GAME_OVER, game.getPhase());
         assertEquals(playerZero, game.getWinner());
+        assertEquals(1, game.getWinners().size());
+        assertEquals(playerZero, game.getWinners().get(0));
         assertEquals(playerZero, game.getCurrentPlayer());
     }
 
@@ -1025,7 +1034,7 @@ class GameTest {
     }
 
     @Test
-    void buyReservedCard_whenPlayerReachesFifteenPrestigePointsEndsGameAndSetsWinner() {
+    void buyReservedCard_whenPlayerReachesFifteenPrestigePointsStartsFinalRoundAndAdvancesCurrentPlayer() {
         Game game = new Game();
         game.startGame(2, Locale.US);
         Player playerZero = game.getCurrentPlayer();
@@ -1037,9 +1046,10 @@ class GameTest {
 
         assertTrue(result.isSuccess());
         assertEquals(15, playerZero.getPrestigePoints());
-        assertEquals(GamePhase.GAME_OVER, game.getPhase());
-        assertEquals(playerZero, game.getWinner());
-        assertEquals(playerZero, game.getCurrentPlayer());
+        assertEquals(GamePhase.FINAL_ROUND, game.getPhase());
+        assertNull(game.getWinner());
+        assertTrue(game.getWinners().isEmpty());
+        assertEquals(game.getPlayers().get(1), game.getCurrentPlayer());
     }
 
     @Test
@@ -1051,6 +1061,7 @@ class GameTest {
         Card winningCard = new Card(1, TokenColor.RUBY, Map.of(), 1);
         playerZero.addReservedCard(winningCard);
         game.buyReservedCard(0, Locale.US);
+        game.takeTokens(Map.of(TokenColor.SAPPHIRE, 1, TokenColor.EMERALD, 1, TokenColor.ONYX, 1), Locale.US);
         Card laterCard = new Card(1, TokenColor.SAPPHIRE, Map.of(), 1);
         playerZero.addReservedCard(laterCard);
 
@@ -1060,6 +1071,151 @@ class GameTest {
         assertEquals(MessageProvider.getMessage("error.invalid_buy_card", Locale.US), result.getMessage());
         assertEquals(GamePhase.GAME_OVER, game.getPhase());
         assertEquals(playerZero, game.getWinner());
+        assertEquals(1, game.getWinners().size());
+        assertEquals(playerZero, game.getWinners().get(0));
+        assertEquals(playerZero, game.getCurrentPlayer());
+    }
+
+    @Test
+    void takeTokens_duringFinalRoundCompletesFinalRoundAndCalculatesWinner() {
+        Game game = new Game();
+        game.startGame(2, Locale.US);
+        Player playerZero = game.getCurrentPlayer();
+        playerZero.addDevelopmentCard(new Card(1, TokenColor.DIAMOND, Map.of(), 14));
+        Card card = new Card(1, TokenColor.RUBY, Map.of(), 1);
+        game.getFaceUpCards(1).set(0, card);
+        game.buyFaceUpCard(1, 0, Locale.US);
+
+        ActionResult result = game.takeTokens(Map.of(TokenColor.SAPPHIRE, 1, TokenColor.EMERALD, 1, TokenColor.ONYX, 1), Locale.US);
+
+        assertTrue(result.isSuccess());
+        assertEquals(GamePhase.GAME_OVER, game.getPhase());
+        assertEquals(playerZero, game.getWinner());
+        assertEquals(1, game.getWinners().size());
+        assertEquals(playerZero, game.getWinners().get(0));
+        assertEquals(playerZero, game.getCurrentPlayer());
+    }
+
+    @Test
+    void takeTokens_invalidActionDuringFinalRoundLeavesFinalRoundUnchanged() {
+        Game game = new Game();
+        game.startGame(2, Locale.US);
+        Player playerZero = game.getCurrentPlayer();
+        Player playerOne = game.getPlayers().get(1);
+        playerZero.addDevelopmentCard(new Card(1, TokenColor.DIAMOND, Map.of(), 14));
+        Card card = new Card(1, TokenColor.RUBY, Map.of(), 1);
+        game.getFaceUpCards(1).set(0, card);
+        game.buyFaceUpCard(1, 0, Locale.US);
+
+        ActionResult result = game.takeTokens(Map.of(TokenColor.GOLD, 1), Locale.US);
+
+        assertFalse(result.isSuccess());
+        assertEquals(MessageProvider.getMessage("error.invalid_token_selection", Locale.US), result.getMessage());
+        assertEquals(GamePhase.FINAL_ROUND, game.getPhase());
+        assertNull(game.getWinner());
+        assertTrue(game.getWinners().isEmpty());
+        assertEquals(playerOne, game.getCurrentPlayer());
+    }
+
+    @Test
+    void buyFaceUpCard_duringFinalRoundHigherPrestigePlayerWins() {
+        Game game = new Game();
+        game.startGame(2, Locale.US);
+        Player playerZero = game.getCurrentPlayer();
+        Player playerOne = game.getPlayers().get(1);
+        playerZero.addDevelopmentCard(new Card(1, TokenColor.DIAMOND, Map.of(), 14));
+        playerOne.addDevelopmentCard(new Card(1, TokenColor.SAPPHIRE, Map.of(), 15));
+        Card triggerCard = new Card(1, TokenColor.RUBY, Map.of(), 1);
+        game.getFaceUpCards(1).set(0, triggerCard);
+        game.buyFaceUpCard(1, 0, Locale.US);
+        Card finalRoundCard = new Card(1, TokenColor.EMERALD, Map.of(), 1);
+        game.getFaceUpCards(1).set(0, finalRoundCard);
+
+        ActionResult result = game.buyFaceUpCard(1, 0, Locale.US);
+
+        assertTrue(result.isSuccess());
+        assertEquals(GamePhase.GAME_OVER, game.getPhase());
+        assertEquals(16, playerOne.getPrestigePoints());
+        assertEquals(playerOne, game.getWinner());
+        assertEquals(1, game.getWinners().size());
+        assertEquals(playerOne, game.getWinners().get(0));
+    }
+
+    @Test
+    void buyFaceUpCard_duringFinalRoundTiedPrestigePlayerWithFewerDevelopmentCardsWins() {
+        Game game = new Game();
+        game.startGame(2, Locale.US);
+        Player playerZero = game.getCurrentPlayer();
+        Player playerOne = game.getPlayers().get(1);
+        playerZero.addDevelopmentCard(new Card(1, TokenColor.DIAMOND, Map.of(), 13));
+        playerZero.addDevelopmentCard(new Card(1, TokenColor.SAPPHIRE, Map.of(), 1));
+        playerOne.addDevelopmentCard(new Card(1, TokenColor.EMERALD, Map.of(), 14));
+        Card triggerCard = new Card(1, TokenColor.RUBY, Map.of(), 1);
+        game.getFaceUpCards(1).set(0, triggerCard);
+        game.buyFaceUpCard(1, 0, Locale.US);
+        Card finalRoundCard = new Card(1, TokenColor.ONYX, Map.of(), 1);
+        game.getFaceUpCards(1).set(0, finalRoundCard);
+
+        ActionResult result = game.buyFaceUpCard(1, 0, Locale.US);
+
+        assertTrue(result.isSuccess());
+        assertEquals(GamePhase.GAME_OVER, game.getPhase());
+        assertEquals(15, playerZero.getPrestigePoints());
+        assertEquals(15, playerOne.getPrestigePoints());
+        assertEquals(3, playerZero.getDevelopmentCards().size());
+        assertEquals(2, playerOne.getDevelopmentCards().size());
+        assertEquals(playerOne, game.getWinner());
+        assertEquals(1, game.getWinners().size());
+        assertEquals(playerOne, game.getWinners().get(0));
+    }
+
+    @Test
+    void buyFaceUpCard_duringFinalRoundTiedPrestigeAndDevelopmentCardsSharesWin() {
+        Game game = new Game();
+        game.startGame(2, Locale.US);
+        Player playerZero = game.getCurrentPlayer();
+        Player playerOne = game.getPlayers().get(1);
+        playerZero.addDevelopmentCard(new Card(1, TokenColor.DIAMOND, Map.of(), 14));
+        playerOne.addDevelopmentCard(new Card(1, TokenColor.EMERALD, Map.of(), 14));
+        Card triggerCard = new Card(1, TokenColor.RUBY, Map.of(), 1);
+        game.getFaceUpCards(1).set(0, triggerCard);
+        game.buyFaceUpCard(1, 0, Locale.US);
+        Card finalRoundCard = new Card(1, TokenColor.ONYX, Map.of(), 1);
+        game.getFaceUpCards(1).set(0, finalRoundCard);
+
+        ActionResult result = game.buyFaceUpCard(1, 0, Locale.US);
+
+        assertTrue(result.isSuccess());
+        assertEquals(GamePhase.GAME_OVER, game.getPhase());
+        assertEquals(15, playerZero.getPrestigePoints());
+        assertEquals(15, playerOne.getPrestigePoints());
+        assertEquals(2, playerZero.getDevelopmentCards().size());
+        assertEquals(2, playerOne.getDevelopmentCards().size());
+        assertEquals(2, game.getWinners().size());
+        assertTrue(game.getWinners().contains(playerZero));
+        assertTrue(game.getWinners().contains(playerOne));
+    }
+
+    @Test
+    void buyReservedCard_duringFinalRoundCompletesFinalRoundAndCalculatesWinner() {
+        Game game = new Game();
+        game.startGame(2, Locale.US);
+        Player playerZero = game.getCurrentPlayer();
+        Player playerOne = game.getPlayers().get(1);
+        playerZero.addDevelopmentCard(new Card(1, TokenColor.DIAMOND, Map.of(), 14));
+        Card triggerCard = new Card(1, TokenColor.RUBY, Map.of(), 1);
+        playerZero.addReservedCard(triggerCard);
+        game.buyReservedCard(0, Locale.US);
+        Card finalRoundCard = new Card(1, TokenColor.SAPPHIRE, Map.of(), 1);
+        playerOne.addReservedCard(finalRoundCard);
+
+        ActionResult result = game.buyReservedCard(0, Locale.US);
+
+        assertTrue(result.isSuccess());
+        assertEquals(GamePhase.GAME_OVER, game.getPhase());
+        assertEquals(playerZero, game.getWinner());
+        assertEquals(1, game.getWinners().size());
+        assertEquals(playerZero, game.getWinners().get(0));
         assertEquals(playerZero, game.getCurrentPlayer());
     }
 }

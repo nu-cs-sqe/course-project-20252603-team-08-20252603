@@ -42,7 +42,7 @@ A player may not finish a turn with more than 10 total tokens.
 
 ## Reserving Cards
 
-A player may reserve one face-up card or the top card from a deck.
+A player may reserve one face-up card.
 
 A player may have at most 3 reserved cards.
 
@@ -78,7 +78,7 @@ A player qualifies for a noble when their development card bonuses meet or excee
 
 A player may receive at most one noble per turn.
 
-If a player qualifies for multiple nobles, the player chooses one.
+If a player qualifies for multiple nobles, the player receives the first qualifying revealed noble.
 
 Received nobles add prestige points and are removed from the shared noble area.
 

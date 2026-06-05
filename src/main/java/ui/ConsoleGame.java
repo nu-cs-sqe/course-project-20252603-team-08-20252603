@@ -6,6 +6,7 @@ import domain.Game;
 import domain.GamePhase;
 import domain.MessageProvider;
 import domain.Noble;
+import domain.Player;
 import domain.TokenColor;
 
 import java.io.InputStream;
@@ -121,6 +122,9 @@ public class ConsoleGame {
 
     private void printTable(Game game, Locale locale) {
         out.println();
+        if (game.getPhase() == GamePhase.FINAL_ROUND) {
+            out.println(message("ui.final_round", locale));
+        }
         out.println(message("ui.current_player", locale) + " " + message("ui.player", locale) + " " + (game.getCurrentPlayerIndex() + 1));
         printCurrentPlayerStatus(game, locale);
         printTokenBank(game, locale);
@@ -131,8 +135,17 @@ public class ConsoleGame {
 
     private void printGameOver(Game game, Locale locale) {
         out.println(message("ui.game_over", locale));
-        int winnerIndex = game.getPlayers().indexOf(game.getWinner()) + 1;
-        out.println(message("ui.winner", locale) + " " + message("ui.player", locale) + " " + winnerIndex);
+        List<Player> winners = game.getWinners();
+        if (winners.size() == 1) {
+            int winnerIndex = game.getPlayers().indexOf(winners.get(0)) + 1;
+            out.println(message("ui.winner", locale) + " " + message("ui.player", locale) + " " + winnerIndex);
+        } else {
+            out.println(message("ui.winners", locale));
+            for (Player winner : winners) {
+                int winnerIndex = game.getPlayers().indexOf(winner) + 1;
+                out.println("  " + message("ui.player", locale) + " " + winnerIndex);
+            }
+        }
     }
 
     private void printCurrentPlayerStatus(Game game, Locale locale) {

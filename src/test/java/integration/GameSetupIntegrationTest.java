@@ -3,6 +3,7 @@ package integration;
 import domain.ActionResult;
 import domain.Game;
 import domain.GamePhase;
+import domain.MessageProvider;
 import domain.Noble;
 import domain.Player;
 import domain.TokenColor;
@@ -13,6 +14,7 @@ import java.util.Locale;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class GameSetupIntegrationTest {
@@ -74,5 +76,22 @@ class GameSetupIntegrationTest {
                 + game.getDeck(2).cards.size()
                 + game.getDeck(3).cards.size();
         assertEquals(TOTAL_DEVELOPMENT_CARDS, cardsInPlay);
+    }
+
+    @Test
+    void integrationTC2_invalidPlayerCountBlocksSetupPipeline() {
+        Game game = new Game();
+
+        ActionResult result = game.startGame(1, Locale.US);
+
+        assertFalse(result.isSuccess());
+        assertEquals(
+                MessageProvider.getMessage("error.invalid_player_count", Locale.US),
+                result.getMessage());
+        assertEquals(GamePhase.SETUP, game.getPhase());
+        assertNull(game.getTokenBank());
+        assertNull(game.getFaceUpCards(1));
+        assertNull(game.getDeck(1));
+        assertNull(game.getRevealedNobles());
     }
 }

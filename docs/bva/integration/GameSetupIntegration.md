@@ -29,7 +29,7 @@ This file covers **cross-component** setup behaviour only.
 |                    | State of the System                                      | Expected output                                                                                                                                                                                                                         | Implemented? |
 |--------------------|----------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|--------------|
 | Integration TC 2   | New `Game`, `playerCount = 1`, `locale = US`             | `ActionResult.isSuccess() == false`, message == `error.invalid_player_count` for US locale, `phase == SETUP`, `getTokenBank() == null`, `getFaceUpCards(1) == null`, `getDeck(1) == null`, `getRevealedNobles() == null`              | :white_check_mark: |
-| Integration TC 3   | New `Game`, `playerCount = 5`, `locale = US`             | `ActionResult.isSuccess() == false`, message == `error.invalid_player_count` for US locale, `phase == SETUP`, `getTokenBank() == null`, `getFaceUpCards(1) == null`, `getDeck(1) == null`, `getRevealedNobles() == null`              | :x:          |
+| Integration TC 3   | New `Game`, `playerCount = 5`, `locale = US`             | `ActionResult.isSuccess() == false`, message == `error.invalid_player_count` for US locale, `phase == SETUP`, `getTokenBank() == null`, `getFaceUpCards(1) == null`, `getDeck(1) == null`, `getRevealedNobles() == null`              | :white_check_mark: |
 
 ---
 

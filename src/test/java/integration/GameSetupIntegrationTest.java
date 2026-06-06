@@ -94,4 +94,21 @@ class GameSetupIntegrationTest {
         assertNull(game.getDeck(1));
         assertNull(game.getRevealedNobles());
     }
+
+    @Test
+    void integrationTC3_tooManyPlayersBlocksSetupPipeline() {
+        Game game = new Game();
+
+        ActionResult result = game.startGame(5, Locale.US);
+
+        assertFalse(result.isSuccess());
+        assertEquals(
+                MessageProvider.getMessage("error.invalid_player_count", Locale.US),
+                result.getMessage());
+        assertEquals(GamePhase.SETUP, game.getPhase());
+        assertNull(game.getTokenBank());
+        assertNull(game.getFaceUpCards(1));
+        assertNull(game.getDeck(1));
+        assertNull(game.getRevealedNobles());
+    }
 }

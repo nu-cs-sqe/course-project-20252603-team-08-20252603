@@ -25,6 +25,8 @@ class GameSetupIntegrationTest {
     private static final int LEVEL_TWO_DECK_SIZE = 26;
     private static final int LEVEL_THREE_DECK_SIZE = 16;
     private static final int TWO_PLAYER_GEM_TOKEN_COUNT = 4;
+    private static final int THREE_PLAYER_GEM_TOKEN_COUNT = 5;
+    private static final int FOUR_PLAYER_GEM_TOKEN_COUNT = 7;
     private static final int GOLD_TOKEN_COUNT = 5;
 
     @Test
@@ -110,5 +112,33 @@ class GameSetupIntegrationTest {
         assertNull(game.getFaceUpCards(1));
         assertNull(game.getDeck(1));
         assertNull(game.getRevealedNobles());
+    }
+
+    @Test
+    void integrationTC4_playerCountScalesTokenBankAndNobleSupply() {
+        Game twoPlayerGame = new Game();
+        Game threePlayerGame = new Game();
+        Game fourPlayerGame = new Game();
+
+        assertTrue(twoPlayerGame.startGame(2, Locale.US).isSuccess());
+        assertTrue(threePlayerGame.startGame(3, Locale.US).isSuccess());
+        assertTrue(fourPlayerGame.startGame(4, Locale.US).isSuccess());
+
+        assertGemTokenCountPerColor(twoPlayerGame, TWO_PLAYER_GEM_TOKEN_COUNT);
+        assertEquals(3, twoPlayerGame.getRevealedNobles().size());
+
+        assertGemTokenCountPerColor(threePlayerGame, THREE_PLAYER_GEM_TOKEN_COUNT);
+        assertEquals(4, threePlayerGame.getRevealedNobles().size());
+
+        assertGemTokenCountPerColor(fourPlayerGame, FOUR_PLAYER_GEM_TOKEN_COUNT);
+        assertEquals(5, fourPlayerGame.getRevealedNobles().size());
+    }
+
+    private static void assertGemTokenCountPerColor(Game game, int expectedGemCount) {
+        for (TokenColor color : TokenColor.values()) {
+            if (color != TokenColor.GOLD) {
+                assertEquals(expectedGemCount, game.getTokenBank().getTokenCount(color));
+            }
+        }
     }
 }

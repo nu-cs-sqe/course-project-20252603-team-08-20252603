@@ -21,7 +21,7 @@ Test input is supplied as line-delimited text to `ConsoleGame(InputStream, Print
 
 |                  | State of the System                                                                                                                                 | Expected output                                                                                                                                                                                                                         | Implemented? |
 |------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|--------------|
-| Integration TC 1 | New `ConsoleGame` with stdin lines: `en`, `2`, `take RUBY DIAMOND ONYX`, `quit`; stdout captured                                                     | Console output contains `ui.game_started` (US locale), `ui.action_succeeded` (US locale), `ui.goodbye` (US locale), token bank line `RUBY: 3`, and next table shows current player as `Player 2` (turn advanced after valid take)      | :x:          |
+| Integration TC 1 | New `ConsoleGame` with stdin lines: `en`, `2`, `take RUBY DIAMOND ONYX`, `quit`; stdout captured                                                     | Console output contains `ui.game_started` (US locale), `ui.action_succeeded` (US locale), `ui.goodbye` (US locale), token bank line `RUBY: 3`, and next table shows current player as `Player 2` (turn advanced after valid take)      | :white_check_mark: |
 
 ---
 

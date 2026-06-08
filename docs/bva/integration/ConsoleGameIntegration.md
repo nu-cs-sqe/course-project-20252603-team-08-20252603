@@ -29,7 +29,7 @@ Test input is supplied as line-delimited text to `ConsoleGame(InputStream, Print
 
 |                  | State of the System                                                                                                      | Expected output                                                                                                                                                                                                                  | Implemented? |
 |------------------|--------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|--------------|
-| Integration TC 2 | New `ConsoleGame` with stdin lines: `zh`, `2`, `reserve 1 0`, `quit`; stdout captured                                  | Console output contains `ui.game_started`, `ui.action_succeeded`, `ui.reserved_cards`, and `ui.goodbye` using Simplified Chinese messages from `messages_zh_CN.properties`; does not contain the English `ui.game_started` text   | :x:          |
+| Integration TC 2 | New `ConsoleGame` with stdin lines: `zh`, `2`, `reserve 1 0`, `quit`; stdout captured                                  | Console output contains `ui.game_started`, `ui.action_succeeded`, `ui.reserved_cards`, and `ui.goodbye` using Simplified Chinese messages from `messages_zh_CN.properties`; does not contain the English `ui.game_started` text   | :white_check_mark: |
 
 ---
 

@@ -37,7 +37,7 @@ Test input is supplied as line-delimited text to `ConsoleGame(InputStream, Print
 
 |                  | State of the System                                                         | Expected output                                                                                                                                                                      | Implemented? |
 |------------------|-----------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|--------------|
-| Integration TC 3 | New `ConsoleGame` with stdin lines: `en`, `1`; stdout captured              | Console output contains `error.invalid_player_count` (US locale); console output does **not** contain `ui.game_started` (US locale); `ConsoleGame.run()` returns without entering the action loop | :x:          |
+| Integration TC 3 | New `ConsoleGame` with stdin lines: `en`, `1`; stdout captured              | Console output contains `error.invalid_player_count` (US locale); console output does **not** contain `ui.game_started` (US locale); `ConsoleGame.run()` returns without entering the action loop | :white_check_mark: |
 
 ---
 

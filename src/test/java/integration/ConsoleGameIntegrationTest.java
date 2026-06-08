@@ -62,4 +62,21 @@ class ConsoleGameIntegrationTest {
 
         assertFalse(consoleOutput.contains(MessageProvider.getMessage("ui.game_started", Locale.US)));
     }
+
+    @Test
+    void integrationTC3_invalidPlayerCountRejectedBeforeGameLoop() {
+        String input = String.join("\n",
+                "en",
+                "1") + "\n";
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+
+        ConsoleGame consoleGame = new ConsoleGame(
+                new ByteArrayInputStream(input.getBytes(StandardCharsets.UTF_8)),
+                new java.io.PrintStream(output, true, StandardCharsets.UTF_8));
+        consoleGame.run();
+
+        String consoleOutput = output.toString(StandardCharsets.UTF_8);
+        assertTrue(consoleOutput.contains(MessageProvider.getMessage("error.invalid_player_count", Locale.US)));
+        assertFalse(consoleOutput.contains(MessageProvider.getMessage("ui.game_started", Locale.US)));
+    }
 }

@@ -79,4 +79,41 @@ class ConsoleGameIntegrationTest {
         assertTrue(consoleOutput.contains(MessageProvider.getMessage("error.invalid_player_count", Locale.US)));
         assertFalse(consoleOutput.contains(MessageProvider.getMessage("ui.game_started", Locale.US)));
     }
+
+    @Test
+    void integrationTC4_unknownActionHandledWithoutEndingSession() {
+        String input = String.join("\n",
+                "en",
+                "2",
+                "not-a-command",
+                "quit") + "\n";
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+
+        ConsoleGame consoleGame = new ConsoleGame(
+                new ByteArrayInputStream(input.getBytes(StandardCharsets.UTF_8)),
+                new java.io.PrintStream(output, true, StandardCharsets.UTF_8));
+        consoleGame.run();
+
+        String gameStarted = MessageProvider.getMessage("ui.game_started", Locale.US);
+        String unknownAction = MessageProvider.getMessage("ui.unknown_action", Locale.US);
+        String goodbye = MessageProvider.getMessage("ui.goodbye", Locale.US);
+        String tokenBank = MessageProvider.getMessage("ui.token_bank", Locale.US);
+        String enterAction = MessageProvider.getMessage("ui.enter_action", Locale.US);
+
+        String consoleOutput = output.toString(StandardCharsets.UTF_8);
+        assertTrue(consoleOutput.contains(gameStarted));
+        assertTrue(consoleOutput.contains(unknownAction));
+        assertTrue(consoleOutput.contains(goodbye));
+
+        int gameStartedIndex = consoleOutput.indexOf(gameStarted);
+        int tokenBankBeforeUnknownActionIndex = consoleOutput.indexOf(tokenBank);
+        int unknownActionIndex = consoleOutput.indexOf(unknownAction);
+        int enterActionBeforeQuitIndex = consoleOutput.lastIndexOf(enterAction);
+        int goodbyeIndex = consoleOutput.indexOf(goodbye);
+
+        assertTrue(gameStartedIndex < tokenBankBeforeUnknownActionIndex);
+        assertTrue(tokenBankBeforeUnknownActionIndex < unknownActionIndex);
+        assertTrue(unknownActionIndex < enterActionBeforeQuitIndex);
+        assertTrue(enterActionBeforeQuitIndex < goodbyeIndex);
+    }
 }

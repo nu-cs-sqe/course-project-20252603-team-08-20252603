@@ -291,9 +291,8 @@ public class Game
             return validationResult;
         }
 
-        Map<TokenColor, Integer> payment = calculatePayment(currentPlayer, card);
-        currentPlayer.removeTokens(payment);
-        tokenBank.addTokens(payment);
+        processPayment(currentPlayer, card);
+
         currentPlayer.removeReservedCard(card);
         currentPlayer.addDevelopmentCard(card);
         visitAvailableNoble(currentPlayer, locale);

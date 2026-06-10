@@ -154,7 +154,7 @@ public class Game
         return ActionResult.success();
     }
 
-    public ActionResult reserveFaceUpCard(int level, int cardIndex, Locale locale) {
+    private ActionResult validateReservationState(Locale locale) {
         if (!isActionPhase() || players == null || tokenBank == null || faceUpCards == null || decks == null) {
             String errorMessage = MessageProvider.getMessage("error.invalid_reserve_card", locale);
             return ActionResult.failure(errorMessage);
@@ -162,6 +162,15 @@ public class Game
 
         if (ruleValidator == null) {
             initializeRuleValidator();
+        }
+
+        return ActionResult.success();
+    }
+
+    public ActionResult reserveFaceUpCard(int level, int cardIndex, Locale locale) {
+        ActionResult stateCheck = validateReservationState(locale);
+        if (!stateCheck.isSuccess()) {
+            return stateCheck;
         }
 
         List<Card> cards = faceUpCards.get(level);

@@ -154,7 +154,7 @@ public class Game
         return ActionResult.success();
     }
 
-    public ActionResult reserveFaceUpCard(int level, int cardIndex, Locale locale) {
+    private ActionResult validateReservationState(Locale locale) {
         if (!isActionPhase() || players == null || tokenBank == null || faceUpCards == null || decks == null) {
             String errorMessage = MessageProvider.getMessage("error.invalid_reserve_card", locale);
             return ActionResult.failure(errorMessage);
@@ -162,6 +162,29 @@ public class Game
 
         if (ruleValidator == null) {
             initializeRuleValidator();
+        }
+
+        return ActionResult.success();
+    }
+
+    private void replenishFaceUpCard(int level, List<Card> cards) {
+        Deck deck = decks.get(level);
+        if (deck != null && !deck.isEmpty()) {
+            cards.add(deck.drawCard());
+        }
+    }
+
+    private void handleGoldTokenReward(Player player) {
+        if (tokenBank.getTokenCount(TokenColor.GOLD) > 0) {
+            player.addTokens(Map.of(TokenColor.GOLD, 1));
+            tokenBank.removeTokens(Map.of(TokenColor.GOLD, 1));
+        }
+    }
+
+    public ActionResult reserveFaceUpCard(int level, int cardIndex, Locale locale) {
+        ActionResult stateCheck = validateReservationState(locale);
+        if (!stateCheck.isSuccess()) {
+            return stateCheck;
         }
 
         List<Card> cards = faceUpCards.get(level);
@@ -174,22 +197,15 @@ public class Game
         Card reservedCard = cards.remove(cardIndex);
         currentPlayer.addReservedCard(reservedCard);
 
-        Deck deck = decks.get(level);
-        if (deck != null && !deck.isEmpty()) {
-            cards.add(deck.drawCard());
-        }
-
-        if (tokenBank.getTokenCount(TokenColor.GOLD) > 0) {
-            currentPlayer.addTokens(Map.of(TokenColor.GOLD, 1));
-            tokenBank.removeTokens(Map.of(TokenColor.GOLD, 1));
-        }
+        replenishFaceUpCard(level, cards);
+        handleGoldTokenReward(currentPlayer);
 
         completeTurn(currentPlayer);
 
         return ActionResult.success();
     }
 
-    public ActionResult buyFaceUpCard(int level, int cardIndex, Locale locale) {
+    private ActionResult validateBuyFaceUpState(int level, int cardIndex, Locale locale) {
         if (!isActionPhase() || players == null || tokenBank == null || faceUpCards == null || decks == null) {
             String errorMessage = MessageProvider.getMessage("error.invalid_buy_card", locale);
             return ActionResult.failure(errorMessage);
@@ -205,6 +221,22 @@ public class Game
             return ActionResult.failure(errorMessage);
         }
 
+        return ActionResult.success();
+    }
+
+    private void processPayment(Player player, Card card) {
+        Map<TokenColor, Integer> payment = calculatePayment(player, card);
+        player.removeTokens(payment);
+        tokenBank.addTokens(payment);
+    }
+
+    public ActionResult buyFaceUpCard(int level, int cardIndex, Locale locale) {
+        ActionResult stateCheck = validateBuyFaceUpState(level, cardIndex, locale);
+        if (!stateCheck.isSuccess()) {
+            return stateCheck;
+        }
+
+        List<Card> cards = faceUpCards.get(level);
         Player currentPlayer = getCurrentPlayer();
         Card card = cards.get(cardIndex);
         ActionResult validationResult = ruleValidator.validateBuyCard(currentPlayer, card, locale);
@@ -212,25 +244,20 @@ public class Game
             return validationResult;
         }
 
-        Map<TokenColor, Integer> payment = calculatePayment(currentPlayer, card);
-        currentPlayer.removeTokens(payment);
-        tokenBank.addTokens(payment);
+        processPayment(currentPlayer, card);
 
         Card boughtCard = cards.remove(cardIndex);
         currentPlayer.addDevelopmentCard(boughtCard);
         visitAvailableNoble(currentPlayer, locale);
 
-        Deck deck = decks.get(level);
-        if (deck != null && !deck.isEmpty()) {
-            cards.add(deck.drawCard());
-        }
+        replenishFaceUpCard(level, cards);
 
         completeTurn(currentPlayer);
 
         return ActionResult.success();
     }
 
-    public ActionResult buyReservedCard(int reservedIndex, Locale locale) {
+    private ActionResult validateBuyReservedState(int reservedIndex, Locale locale) {
         if (!isActionPhase() || players == null || tokenBank == null) {
             String errorMessage = MessageProvider.getMessage("error.invalid_buy_card", locale);
             return ActionResult.failure(errorMessage);
@@ -247,15 +274,25 @@ public class Game
             return ActionResult.failure(errorMessage);
         }
 
-        Card card = reservedCards.get(reservedIndex);
+        return ActionResult.success();
+    }
+
+    public ActionResult buyReservedCard(int reservedIndex, Locale locale) {
+        ActionResult stateCheck = validateBuyReservedState(reservedIndex, locale);
+        if (!stateCheck.isSuccess()) {
+            return stateCheck;
+        }
+
+        Player currentPlayer = getCurrentPlayer();
+        Card card = currentPlayer.getReservedCards().get(reservedIndex);
+
         ActionResult validationResult = ruleValidator.validateBuyCard(currentPlayer, card, locale);
         if (!validationResult.isSuccess()) {
             return validationResult;
         }
 
-        Map<TokenColor, Integer> payment = calculatePayment(currentPlayer, card);
-        currentPlayer.removeTokens(payment);
-        tokenBank.addTokens(payment);
+        processPayment(currentPlayer, card);
+
         currentPlayer.removeReservedCard(card);
         currentPlayer.addDevelopmentCard(card);
         visitAvailableNoble(currentPlayer, locale);

@@ -34,6 +34,32 @@ public class ConsoleGame {
         this.out = out;
     }
 
+    private void processCommand(Game game, String line, Locale locale) {
+        ActionResult actionResult;
+        String lowerLine = line.toLowerCase(Locale.US);
+
+        if (lowerLine.startsWith(TAKE_COMMAND_PREFIX)) {
+            actionResult = game.takeTokens(parseTokens(line.substring(TAKE_COMMAND_PREFIX.length())), locale);
+        } else if (lowerLine.startsWith(RESERVE_COMMAND_PREFIX)) {
+            actionResult = reserveFaceUpCard(game, line.substring(RESERVE_COMMAND_PREFIX.length()), locale);
+        } else if (lowerLine.startsWith(BUY_COMMAND_PREFIX)) {
+            actionResult = buyCard(game, line.substring(BUY_COMMAND_PREFIX.length()), locale);
+        } else {
+            out.println(message("ui.unknown_action", locale));
+            return;
+        }
+
+        printActionResult(actionResult, locale);
+    }
+
+    private void printActionResult(ActionResult actionResult, Locale locale) {
+        if (actionResult.isSuccess()) {
+            out.println(message("ui.action_succeeded", locale));
+        } else {
+            out.println(actionResult.getMessage());
+        }
+    }
+
     public void run() {
         Scanner scanner = new Scanner(in, StandardCharsets.UTF_8.name());
         Locale locale = readLocale(scanner);
@@ -64,30 +90,7 @@ public class ConsoleGame {
                 return;
             }
 
-            if (line.toLowerCase(Locale.US).startsWith(TAKE_COMMAND_PREFIX)) {
-                ActionResult actionResult = game.takeTokens(parseTokens(line.substring(TAKE_COMMAND_PREFIX.length())), locale);
-                if (actionResult.isSuccess()) {
-                    out.println(message("ui.action_succeeded", locale));
-                } else {
-                    out.println(actionResult.getMessage());
-                }
-            } else if (line.toLowerCase(Locale.US).startsWith(RESERVE_COMMAND_PREFIX)) {
-                ActionResult actionResult = reserveFaceUpCard(game, line.substring(RESERVE_COMMAND_PREFIX.length()), locale);
-                if (actionResult.isSuccess()) {
-                    out.println(message("ui.action_succeeded", locale));
-                } else {
-                    out.println(actionResult.getMessage());
-                }
-            } else if (line.toLowerCase(Locale.US).startsWith(BUY_COMMAND_PREFIX)) {
-                ActionResult actionResult = buyCard(game, line.substring(BUY_COMMAND_PREFIX.length()), locale);
-                if (actionResult.isSuccess()) {
-                    out.println(message("ui.action_succeeded", locale));
-                } else {
-                    out.println(actionResult.getMessage());
-                }
-            } else {
-                out.println(message("ui.unknown_action", locale));
-            }
+            processCommand(game, line, locale);
         }
     }
 

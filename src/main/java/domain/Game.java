@@ -167,6 +167,13 @@ public class Game
         return ActionResult.success();
     }
 
+    private void replenishFaceUpCard(int level, List<Card> cards) {
+        Deck deck = decks.get(level);
+        if (deck != null && !deck.isEmpty()) {
+            cards.add(deck.drawCard());
+        }
+    }
+
     public ActionResult reserveFaceUpCard(int level, int cardIndex, Locale locale) {
         ActionResult stateCheck = validateReservationState(locale);
         if (!stateCheck.isSuccess()) {
@@ -183,10 +190,7 @@ public class Game
         Card reservedCard = cards.remove(cardIndex);
         currentPlayer.addReservedCard(reservedCard);
 
-        Deck deck = decks.get(level);
-        if (deck != null && !deck.isEmpty()) {
-            cards.add(deck.drawCard());
-        }
+        replenishFaceUpCard(level, cards);
 
         if (tokenBank.getTokenCount(TokenColor.GOLD) > 0) {
             currentPlayer.addTokens(Map.of(TokenColor.GOLD, 1));

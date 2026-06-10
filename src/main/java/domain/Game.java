@@ -174,6 +174,13 @@ public class Game
         }
     }
 
+    private void handleGoldTokenReward(Player player) {
+        if (tokenBank.getTokenCount(TokenColor.GOLD) > 0) {
+            player.addTokens(Map.of(TokenColor.GOLD, 1));
+            tokenBank.removeTokens(Map.of(TokenColor.GOLD, 1));
+        }
+    }
+
     public ActionResult reserveFaceUpCard(int level, int cardIndex, Locale locale) {
         ActionResult stateCheck = validateReservationState(locale);
         if (!stateCheck.isSuccess()) {
@@ -191,11 +198,7 @@ public class Game
         currentPlayer.addReservedCard(reservedCard);
 
         replenishFaceUpCard(level, cards);
-
-        if (tokenBank.getTokenCount(TokenColor.GOLD) > 0) {
-            currentPlayer.addTokens(Map.of(TokenColor.GOLD, 1));
-            tokenBank.removeTokens(Map.of(TokenColor.GOLD, 1));
-        }
+        handleGoldTokenReward(currentPlayer);
 
         completeTurn(currentPlayer);
 

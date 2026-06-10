@@ -257,7 +257,7 @@ public class Game
         return ActionResult.success();
     }
 
-    public ActionResult buyReservedCard(int reservedIndex, Locale locale) {
+    private ActionResult validateBuyReservedState(int reservedIndex, Locale locale) {
         if (!isActionPhase() || players == null || tokenBank == null) {
             String errorMessage = MessageProvider.getMessage("error.invalid_buy_card", locale);
             return ActionResult.failure(errorMessage);
@@ -274,7 +274,18 @@ public class Game
             return ActionResult.failure(errorMessage);
         }
 
-        Card card = reservedCards.get(reservedIndex);
+        return ActionResult.success();
+    }
+
+    public ActionResult buyReservedCard(int reservedIndex, Locale locale) {
+        ActionResult stateCheck = validateBuyReservedState(reservedIndex, locale);
+        if (!stateCheck.isSuccess()) {
+            return stateCheck;
+        }
+
+        Player currentPlayer = getCurrentPlayer();
+        Card card = currentPlayer.getReservedCards().get(reservedIndex);
+
         ActionResult validationResult = ruleValidator.validateBuyCard(currentPlayer, card, locale);
         if (!validationResult.isSuccess()) {
             return validationResult;

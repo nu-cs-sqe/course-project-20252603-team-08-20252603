@@ -250,10 +250,7 @@ public class Game
         currentPlayer.addDevelopmentCard(boughtCard);
         visitAvailableNoble(currentPlayer, locale);
 
-        Deck deck = decks.get(level);
-        if (deck != null && !deck.isEmpty()) {
-            cards.add(deck.drawCard());
-        }
+        replenishFaceUpCard(level, cards);
 
         completeTurn(currentPlayer);
 

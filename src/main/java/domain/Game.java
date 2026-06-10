@@ -205,7 +205,7 @@ public class Game
         return ActionResult.success();
     }
 
-    public ActionResult buyFaceUpCard(int level, int cardIndex, Locale locale) {
+    private ActionResult validateBuyFaceUpState(int level, int cardIndex, Locale locale) {
         if (!isActionPhase() || players == null || tokenBank == null || faceUpCards == null || decks == null) {
             String errorMessage = MessageProvider.getMessage("error.invalid_buy_card", locale);
             return ActionResult.failure(errorMessage);
@@ -213,6 +213,21 @@ public class Game
 
         if (ruleValidator == null) {
             initializeRuleValidator();
+        }
+
+        List<Card> cards = faceUpCards.get(level);
+        if (cards == null || cardIndex < 0 || cardIndex >= cards.size()) {
+            String errorMessage = MessageProvider.getMessage("error.invalid_buy_card", locale);
+            return ActionResult.failure(errorMessage);
+        }
+
+        return ActionResult.success();
+    }
+
+    public ActionResult buyFaceUpCard(int level, int cardIndex, Locale locale) {
+        ActionResult stateCheck = validateBuyFaceUpState(level, cardIndex, locale);
+        if (!stateCheck.isSuccess()) {
+            return stateCheck;
         }
 
         List<Card> cards = faceUpCards.get(level);

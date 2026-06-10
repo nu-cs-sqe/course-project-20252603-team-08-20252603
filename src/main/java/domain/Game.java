@@ -224,6 +224,12 @@ public class Game
         return ActionResult.success();
     }
 
+    private void processPayment(Player player, Card card) {
+        Map<TokenColor, Integer> payment = calculatePayment(player, card);
+        player.removeTokens(payment);
+        tokenBank.addTokens(payment);
+    }
+
     public ActionResult buyFaceUpCard(int level, int cardIndex, Locale locale) {
         ActionResult stateCheck = validateBuyFaceUpState(level, cardIndex, locale);
         if (!stateCheck.isSuccess()) {
@@ -231,11 +237,6 @@ public class Game
         }
 
         List<Card> cards = faceUpCards.get(level);
-        if (cards == null || cardIndex < 0 || cardIndex >= cards.size()) {
-            String errorMessage = MessageProvider.getMessage("error.invalid_buy_card", locale);
-            return ActionResult.failure(errorMessage);
-        }
-
         Player currentPlayer = getCurrentPlayer();
         Card card = cards.get(cardIndex);
         ActionResult validationResult = ruleValidator.validateBuyCard(currentPlayer, card, locale);
@@ -243,9 +244,7 @@ public class Game
             return validationResult;
         }
 
-        Map<TokenColor, Integer> payment = calculatePayment(currentPlayer, card);
-        currentPlayer.removeTokens(payment);
-        tokenBank.addTokens(payment);
+        processPayment(currentPlayer, card);
 
         Card boughtCard = cards.remove(cardIndex);
         currentPlayer.addDevelopmentCard(boughtCard);

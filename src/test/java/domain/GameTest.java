@@ -631,6 +631,33 @@ class GameTest {
     }
 
     @Test
+    void buyFaceUpCard_paysFullShortfallWithGoldWhenNoGemTokens() {
+        Game game = new Game();
+        game.startGame(2, Locale.US);
+        Player playerZero = game.getPlayers().get(0);
+        Card card = new Card(1, TokenColor.DIAMOND, Map.of(TokenColor.RUBY, 1), 0);
+        game.getFaceUpCards(1).set(0, card);
+        game.reserveFaceUpCard(1, 1, Locale.US);
+        game.takeTokens(Map.of(TokenColor.SAPPHIRE, 1, TokenColor.EMERALD, 1, TokenColor.ONYX, 1), Locale.US);
+        assertEquals(playerZero, game.getCurrentPlayer());
+        assertEquals(0, playerZero.getTokenCount(TokenColor.RUBY));
+        assertEquals(1, playerZero.getTokenCount(TokenColor.GOLD));
+        int goldBankBefore = game.getTokenBank().getTokenCount(TokenColor.GOLD);
+        int rubyBankBefore = game.getTokenBank().getTokenCount(TokenColor.RUBY);
+
+        ActionResult result = game.buyFaceUpCard(1, 0, Locale.US);
+
+        assertTrue(result.isSuccess());
+        assertEquals(1, playerZero.getDevelopmentCards().size());
+        assertEquals(card, playerZero.getDevelopmentCards().get(0));
+        assertEquals(0, playerZero.getTokenCount(TokenColor.RUBY));
+        assertEquals(0, playerZero.getTokenCount(TokenColor.GOLD));
+        assertEquals(rubyBankBefore, game.getTokenBank().getTokenCount(TokenColor.RUBY));
+        assertEquals(goldBankBefore + 1, game.getTokenBank().getTokenCount(TokenColor.GOLD));
+        assertEquals(game.getPlayers().get(1), game.getCurrentPlayer());
+    }
+
+    @Test
     void buyFaceUpCard_bonusFullyCoversSingleColorCostWithoutSpendingTokens() {
         Game game = new Game();
         game.startGame(2, Locale.US);

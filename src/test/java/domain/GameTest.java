@@ -912,6 +912,27 @@ class GameTest {
     }
 
     @Test
+    void buyReservedCard_lazyInitializesRuleValidatorWhenNull() throws Exception {
+        Game game = new Game();
+        game.startGame(2, Locale.US);
+        Player playerZero = game.getCurrentPlayer();
+        Card card = new Card(1, TokenColor.DIAMOND, Map.of(), 0);
+        playerZero.addReservedCard(card);
+
+        Field ruleValidatorField = Game.class.getDeclaredField("ruleValidator");
+        ruleValidatorField.setAccessible(true);
+        ruleValidatorField.set(game, null);
+
+        ActionResult result = game.buyReservedCard(0, Locale.US);
+
+        assertTrue(result.isSuccess());
+        assertEquals(0, playerZero.getReservedCards().size());
+        assertEquals(1, playerZero.getDevelopmentCards().size());
+        assertEquals(card, playerZero.getDevelopmentCards().get(0));
+        assertEquals(game.getPlayers().get(1), game.getCurrentPlayer());
+    }
+
+    @Test
     void buyReservedCard_validCardPaidWithGemTokensBuysReservedCardAndAdvancesCurrentPlayer() {
         Game game = new Game();
         game.startGame(2, Locale.US);

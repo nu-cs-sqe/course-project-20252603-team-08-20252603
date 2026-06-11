@@ -2,6 +2,7 @@ package domain;
 
 import org.junit.jupiter.api.Test;
 
+import java.lang.reflect.Field;
 import java.util.Locale;
 import java.util.Map;
 
@@ -261,6 +262,30 @@ class GameTest {
         assertNull(game.getFaceUpCards(1));
         assertNull(game.getDeck(1));
         assertNull(game.getRevealedNobles());
+    }
+
+    @Test
+    void takeTokens_lazyInitializesRuleValidatorWhenNull() throws Exception {
+        Game game = new Game();
+        game.startGame(2, Locale.US);
+        Player playerZero = game.getCurrentPlayer();
+
+        Field ruleValidatorField = Game.class.getDeclaredField("ruleValidator");
+        ruleValidatorField.setAccessible(true);
+        ruleValidatorField.set(game, null);
+
+        ActionResult result = game.takeTokens(
+                Map.of(TokenColor.DIAMOND, 1, TokenColor.RUBY, 1, TokenColor.ONYX, 1),
+                Locale.US);
+
+        assertTrue(result.isSuccess());
+        assertEquals(1, playerZero.getTokenCount(TokenColor.DIAMOND));
+        assertEquals(1, playerZero.getTokenCount(TokenColor.RUBY));
+        assertEquals(1, playerZero.getTokenCount(TokenColor.ONYX));
+        assertEquals(3, game.getTokenBank().getTokenCount(TokenColor.DIAMOND));
+        assertEquals(3, game.getTokenBank().getTokenCount(TokenColor.RUBY));
+        assertEquals(3, game.getTokenBank().getTokenCount(TokenColor.ONYX));
+        assertEquals(game.getPlayers().get(1), game.getCurrentPlayer());
     }
 
     @Test

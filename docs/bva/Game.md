@@ -104,6 +104,7 @@
 | Test Case 27 | New Game object before startGame(), takeTokens is called                                 | Returns ActionResult (isSuccess=false), phase remains SETUP                                                                                          | :white_check_mark: |
 | Test Case 75 | During FINAL_ROUND, current player takes valid tokens and this completes the final round | Returns ActionResult (isSuccess=true), phase becomes GAME_OVER, winners are calculated, current player advances to final-round trigger player        | :white_check_mark: |
 | Test Case 76 | During FINAL_ROUND, current player takes invalid tokens                                  | Returns ActionResult (isSuccess=false), phase remains FINAL_ROUND, winners list remains empty, current player unchanged                              | :white_check_mark: |
+| Test Case 84 | After startGame(2, US), `ruleValidator` set to `null`, current player takes 1 DIAMOND, 1 RUBY, and 1 ONYX | Returns ActionResult (isSuccess=true), current player's tokens increase, token bank counts decrease, current player advances to player 1 | :white_check_mark: |
 
 ---
 

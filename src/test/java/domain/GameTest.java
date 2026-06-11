@@ -1284,6 +1284,33 @@ class GameTest {
     }
 
     @Test
+    void takeTokens_duringFinalRoundTiedPrestigeAndDevelopmentCardsSharesWin() {
+        Game game = new Game();
+        game.startGame(2, Locale.US);
+        Player playerZero = game.getCurrentPlayer();
+        Player playerOne = game.getPlayers().get(1);
+        playerZero.addDevelopmentCard(new Card(1, TokenColor.DIAMOND, Map.of(), 14));
+        playerOne.addDevelopmentCard(new Card(1, TokenColor.EMERALD, Map.of(), 15));
+        playerOne.addDevelopmentCard(new Card(1, TokenColor.SAPPHIRE, Map.of(), 0));
+        Card triggerCard = new Card(1, TokenColor.RUBY, Map.of(), 1);
+        game.getFaceUpCards(1).set(0, triggerCard);
+        game.buyFaceUpCard(1, 0, Locale.US);
+
+        ActionResult result = game.takeTokens(Map.of(TokenColor.SAPPHIRE, 1, TokenColor.EMERALD, 1, TokenColor.ONYX, 1), Locale.US);
+
+        assertTrue(result.isSuccess());
+        assertEquals(GamePhase.GAME_OVER, game.getPhase());
+        assertEquals(15, playerZero.getPrestigePoints());
+        assertEquals(15, playerOne.getPrestigePoints());
+        assertEquals(2, playerZero.getDevelopmentCards().size());
+        assertEquals(2, playerOne.getDevelopmentCards().size());
+        assertEquals(2, game.getWinners().size());
+        assertTrue(game.getWinners().contains(playerZero));
+        assertTrue(game.getWinners().contains(playerOne));
+        assertEquals(playerZero, game.getCurrentPlayer());
+    }
+
+    @Test
     void takeTokens_invalidActionDuringFinalRoundLeavesFinalRoundUnchanged() {
         Game game = new Game();
         game.startGame(2, Locale.US);

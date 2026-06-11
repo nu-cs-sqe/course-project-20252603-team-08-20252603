@@ -106,7 +106,7 @@ PIT **SURVIVED** `changed conditional boundary` mutants in `calculatePayment`.
 
 | ID | Method(s) under test | State of the System | Expected output | Implemented? |
 |----|----------------------|---------------------|-----------------|--------------|
-| CC-DECK-01 | `shuffle()` | Deck with ≥ 2 distinct cards; record order before shuffle | After `shuffle()`, card list order differs from pre-shuffle order | :x: |
+| CC-DECK-01 | `shuffle()` | Deck with ≥ 2 distinct cards; record order before shuffle | After `shuffle()`, card list order differs from pre-shuffle order | :white_check_mark: |
 
 *Also add to `docs/bva/Deck.md` when implemented.*
 

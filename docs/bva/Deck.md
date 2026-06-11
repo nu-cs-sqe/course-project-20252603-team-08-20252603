@@ -57,3 +57,7 @@
 - **DECK-SHUF-01** ( :white_check_mark: )
   - **State of the system**: deck with exactly two cards; record `cards.size()` before `shuffle()`.
   - **Expected output**: size unchanged after shuffle; deck is still not empty (`gameSetup_shuffle_doesNotChangeSize`).
+
+- **DECK-SHUF-02** ( :white_check_mark: )
+  - **State of the system**: deck with at least two distinct cards; record card list order before `shuffle()`.
+  - **Expected output**: after `shuffle()`, card list order differs from pre-shuffle order (`gameSetup_shuffle_changesOrderWhenDeckHasDistinctCards`).

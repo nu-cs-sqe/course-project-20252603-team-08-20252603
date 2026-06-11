@@ -131,7 +131,7 @@ PIT mutation coverage 93% (4 surviving mutants). Target boundary values not yet 
 | ID | Method(s) under test | State of the System | Expected output | Implemented? |
 |----|----------------------|---------------------|-----------------|--------------|
 | CC-RV-01 | `validateTakeTokens(...)` | Bank has **exactly 4** of one color; take **2** of that color | `isSuccess() == true` | :white_check_mark: |
-| CC-RV-02 | `validateTakeTokens(...)` | Bank has **3** of one color; take **2** of that color | `isSuccess() == false` | :x: |
+| CC-RV-02 | `validateTakeTokens(...)` | Bank has **3** of one color; take **2** of that color | `isSuccess() == false` | :white_check_mark: |
 | CC-RV-03 | `validateTakeTokens(...)` | Map contains color with count **0** | `isSuccess() == false` | :x: |
 | CC-RV-04 | `validateBuyCard(...)` | `goldNeeded == player GOLD count` exactly (affordable edge) | `isSuccess() == true` | :x: |
 | CC-RV-05 | `validateBuyCard(...)` | `goldNeeded == player GOLD count + 1` (not affordable) | `isSuccess() == false` | :x: |

@@ -109,6 +109,19 @@ public class RuleValidatorTest {
     }
 
     @Test
+    public void validateTakeTokens_rejectsTwoSameGemTokensWhenBankHasExactlyThreeBoundary() {
+        Player player = new Player();
+        TokenBank bank = new TokenBank();
+        bank.addTokens(Map.of(TokenColor.DIAMOND, 3));
+        assertEquals(3, bank.getTokenCount(TokenColor.DIAMOND));
+
+        ActionResult result = validator.validateTakeTokens(player, bank, Map.of(TokenColor.DIAMOND, 2), Locale.US);
+
+        assertFalse(result.isSuccess());
+        assertEquals(MessageProvider.getMessage("error.invalid_token_selection", Locale.US), result.getMessage());
+    }
+
+    @Test
     public void validateTakeTokens_rejectsUnavailableBankToken() {
         Player player = new Player();
         TokenBank bank = new TokenBank();

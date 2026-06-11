@@ -608,6 +608,29 @@ class GameTest {
     }
 
     @Test
+    void buyFaceUpCard_usesExactGemTokensWithoutGold() {
+        Game game = new Game();
+        game.startGame(2, Locale.US);
+        Player playerZero = game.getPlayers().get(0);
+        Card card = new Card(1, TokenColor.DIAMOND, Map.of(TokenColor.RUBY, 2), 0);
+        game.getFaceUpCards(1).set(0, card);
+        assertTrue(game.takeTokens(Map.of(TokenColor.RUBY, 2), Locale.US).isSuccess());
+        assertTrue(game.takeTokens(Map.of(TokenColor.SAPPHIRE, 1, TokenColor.EMERALD, 1, TokenColor.ONYX, 1), Locale.US).isSuccess());
+        assertEquals(playerZero, game.getCurrentPlayer());
+        int goldBefore = playerZero.getTokenCount(TokenColor.GOLD);
+        int goldBankBefore = game.getTokenBank().getTokenCount(TokenColor.GOLD);
+
+        ActionResult result = game.buyFaceUpCard(1, 0, Locale.US);
+
+        assertTrue(result.isSuccess());
+        assertEquals(0, playerZero.getTokenCount(TokenColor.RUBY));
+        assertEquals(goldBefore, playerZero.getTokenCount(TokenColor.GOLD));
+        assertEquals(goldBankBefore, game.getTokenBank().getTokenCount(TokenColor.GOLD));
+        assertEquals(4, game.getTokenBank().getTokenCount(TokenColor.RUBY));
+        assertEquals(game.getPlayers().get(1), game.getCurrentPlayer());
+    }
+
+    @Test
     void buyFaceUpCard_bonusFullyCoversSingleColorCostWithoutSpendingTokens() {
         Game game = new Game();
         game.startGame(2, Locale.US);

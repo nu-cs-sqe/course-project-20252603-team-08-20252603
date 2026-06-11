@@ -84,7 +84,7 @@ PIT **SURVIVED** `changed conditional boundary` mutants in `calculatePayment`.
 | ID | Method(s) under test | State of the System | Expected output | Implemented? |
 |----|----------------------|---------------------|-----------------|--------------|
 | CC-GAME-07 | `buyFaceUpCard` → `calculatePayment` | Player bonus **equals** full gem cost for one color (`remainingCost == 0`); no gems or gold spent for that color | Purchase succeeds; payment map has no entry for that color | :white_check_mark: |
-| CC-GAME-08 | `buyFaceUpCard` → `calculatePayment` | Player has **exactly** enough gem tokens for remaining cost (`gemTokensUsed == remainingCost`); no gold used | Purchase succeeds; gold not in payment map | :x: |
+| CC-GAME-08 | `buyFaceUpCard` → `calculatePayment` | Player has **exactly** enough gem tokens for remaining cost (`gemTokensUsed == remainingCost`); no gold used | Purchase succeeds; gold not in payment map | :white_check_mark: |
 | CC-GAME-09 | `buyFaceUpCard` → `calculatePayment` | Player has **zero** gem tokens for a color; entire remaining cost paid with gold | Purchase succeeds; payment includes `GOLD` for full shortfall | :x: |
 
 *Also add to `docs/bva/Game.md` when implemented.*

@@ -608,6 +608,29 @@ class GameTest {
     }
 
     @Test
+    void buyFaceUpCard_bonusFullyCoversSingleColorCostWithoutSpendingTokens() {
+        Game game = new Game();
+        game.startGame(2, Locale.US);
+        Player playerZero = game.getCurrentPlayer();
+        playerZero.addDevelopmentCard(new Card(1, TokenColor.RUBY, Map.of(), 0));
+        Card card = new Card(1, TokenColor.DIAMOND, Map.of(TokenColor.RUBY, 1), 1);
+        game.getFaceUpCards(1).set(0, card);
+        int rubyBankBefore = game.getTokenBank().getTokenCount(TokenColor.RUBY);
+        int goldBankBefore = game.getTokenBank().getTokenCount(TokenColor.GOLD);
+
+        ActionResult result = game.buyFaceUpCard(1, 0, Locale.US);
+
+        assertTrue(result.isSuccess());
+        assertEquals(2, playerZero.getDevelopmentCards().size());
+        assertEquals(card, playerZero.getDevelopmentCards().get(1));
+        assertEquals(0, playerZero.getTokenCount(TokenColor.RUBY));
+        assertEquals(0, playerZero.getTokenCount(TokenColor.GOLD));
+        assertEquals(rubyBankBefore, game.getTokenBank().getTokenCount(TokenColor.RUBY));
+        assertEquals(goldBankBefore, game.getTokenBank().getTokenCount(TokenColor.GOLD));
+        assertEquals(game.getPlayers().get(1), game.getCurrentPlayer());
+    }
+
+    @Test
     void buyFaceUpCard_validCardUsesBonusToReduceCost() {
         Game game = new Game();
         game.startGame(2, Locale.US);

@@ -65,6 +65,15 @@
 | Test Case 9  | After startGame(2)  | First player is current player | :white_check_mark: |
 | Test Case 10 | After startGame(4)  | First player is current player | :white_check_mark: |
 
+---
+
+## Method: getCurrentPlayerIndex()
+
+|              | State of the System | Expected output              | Implemented?       |
+|--------------|---------------------|------------------------------|--------------------|
+| Test Case 82 | After startGame(2, US) | `getCurrentPlayerIndex()` returns `0` | :white_check_mark: |
+
+---
 
 ## Method: getTokenBank()
 

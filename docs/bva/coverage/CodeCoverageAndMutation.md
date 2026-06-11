@@ -55,7 +55,7 @@ Measured with `./gradlew clean test jacocoTestReport pitest` on `main`:
 
 | ID | Method(s) under test | State of the System | Expected output | Implemented? |
 |----|----------------------|---------------------|-----------------|--------------|
-| CC-GAME-01 | `getCurrentPlayerIndex()` | After `startGame(2, US)` | Returns `0` | :x: |
+| CC-GAME-01 | `getCurrentPlayerIndex()` | After `startGame(2, US)` | Returns `0` | :white_check_mark: |
 | CC-GAME-02 | `getCurrentPlayerIndex()` | After `startGame(2, US)` and player 0 completes one valid `takeTokens` | Returns `1` | :x: |
 
 *Also add to `docs/bva/Game.md` when implemented.*

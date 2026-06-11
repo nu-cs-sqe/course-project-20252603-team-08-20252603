@@ -105,6 +105,14 @@ class GameTest {
         assertEquals(game.getPlayers().get(0), game.getCurrentPlayer());
     }
 
+    @Test
+    void getCurrentPlayerIndex_returnsZeroAfterStartGameForTwoPlayers() {
+        Game game = new Game();
+
+        game.startGame(2, Locale.US);
+
+        assertEquals(0, game.getCurrentPlayerIndex());
+    }
 
     @Test
     void getTokenBank_returnsNullBeforeStartGame() {

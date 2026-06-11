@@ -431,6 +431,30 @@ class GameTest {
     }
 
     @Test
+    void reserveFaceUpCard_lazyInitializesRuleValidatorWhenNull() throws Exception {
+        Game game = new Game();
+        game.startGame(2, Locale.US);
+        Player playerZero = game.getCurrentPlayer();
+        Card originalCard = game.getFaceUpCards(1).get(0);
+        int deckSizeBefore = game.getDeck(1).cards.size();
+
+        Field ruleValidatorField = Game.class.getDeclaredField("ruleValidator");
+        ruleValidatorField.setAccessible(true);
+        ruleValidatorField.set(game, null);
+
+        ActionResult result = game.reserveFaceUpCard(1, 0, Locale.US);
+
+        assertTrue(result.isSuccess());
+        assertEquals(1, playerZero.getReservedCards().size());
+        assertEquals(originalCard, playerZero.getReservedCards().get(0));
+        assertEquals(4, game.getFaceUpCards(1).size());
+        assertEquals(deckSizeBefore - 1, game.getDeck(1).cards.size());
+        assertEquals(1, playerZero.getTokenCount(TokenColor.GOLD));
+        assertEquals(4, game.getTokenBank().getTokenCount(TokenColor.GOLD));
+        assertEquals(game.getPlayers().get(1), game.getCurrentPlayer());
+    }
+
+    @Test
     void reserveFaceUpCard_validCardReservesCardTakesGoldRefillsMarketAndAdvancesCurrentPlayer() {
         Game game = new Game();
         game.startGame(2, Locale.US);

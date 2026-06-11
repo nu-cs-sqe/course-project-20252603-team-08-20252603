@@ -69,7 +69,7 @@ PIT reports `initializeRuleValidator()` as **NO_COVERAGE** in `takeTokens`, `res
 | ID | Method(s) under test | State of the System | Expected output | Implemented? |
 |----|----------------------|---------------------|-----------------|--------------|
 | CC-GAME-03 | `takeTokens(...)` | `Game` after `startGame(2, US)`; `ruleValidator` field set to `null` via test-only access; valid token take for current player | `ActionResult.isSuccess() == true`, tokens and turn advance as in existing take-token success cases | :white_check_mark: |
-| CC-GAME-04 | `reserveFaceUpCard(...)` | Same `ruleValidator == null` setup; valid reserve at level 1 index 0 | `ActionResult.isSuccess() == true`, card reserved and turn advances | :x: |
+| CC-GAME-04 | `reserveFaceUpCard(...)` | Same `ruleValidator == null` setup; valid reserve at level 1 index 0 | `ActionResult.isSuccess() == true`, card reserved and turn advances | :white_check_mark: |
 | CC-GAME-05 | `buyFaceUpCard(...)` | Same setup; player can afford face-up card at level 1 index 0 | `ActionResult.isSuccess() == true`, card bought and turn advances | :x: |
 | CC-GAME-06 | `buyReservedCard(...)` | Same setup; player has affordable reserved card at index 0 | `ActionResult.isSuccess() == true`, reserved card bought and turn advances | :x: |
 

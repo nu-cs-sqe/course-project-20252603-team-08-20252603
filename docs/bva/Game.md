@@ -17,6 +17,7 @@
 | Test Case 31 | After startGame(3)           | getRevealedNobles().size() == 4                                                             | :white_check_mark: |
 | Test Case 32 | After startGame(4)           | getRevealedNobles().size() == 5                                                             | :white_check_mark: |
 | Test Case 33 | After failed startGame(1)    | getFaceUpCards(1), getDeck(1), and getRevealedNobles() are null                             | :white_check_mark: |
+| Test Case 92 | Two separate `startGame(2, US)` calls on different Game objects                            | Level-1 draw order (first 4 face-up cards plus first remaining deck card) is not identical across both games | :white_check_mark: |
 
 ---
 

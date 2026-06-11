@@ -229,6 +229,19 @@ class GameTest {
     }
 
     @Test
+    void startGame_shuffleProducesDifferentLevelOneDrawOrderAcrossGames() {
+        Game firstGame = new Game();
+        firstGame.startGame(2, Locale.US);
+        String firstOrder = levelOneDrawOrderFingerprint(firstGame);
+
+        Game secondGame = new Game();
+        secondGame.startGame(2, Locale.US);
+        String secondOrder = levelOneDrawOrderFingerprint(secondGame);
+
+        assertNotEquals(firstOrder, secondOrder);
+    }
+
+    @Test
     void startGame_twoPlayersRevealsThreeNobles() {
         Game game = new Game();
         game.startGame(2, Locale.US);
@@ -1431,5 +1444,18 @@ class GameTest {
         assertEquals(1, game.getWinners().size());
         assertEquals(playerZero, game.getWinners().get(0));
         assertEquals(playerZero, game.getCurrentPlayer());
+    }
+
+    private static String levelOneDrawOrderFingerprint(Game game) {
+        StringBuilder fingerprint = new StringBuilder();
+        for (Card card : game.getFaceUpCards(1)) {
+            fingerprint.append(cardFingerprint(card)).append('|');
+        }
+        fingerprint.append(cardFingerprint(game.getDeck(1).cards.get(0)));
+        return fingerprint.toString();
+    }
+
+    private static String cardFingerprint(Card card) {
+        return card.bonusColor + ":" + card.prestigePoints + ":" + card.cost;
     }
 }

@@ -96,7 +96,7 @@ PIT **SURVIVED** `changed conditional boundary` mutants in `calculatePayment`.
 | ID | Method(s) under test | State of the System | Expected output | Implemented? |
 |----|----------------------|---------------------|-----------------|--------------|
 | CC-GAME-10 | `calculateWinners()` via final round | 2-player game; after final round both players tied on prestige **and** development-card count | `getWinners().size() == 2` | :white_check_mark: |
-| CC-GAME-11 | `initializeCards()` via `startGame` | Two separate `startGame(2, US)` calls | Level-1 deck draw order (first 4 face-up + first deck card) is **not identical** across both games (proves `shuffle()` ran) | :x: |
+| CC-GAME-11 | `initializeCards()` via `startGame` | Two separate `startGame(2, US)` calls | Level-1 deck draw order (first 4 face-up + first deck card) is **not identical** across both games (proves `shuffle()` ran) | :white_check_mark: |
 
 *Also add to `docs/bva/Game.md` when implemented.*
 

@@ -26,6 +26,7 @@
 | TC13 | Player has 0 tokens, bank has tokens, take empty token map                          | `isSuccess()` is false, returns US invalid token selection message | :white_check_mark: |
 | TC14 | Player has 0 tokens, bank has tokens, take 1 DIAMOND and 1 RUBY                     | `isSuccess()` is false, returns US invalid token selection message | :white_check_mark: |
 | TC15 | Player has 0 tokens, bank has tokens, take 1 DIAMOND, 1 RUBY, 1 ONYX, and 1 EMERALD | `isSuccess()` is false, returns US invalid token selection message | :white_check_mark: |
+| TC44 | Player has 0 tokens, bank has **exactly 4** DIAMOND, take 2 DIAMOND | `isSuccess()` is true | :white_check_mark: |
 
 ---
 

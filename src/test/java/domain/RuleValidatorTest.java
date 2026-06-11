@@ -97,6 +97,18 @@ public class RuleValidatorTest {
     }
 
     @Test
+    public void validateTakeTokens_acceptsTwoSameGemTokensWhenBankHasExactlyFourBoundary() {
+        Player player = new Player();
+        TokenBank bank = new TokenBank();
+        bank.addTokens(Map.of(TokenColor.DIAMOND, 4));
+        assertEquals(4, bank.getTokenCount(TokenColor.DIAMOND));
+
+        ActionResult result = validator.validateTakeTokens(player, bank, Map.of(TokenColor.DIAMOND, 2), Locale.US);
+
+        assertTrue(result.isSuccess());
+    }
+
+    @Test
     public void validateTakeTokens_rejectsUnavailableBankToken() {
         Player player = new Player();
         TokenBank bank = new TokenBank();

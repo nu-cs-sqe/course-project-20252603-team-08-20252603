@@ -115,6 +115,19 @@ class GameTest {
     }
 
     @Test
+    void getCurrentPlayerIndex_returnsOneAfterPlayerZeroTakesTokens() {
+        Game game = new Game();
+        game.startGame(2, Locale.US);
+
+        ActionResult result = game.takeTokens(
+                Map.of(TokenColor.DIAMOND, 1, TokenColor.RUBY, 1, TokenColor.ONYX, 1),
+                Locale.US);
+
+        assertTrue(result.isSuccess());
+        assertEquals(1, game.getCurrentPlayerIndex());
+    }
+
+    @Test
     void getTokenBank_returnsNullBeforeStartGame() {
         Game game = new Game();
 

@@ -72,6 +72,7 @@
 |              | State of the System | Expected output              | Implemented?       |
 |--------------|---------------------|------------------------------|--------------------|
 | Test Case 82 | After startGame(2, US) | `getCurrentPlayerIndex()` returns `0` | :white_check_mark: |
+| Test Case 83 | After startGame(2, US) and player 0 completes one valid `takeTokens` | `getCurrentPlayerIndex()` returns `1` | :white_check_mark: |
 
 ---
 

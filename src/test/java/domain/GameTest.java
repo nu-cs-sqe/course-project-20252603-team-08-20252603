@@ -561,6 +561,29 @@ class GameTest {
     }
 
     @Test
+    void buyFaceUpCard_lazyInitializesRuleValidatorWhenNull() throws Exception {
+        Game game = new Game();
+        game.startGame(2, Locale.US);
+        Player playerZero = game.getCurrentPlayer();
+        Card card = new Card(1, TokenColor.DIAMOND, Map.of(), 0);
+        game.getFaceUpCards(1).set(0, card);
+        int deckSizeBefore = game.getDeck(1).cards.size();
+
+        Field ruleValidatorField = Game.class.getDeclaredField("ruleValidator");
+        ruleValidatorField.setAccessible(true);
+        ruleValidatorField.set(game, null);
+
+        ActionResult result = game.buyFaceUpCard(1, 0, Locale.US);
+
+        assertTrue(result.isSuccess());
+        assertEquals(1, playerZero.getDevelopmentCards().size());
+        assertEquals(card, playerZero.getDevelopmentCards().get(0));
+        assertEquals(4, game.getFaceUpCards(1).size());
+        assertEquals(deckSizeBefore - 1, game.getDeck(1).cards.size());
+        assertEquals(game.getPlayers().get(1), game.getCurrentPlayer());
+    }
+
+    @Test
     void buyFaceUpCard_validCardPaidWithGemTokensBuysCardRefillsMarketAndAdvancesCurrentPlayer() {
         Game game = new Game();
         game.startGame(2, Locale.US);

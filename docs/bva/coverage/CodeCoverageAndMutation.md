@@ -118,7 +118,7 @@ Existing `MessageProvider.md` TC3 covers missing **key**; JaCoCo still shows 80%
 
 | ID | Method(s) under test | State of the System | Expected output | Implemented? |
 |----|----------------------|---------------------|-----------------|--------------|
-| CC-MSG-01 | `getMessage(String key, Locale locale)` | `key = "ui.game_started"`, `locale = Locale.FRENCH` (no `messages_fr_FR.properties`) | Returns `"ui.game_started"` (fallback `key`) | :x: |
+| CC-MSG-01 | `getMessage(String key, Locale locale)` | `key = "ui.game_started"`, `locale = Locale.FRENCH` (no `messages_fr_FR.properties`) | Returns `"ui.game_started"` (fallback `key`) | :white_check_mark: |
 
 *Also add to `docs/bva/MessageProvider.md` as TC4 when implemented.*
 

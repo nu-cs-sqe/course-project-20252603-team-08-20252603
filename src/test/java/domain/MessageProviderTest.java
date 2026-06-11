@@ -23,4 +23,16 @@ public class MessageProviderTest {
         String message = MessageProvider.getMessage("error.unknown", Locale.US);
         assertEquals("error.unknown", message);
     }
+
+    @Test
+    public void testMissingBundleReturnsKeyNameAsFallback() {
+        Locale originalDefault = Locale.getDefault();
+        try {
+            Locale.setDefault(new Locale("zz", "ZZ"));
+            String message = MessageProvider.getMessage("ui.game_started", Locale.FRENCH);
+            assertEquals("ui.game_started", message);
+        } finally {
+            Locale.setDefault(originalDefault);
+        }
+    }
 }

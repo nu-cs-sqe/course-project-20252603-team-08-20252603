@@ -152,6 +152,23 @@ public class RuleValidatorTest {
     }
 
     @Test
+    public void validateTakeTokens_rejectsZeroCountEntryEvenWhenOtherTokensFormValidTake() {
+        Player player = new Player();
+        TokenBank bank = new TokenBank();
+        bank.initialize(2);
+
+        Map<TokenColor, Integer> tokensToTake = new java.util.HashMap<>();
+        tokensToTake.put(TokenColor.DIAMOND, 0);
+        tokensToTake.put(TokenColor.RUBY, 2);
+        tokensToTake.put(TokenColor.SAPPHIRE, 1);
+
+        ActionResult result = validator.validateTakeTokens(player, bank, tokensToTake, Locale.US);
+
+        assertFalse(result.isSuccess());
+        assertEquals(MessageProvider.getMessage("error.invalid_token_selection", Locale.US), result.getMessage());
+    }
+
+    @Test
     public void validateTakeTokens_rejectsUnavailableBankToken() {
         Player player = new Player();
         TokenBank bank = new TokenBank();

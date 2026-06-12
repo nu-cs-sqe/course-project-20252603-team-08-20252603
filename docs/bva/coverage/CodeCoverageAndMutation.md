@@ -237,12 +237,94 @@ PIT mutation is already **100%** for `MessageProvider`; include only if line cov
 | `MessageProvider` | 80% line, 100% mutation (2/2) | CC-MSG-02 optional |
 | `Deck` | 100% / 100% | :white_check_mark: |
 
-**Remaining gaps (not yet 100%):** surviving PIT boundary mutants in `Game.calculatePayment` (×3), `Game.calculateWinners` (`winners.clear`), `RuleValidator.validateTakeTokens`, `RuleValidator.validateBuyCard`; JaCoCo missed branches mostly in `Game` (4) and `RuleValidator` (1).
+**Remaining gaps after Phase 2 (addressed by Phase 3 below):** JaCoCo 5 missed branches (`Game` buy paths, `calculateWinners` tie-break, `RuleValidator` L52); PIT 6 surviving mutants → **0** after Phase 3.
 
-**Run verification again after Phase 2 (18 Phase 1 + 7 required Phase 2 BVA cases, ~8 test methods):**
+---
+
+## Phase 3 — Remaining gaps to **100%** (12 commits)
+
+Phase 2 closed most gaps but verification still reported **domain branch 97%** and **PIT mutation 98%**. Phase 3 adds **11 new `@Test` methods** + **1 parameterized row** (+ small assertion enhancements on 2 existing tests).
+
+**Replay guide:** `docs/bva/coverage/Phase3CommitPlan.md`  
+**Baseline commit:** `4c2e87e`  
+**Full test diff reference:** `docs/bva/coverage/phase3-tests-reference.patch`
+
+| Phase | BVA cases | New test methods / rows | Status |
+|-------|-----------|-------------------------|--------|
+| Phase 1 | CC-GAME-01 … CC-RV-05 | 18+ | :white_check_mark: |
+| Phase 2 | CC-GAME-12 … 16, CC-RV-06 … 07 | ~8 | :white_check_mark: |
+| **Phase 3** | **CC-GAME-17 … 23, CC-RV-08 … 11, CC-MSG-02** | **11 methods + 1 row** | :x: |
+
+### Phase 3 → gap mapping
+
+| Remaining gap | Covered by |
+|---------------|------------|
+| `validateBuyReservedState` — `players` / `tokenBank` null | CC-GAME-17, CC-GAME-18 |
+| `validateBuyFaceUpState` — `cardIndex < 0`, `cards == null` | CC-GAME-19, CC-GAME-20 |
+| `calculateWinners` — `developmentCardCount == fewestDevelopmentCards` tie branch | CC-GAME-21 (`FEWEST_DEV_CARDS_WINS` row) |
+| PIT `calculateWinners` — entry `winners.clear()` void call | CC-GAME-22 |
+| PIT `calculatePayment` — `remainingCost > 0` boundary at zero | CC-GAME-23 |
+| JaCoCo `RuleValidator` L52 — `entry.getValue() == 2` false branch | CC-RV-10 |
+| PIT `validateTakeTokens` — `count <= 0` boundary | CC-RV-09 |
+| `validateTakeTokens` — bank strictly above minimum for double take | CC-RV-08 |
+| PIT `validateBuyCard` — `remainingCost > 0` boundary at zero | CC-RV-11 (+ TC50 counting assert) |
+| `MessageProvider` default constructor line | CC-MSG-02 |
+
+---
+
+## Phase 3: `Game` — CC-GAME-17 … 23
+
+| ID | Test method | State of the System (summary) | Expected output | Implemented? |
+|----|-------------|-------------------------------|-----------------|--------------|
+| CC-GAME-17 | `buyReservedCard_failsWhenPlayersIsNull` | After `startGame(2, US)`; reserved card on current player; `players` set to `null` | `isSuccess() == false`, invalid buy card message | :x: |
+| CC-GAME-18 | `buyReservedCard_failsWhenTokenBankIsNull` | Same; `tokenBank` set to `null` | `isSuccess() == false`, invalid buy card message | :x: |
+| CC-GAME-19 | `buyFaceUpCard_rejectsNegativeCardIndexAndLeavesStateUnchanged` | After `startGame(2, US)`; buy level 1 at index **−1** | `isSuccess() == false`; state unchanged | :x: |
+| CC-GAME-20 | `buyFaceUpCard_failsWhenLevelMarketListIsNull` | After `startGame(2, US)`; level-1 market list set to `null` | `isSuccess() == false`, invalid buy card message | :x: |
+| CC-GAME-21 | `calculateWinners_threePlayerFinalRound` row `FEWEST_DEV_CARDS_WINS` | 3 players; two at 15 prestige / 3 dev cards; one at 15 / 2 dev cards | After final round: single winner with fewest dev cards | :x: |
+| CC-GAME-22 | `calculateWinners_clearsExistingWinnersBeforeSelectingNewWinner` | `winners` pre-filled with stale players; invoke `calculateWinners` via reflection | `getWinners().size() == 1`; `clear()` called **2** times on winners list | :x: |
+| CC-GAME-23 | `calculatePayment_omitsZeroGemAndGoldEntriesWhenNotNeeded` | Reflection on private `calculatePayment`; bonus-only, gem-only, gold-only, multi-color cases | Payment map has no zero-value keys; bonus-only path reads **0** tokens | :x: |
+
+*Also in `docs/bva/Game.md` as Test Cases 91–92, 98–99, 95†, 100–101.*
+
+---
+
+## Phase 3: `RuleValidator` — CC-RV-08 … 11
+
+| ID | Test method | State of the System (summary) | Expected output | Implemented? |
+|----|-------------|-------------------------------|-----------------|--------------|
+| CC-RV-08 | `validateTakeTokens_acceptsTwoSameGemTokensWhenBankHasMoreThanMinimum` | Bank **5** DIAMOND; take 2 DIAMOND | `isSuccess() == true` | :x: |
+| CC-RV-09 | `validateTakeTokens_rejectsZeroCountEntryEvenWhenOtherTokensFormValidTake` | `{DIAMOND:0, RUBY:2, SAPPHIRE:1}` | `isSuccess() == false` | :x: |
+| CC-RV-10 | `validateTakeTokens_rejectsDoubleTakeWhenEntryValueIsNotTwo` | Custom `Map` — loop sees count 2, inner check sees 1 | `isSuccess() == false` | :x: |
+| CC-RV-11 | `validateBuyCard_succeedsWhenBonusCoversOneColorInMultiColorCost` | Costs 1 DIAMOND + 1 SAPPHIRE; DIAMOND bonus; 1 GOLD; assert **2** `getTokenCount` calls | `isSuccess() == true` | :x: |
+
+*Also enhance `validateBuyCard_succeedsWhenBonusCoversEntireColorCost` (TC50): assert **1** `getTokenCount` call (GOLD check only).*
+
+*Also in `docs/bva/RuleValidator.md` as TC51–TC54.*
+
+---
+
+## Phase 3: `MessageProvider` — CC-MSG-02
+
+| ID | Test method | State of the System | Expected output | Implemented? |
+|----|-------------|---------------------|-----------------|--------------|
+| CC-MSG-02 | `messageProvider_defaultConstructor` | `new MessageProvider()` | Instance not null | :x: |
+
+*Also in `docs/bva/MessageProvider.md` as TC5.*
+
+---
+
+## Verification checklist (after Phase 3 complete)
 
 ```bash
 ./gradlew clean test jacocoTestReport pitest
 ```
 
-**Optional build fix (separate from test cases):** `build.gradle.kts` sets `targetClasses = domain.*, ui.*` but `targetTests = domain.*` only. Consider aligning PIT config so UI mutants do not deflate the project summary, or add UI tests to `targetTests`.
+| Check | Target | Report | Result (after Phase 3) |
+|-------|--------|--------|------------------------|
+| domain branch coverage | **100%** | `build/reports/jacoco/domain/index.html` | :x: pending |
+| domain PIT Line / Mutation / Test Strength | **100%** each | `build/reports/pitest/domain/index.html` | :x: pending |
+| all tests pass | yes | `./gradlew test` | :x: pending |
+
+**Note:** Project-level PIT terminal summary (~74%) includes **ui** mutants with no tests; use **`pitest/domain/index.html`** for grading.
+
+**Optional build fix (separate):** `build.gradle.kts` sets `targetClasses = domain.*, ui.*` but `targetTests = domain.*` only.

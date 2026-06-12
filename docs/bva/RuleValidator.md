@@ -66,7 +66,11 @@
 | TC47 | Player has 0 gem tokens, 0 bonuses, and **exactly 2 GOLD** tokens, card costs 2 DIAMOND (goldNeeded equals player GOLD) | `isSuccess()` is true | :white_check_mark: |
 | TC48 | Player has 0 gem tokens, 0 bonuses, and **exactly 2 GOLD** tokens, card costs 3 DIAMOND (goldNeeded is player GOLD + 1) | `isSuccess()` is false, returns US invalid buy card message | :white_check_mark: |
 | TC49 | CC-RV-06: `@ParameterizedTest` — bank count equals take count; player at token limit 10; count −1 | rows (1)(2) true, (3) false | :white_check_mark: |
-| TC50 | CC-RV-07: bonus fully covers single-color cost (`remainingCost == 0`) | `isSuccess()` is true | :white_check_mark: |
+| TC50 | CC-RV-07: bonus fully covers single-color cost (`remainingCost == 0`) | `isSuccess()` is true; **no** `getTokenCount` during cost loop (only final GOLD check) | :white_check_mark: / :x: counting assert |
+| TC51 | CC-RV-08: bank has **5** DIAMOND; take 2 DIAMOND | `isSuccess()` is true | :x: |
+| TC52 | CC-RV-09: map `{DIAMOND:0, RUBY:2, SAPPHIRE:1}` (total 3, size 3) | `isSuccess()` is false — rejects zero-count entry | :x: |
+| TC53 | CC-RV-10: double-take path with entry value ≠ 2 on second iterator pass | `isSuccess()` is false | :x: |
+| TC54 | CC-RV-11: card costs 1 DIAMOND + 1 SAPPHIRE; player has DIAMOND bonus and 1 GOLD; `getTokenCount` called exactly twice during validation | `isSuccess()` is true | :x: |
 
 ---
 

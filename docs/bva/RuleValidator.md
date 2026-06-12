@@ -65,6 +65,8 @@
 | TC35 | Player has 1 DIAMOND token, 0 SAPPHIRE tokens, 0 bonuses, and 0 GOLD tokens, card costs 1 DIAMOND and 1 SAPPHIRE | `isSuccess()` is false, returns US invalid buy card message | :white_check_mark: |
 | TC47 | Player has 0 gem tokens, 0 bonuses, and **exactly 2 GOLD** tokens, card costs 2 DIAMOND (goldNeeded equals player GOLD) | `isSuccess()` is true | :white_check_mark: |
 | TC48 | Player has 0 gem tokens, 0 bonuses, and **exactly 2 GOLD** tokens, card costs 3 DIAMOND (goldNeeded is player GOLD + 1) | `isSuccess()` is false, returns US invalid buy card message | :white_check_mark: |
+| TC49 | CC-RV-06: `@ParameterizedTest` — bank count equals take count; player at token limit 10; count −1 | rows (1)(2) true, (3) false | :x: |
+| TC50 | CC-RV-07: bonus fully covers single-color cost (`remainingCost == 0`) | `isSuccess()` is true | :x: |
 
 ---
 

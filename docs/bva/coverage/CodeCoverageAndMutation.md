@@ -140,16 +140,106 @@ PIT mutation coverage 93% (4 surviving mutants). Target boundary values not yet 
 
 ---
 
+## Phase 2 — Remaining gaps to **100%** (consolidated)
+
+Phase 1 (CC-GAME-01 … CC-RV-05) is complete. Verification on 2026-06-11 still reports **domain branch 92%** and **domain mutation 97%**.
+
+**Design principle:** one BVA row can map to one **`@ParameterizedTest`** (many rows) or one test method with multiple assertions — not one JUnit method per branch.  
+Target: **8 new test methods** (7 required + 1 optional) instead of 25.
+
+| Phase | BVA cases | Planned test methods | Status |
+|-------|-----------|----------------------|--------|
+| Phase 1 | 18 | 18+ | :white_check_mark: |
+| **Phase 2** | **CC-GAME-12 … 16, CC-RV-06 … 07, CC-MSG-02 (opt.)** | **~8** | :x: **0/7** required |
+
+### Phase 2 → gap mapping (why this is enough)
+
+| Remaining gap (JaCoCo / PIT) | Covered by |
+|------------------------------|------------|
+| `takeTokens` / `validate*State` null operands (16 branches) | CC-GAME-12 parameterized rows |
+| `buyFaceUpCard` level 4 → `cards == null` | CC-GAME-12 row |
+| `replenishFaceUpCard` deck null; `visitAvailableNoble` revealedNobles null | CC-GAME-13 (2 rows) |
+| `calculateWinners` tie branch + `winners.clear()` mutant | CC-GAME-14 (2 rows) |
+| `calculatePayment` 3 boundary mutants | CC-GAME-15 one multi-color buy |
+| `initializeCards` / `initializeNobles` catch | CC-GAME-16 (2 rows; needs test seam) |
+| `RuleValidator` 4 boundary mutants | CC-RV-06 (3 rows) + CC-RV-07 |
+| `MessageProvider` constructor line (optional) | CC-MSG-02 — mutation already 100% |
+
+---
+
+## Phase 2: `Game` — CC-GAME-12 … 16
+
+| ID | Test method (planned) | State of the System (summary) | Expected output | Implemented? |
+|----|----------------------|-------------------------------|-----------------|--------------|
+| CC-GAME-12 | `gameAction_failsWhenRequiredFieldIsNull` **`@ParameterizedTest`** | After `startGame(2, US)`; reflection sets one field to `null` per row: `players`, `tokenBank`, `faceUpCards`, `decks` × action (`takeTokens`, `reserveFaceUpCard`, `buyFaceUpCard`, `buyReservedCard`); plus row: `buyFaceUpCard(4, 0)` | Each row: `isSuccess() == false` with matching error message | :x: |
+| CC-GAME-13 | `buyFaceUpCard_skipsReplenishOrNobleWhenTargetIsNull` **`@ParameterizedTest`** | (1) level-1 deck set to `null`, affordable buy; (2) `revealedNobles` set to `null`, affordable buy | (1) buy succeeds, market size −1; (2) buy succeeds, nobles unchanged | :x: |
+| CC-GAME-14 | `calculateWinners_threePlayerFinalRound` **`@ParameterizedTest`** | 3-player `startGame`; final-round setup per row: (1) one player strictly highest prestige; (2) two players tied on prestige **and** dev-card count | (1) `getWinners().size() == 1`; (2) `getWinners().size() == 2` | :x: |
+| CC-GAME-15 | `buyFaceUpCard_multiColorPurchaseKillsCalculatePaymentBoundaryMutants` | Card costs 1 RUBY + 1 SAPPHIRE; player has 1 RUBY **bonus**, 0 RUBY gems, 1 SAPPHIRE gem, 1 GOLD | Buy succeeds; spends 1 SAPPHIRE + 1 GOLD only; RUBY/gold bank counts reflect no RUBY gem spend | :x: |
+| CC-GAME-16 | `startGame_throwsWhenResourceLoaderFails` **`@ParameterizedTest`** | Test seam makes card or noble loader throw | `IllegalStateException` (*Unable to initialize cards/nobles.*) | :x: |
+
+*Also add to `docs/bva/Game.md` as Test Cases 93–97 when implemented.*
+
+**CC-GAME-12 row count:** 11 parameterized rows (same coverage as former CC-GAME-12 … 22).  
+**CC-GAME-16:** requires a **minimal test seam** on `Game` (injectable `CardLoader` / `NobleLoader`); without it, catch blocks stay uncovered.
+
+---
+
+## Phase 2: `RuleValidator` — CC-RV-06 … 07
+
+| ID | Test method (planned) | State of the System (summary) | Expected output | Implemented? |
+|----|----------------------|-------------------------------|-----------------|--------------|
+| CC-RV-06 | `validateTakeTokens_boundaryTokenRules` **`@ParameterizedTest`** | (1) bank **1** DIAMOND, take 1D+1R+1O; (2) player **7** tokens, take 3 gems; (3) map contains count **−1** | (1)(2) `isSuccess() == true`; (3) `isSuccess() == false` | :x: |
+| CC-RV-07 | `validateBuyCard_succeedsWhenBonusCoversEntireColorCost` | Card costs 1 DIAMOND; player has 1 DIAMOND bonus, 0 gems, 0 gold | `isSuccess() == true` | :x: |
+
+*Also add to `docs/bva/RuleValidator.md` as TC49–TC50 when implemented.*
+
+---
+
+## Phase 2: `MessageProvider` — CC-MSG-02 (optional)
+
+| ID | Test method (planned) | State of the System | Expected output | Implemented? |
+|----|----------------------|---------------------|-----------------|--------------|
+| CC-MSG-02 | `messageProvider_defaultConstructor` | `new MessageProvider()` | Instance created | :x: |
+
+PIT mutation is already **100%** for `MessageProvider`; include only if line coverage is graded. Otherwise skip.
+
+*Also add to `docs/bva/MessageProvider.md` as TC5 when implemented.*
+
+---
+
 ## Verification checklist (run after all cases implemented)
 
 ```bash
 ./gradlew clean test jacocoTestReport pitest
 ```
 
-| Check | Target | Report |
-|-------|--------|--------|
-| domain branch coverage | **100%** | `build/reports/jacoco/domain/index.html` |
-| domain PIT mutation | **100%** killed | `build/reports/pitest/domain/index.html` |
-| all tests pass | yes | `./gradlew test` |
+| Check | Target | Report | Result |
+|-------|--------|--------|--------|
+| domain branch coverage | **100%** | `build/reports/jacoco/domain/index.html` | **92%** after Phase 1 — Phase 2 pending |
+| domain PIT mutation | **100%** killed | `build/reports/pitest/domain/index.html` | **97%** after Phase 1 — Phase 2 pending |
+| all tests pass | yes | `./gradlew test` | :white_check_mark: (Phase 1) |
+
+### Post–Phase 1 verification (2026-06-11)
+
+| Scope | JaCoCo branch | PIT mutation |
+|-------|---------------|--------------|
+| **domain (package total)** | **92%** (was 89%) | **97%** (was 92%) |
+| ui | 60% | 0% (not graded for cyclomatic) |
+| whole project (PIT incl. ui) | — | 72% |
+
+### Classes still below 100% (Phase 2 targets)
+
+| Class | JaCoCo branch | PIT mutation | Phase 2 case IDs |
+|-------|---------------|--------------|------------------|
+| `Game` | 88% | 97% (155/159) | CC-GAME-12 … 16 |
+| `RuleValidator` | 98% | 93% (56/60) | CC-RV-06 … 07 |
+| `MessageProvider` | n/a (80% line) | 100% (2/2) | CC-MSG-02 (optional) |
+| `Deck` | 100% | 100% (5/5) | :white_check_mark: (done) |
+
+**Run verification again after Phase 2 (18 Phase 1 + 7 required Phase 2 BVA cases, ~8 test methods):**
+
+```bash
+./gradlew clean test jacocoTestReport pitest
+```
 
 **Optional build fix (separate from test cases):** `build.gradle.kts` sets `targetClasses = domain.*, ui.*` but `targetTests = domain.*` only. Consider aligning PIT config so UI mutants do not deflate the project summary, or add UI tests to `targetTests`.

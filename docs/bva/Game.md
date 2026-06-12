@@ -172,3 +172,15 @@
 | Test Case 70 | After game phase is GAME_OVER, current player tries to buy a reserved card                                                                                                                                           | Returns ActionResult (isSuccess=false) with invalid buy card message, phase remains GAME_OVER, winner unchanged                                                                                                                                        | :white_check_mark: |
 | Test Case 81 | During FINAL_ROUND, current player buys a reserved card and this completes the final round                                                                                                                           | Returns ActionResult (isSuccess=true), phase becomes GAME_OVER and winners are calculated                                                                                                                                                              | :white_check_mark: |
 | Test Case 87 | After startGame(2, US), `ruleValidator` set to `null`, current player buys affordable reserved card at index 0                                                                                                       | Returns ActionResult (isSuccess=true), reserved card moves to development cards, reserved list empty, current player advances to player 1                                                                                                              | :white_check_mark: |
+
+---
+
+## Phase 2 coverage supplement (consolidated — see `docs/bva/coverage/CodeCoverageAndMutation.md`)
+
+| ID | Summary | Implemented? |
+|----|---------|--------------|
+| Test Case 93 | CC-GAME-12: `@ParameterizedTest` — null-field guards for all actions (11 rows) | :x: |
+| Test Case 94 | CC-GAME-13: `@ParameterizedTest` — deck null (no refill) and `revealedNobles` null | :x: |
+| Test Case 95 | CC-GAME-14: `@ParameterizedTest` — 3-player `calculateWinners` single winner vs tie | :x: |
+| Test Case 96 | CC-GAME-15: one multi-color buy killing `calculatePayment` boundary mutants | :x: |
+| Test Case 97 | CC-GAME-16: `@ParameterizedTest` — `startGame` when card/noble loader fails (needs test seam) | :x: |

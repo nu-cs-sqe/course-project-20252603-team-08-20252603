@@ -26,8 +26,13 @@
 # Week 8 (05/17/2026-05/24/2026)
 1. [done] Mengxi-Xia(Mengxi Xia): Add jacoco and pitest. Implement player buy card UI and game logic. Add spotbug and checkstyle, fix checkstyle problem and some spotbug problem. Link to PR: (https://github.com/nu-cs-sqe/course-project-20252603-team-08-20252603/pull/48, https://github.com/nu-cs-sqe/course-project-20252603-team-08-20252603/pull/47, https://github.com/nu-cs-sqe/course-project-20252603-team-08-20252603/pull/50)
 
-# Week 8 (05/25/2026-05/31/2026)
+# Week 9 (05/25/2026-05/31/2026)
 1. [done] Mengxi-Xia(Mengxi Xia): Add player buy reserve card, player get noble automatically, winning logic and game over logic. Link to PR: (https://github.com/nu-cs-sqe/course-project-20252603-team-08-20252603/pull/52)
+
+# Week 10, 11 (06/01/2026-06/13/2026)
+1. [done] zwu454(Zhixuan Wu): Completed Clean Code refactoring for long functions across Game and ConsoleGame classes to resolve "Too Big Functions" issue, extracting helper methods and eliminating code duplication. Link to PR: (https://github.com/nu-cs-sqe/course-project-20252603-team-08-20252603/pull/64)
+2. [done] zwu454(Zhixuan Wu): Added order change verification for Deck#shuffle unit test in DeckTest.java to kill the related shuffle mutant and ensure true randomness logic. Link to PR: (https://github.com/nu-cs-sqe/course-project-20252603-team-08-20252603/pull/66)
+3. [done] zwu454(Zhixuan Wu): Updated README.md documentation by incorporating final test coverage statistics, test exemption notes for the UI layer, and the official game rules hyperlink. Link to PR: (https://github.com/nu-cs-sqe/course-project-20252603-team-08-20252603/pull/68)
 
 # Week X (XX/XX/2026-XX/XX/2026) TEMPLATE (You can change the format to whatever the team likes better)
 **Planning and Progress Tracking**:

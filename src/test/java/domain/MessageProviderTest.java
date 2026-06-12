@@ -25,6 +25,11 @@ public class MessageProviderTest {
     }
 
     @Test
+    public void messageProvider_defaultConstructor() {
+        assertNotNull(new MessageProvider());
+    }
+
+    @Test
     public void testMissingBundleReturnsKeyNameAsFallback() {
         Locale originalDefault = Locale.getDefault();
         try {

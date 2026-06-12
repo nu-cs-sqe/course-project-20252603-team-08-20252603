@@ -199,7 +199,7 @@ Target: **8 new test methods** (7 required + 1 optional) instead of 25.
 
 | ID | Test method (planned) | State of the System | Expected output | Implemented? |
 |----|----------------------|---------------------|-----------------|--------------|
-| CC-MSG-02 | `messageProvider_defaultConstructor` | `new MessageProvider()` | Instance created | :x: |
+| CC-MSG-02 | `messageProvider_defaultConstructor` | `new MessageProvider()` | Instance created | :white_check_mark: |
 
 PIT mutation is already **100%** for `MessageProvider`; include only if line coverage is graded. Otherwise skip.
 
@@ -253,7 +253,7 @@ Phase 2 closed most gaps but verification still reported **domain branch 97%** a
 |-------|-----------|-------------------------|--------|
 | Phase 1 | CC-GAME-01 … CC-RV-05 | 18+ | :white_check_mark: |
 | Phase 2 | CC-GAME-12 … 16, CC-RV-06 … 07 | ~8 | :white_check_mark: |
-| **Phase 3** | **CC-GAME-17 … 23, CC-RV-08 … 11, CC-MSG-02** | **11 methods + 1 row** | :x: |
+| **Phase 3** | **CC-GAME-17 … 23, CC-RV-08 … 11, CC-MSG-02** | **11 methods + 1 row** | :white_check_mark: |
 
 ### Phase 3 → gap mapping
 
@@ -307,7 +307,7 @@ Phase 2 closed most gaps but verification still reported **domain branch 97%** a
 
 | ID | Test method | State of the System | Expected output | Implemented? |
 |----|-------------|---------------------|-----------------|--------------|
-| CC-MSG-02 | `messageProvider_defaultConstructor` | `new MessageProvider()` | Instance not null | :x: |
+| CC-MSG-02 | `messageProvider_defaultConstructor` | `new MessageProvider()` | Instance not null | :white_check_mark: |
 
 *Also in `docs/bva/MessageProvider.md` as TC5.*
 

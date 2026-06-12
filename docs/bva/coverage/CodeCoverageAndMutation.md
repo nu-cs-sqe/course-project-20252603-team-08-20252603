@@ -150,7 +150,7 @@ Target: **8 new test methods** (7 required + 1 optional) instead of 25.
 | Phase | BVA cases | Planned test methods | Status |
 |-------|-----------|----------------------|--------|
 | Phase 1 | 18 | 18+ | :white_check_mark: |
-| **Phase 2** | **CC-GAME-12 … 16, CC-RV-06 … 07, CC-MSG-02 (opt.)** | **~8** | :x: **6/7** required |
+| **Phase 2** | **CC-GAME-12 … 16, CC-RV-06 … 07, CC-MSG-02 (opt.)** | **~8** | :white_check_mark: **7/7** required |
 
 ### Phase 2 → gap mapping (why this is enough)
 
@@ -189,7 +189,7 @@ Target: **8 new test methods** (7 required + 1 optional) instead of 25.
 | ID | Test method (planned) | State of the System (summary) | Expected output | Implemented? |
 |----|----------------------|-------------------------------|-----------------|--------------|
 | CC-RV-06 | `validateTakeTokens_boundaryTokenRules` **`@ParameterizedTest`** | (1) bank **1** DIAMOND, take 1D+1R+1O; (2) player **7** tokens, take 3 gems; (3) map contains count **−1** | (1)(2) `isSuccess() == true`; (3) `isSuccess() == false` | :white_check_mark: |
-| CC-RV-07 | `validateBuyCard_succeedsWhenBonusCoversEntireColorCost` | Card costs 1 DIAMOND; player has 1 DIAMOND bonus, 0 gems, 0 gold | `isSuccess() == true` | :x: |
+| CC-RV-07 | `validateBuyCard_succeedsWhenBonusCoversEntireColorCost` | Card costs 1 DIAMOND; player has 1 DIAMOND bonus, 0 gems, 0 gold | `isSuccess() == true` | :white_check_mark: |
 
 *Also add to `docs/bva/RuleValidator.md` as TC49–TC50 when implemented.*
 
@@ -215,9 +215,9 @@ PIT mutation is already **100%** for `MessageProvider`; include only if line cov
 
 | Check | Target | Report | Result |
 |-------|--------|--------|--------|
-| domain branch coverage | **100%** | `build/reports/jacoco/domain/index.html` | **92%** after Phase 1 — Phase 2 pending |
-| domain PIT mutation | **100%** killed | `build/reports/pitest/domain/index.html` | **97%** after Phase 1 — Phase 2 pending |
-| all tests pass | yes | `./gradlew test` | :white_check_mark: (Phase 1) |
+| domain branch coverage | **100%** | `build/reports/jacoco/domain/index.html` | **97%** (237/242) after Phase 2 |
+| domain PIT mutation | **100%** killed | `build/reports/pitest/domain/index.html` | **98%** (258/264) after Phase 2 |
+| all tests pass | yes | `./gradlew test` | :white_check_mark: |
 
 ### Post–Phase 1 verification (2026-06-11)
 
@@ -227,14 +227,17 @@ PIT mutation is already **100%** for `MessageProvider`; include only if line cov
 | ui | 60% | 0% (not graded for cyclomatic) |
 | whole project (PIT incl. ui) | — | 72% |
 
-### Classes still below 100% (Phase 2 targets)
+### Post–Phase 2 verification (2026-06-12)
 
-| Class | JaCoCo branch | PIT mutation | Phase 2 case IDs |
-|-------|---------------|--------------|------------------|
-| `Game` | 88% | 97% (155/159) | CC-GAME-12 … 16 |
-| `RuleValidator` | 98% | 93% (56/60) | CC-RV-06 … 07 |
-| `MessageProvider` | n/a (80% line) | 100% (2/2) | CC-MSG-02 (optional) |
-| `Deck` | 100% | 100% (5/5) | :white_check_mark: (done) |
+| Scope | JaCoCo branch | PIT mutation |
+|-------|---------------|--------------|
+| **domain (package total)** | **97%** (237/242) | **98%** (258/264) |
+| `Game` | 97% branch, 98% mutation (157/161) | CC-GAME-12 … 16 :white_check_mark: |
+| `RuleValidator` | 98% branch, 97% mutation (58/60) | CC-RV-06 … 07 :white_check_mark: |
+| `MessageProvider` | 80% line, 100% mutation (2/2) | CC-MSG-02 optional |
+| `Deck` | 100% / 100% | :white_check_mark: |
+
+**Remaining gaps (not yet 100%):** surviving PIT boundary mutants in `Game.calculatePayment` (×3), `Game.calculateWinners` (`winners.clear`), `RuleValidator.validateTakeTokens`, `RuleValidator.validateBuyCard`; JaCoCo missed branches mostly in `Game` (4) and `RuleValidator` (1).
 
 **Run verification again after Phase 2 (18 Phase 1 + 7 required Phase 2 BVA cases, ~8 test methods):**
 

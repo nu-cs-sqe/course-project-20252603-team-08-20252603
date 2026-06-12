@@ -438,6 +438,19 @@ public class RuleValidatorTest {
     }
 
     @Test
+    public void validateBuyCard_succeedsWhenBonusCoversEntireColorCost() {
+        Player player = new Player();
+        player.addDevelopmentCard(new Card(1, TokenColor.DIAMOND, Map.of(), 0));
+        Card card = new Card(1, TokenColor.RUBY, Map.of(TokenColor.DIAMOND, 1), 0);
+
+        ActionResult result = validator.validateBuyCard(player, card, Locale.US);
+
+        assertTrue(result.isSuccess());
+        assertEquals(0, player.getTokenCount(TokenColor.DIAMOND));
+        assertEquals(0, player.getTokenCount(TokenColor.GOLD));
+    }
+
+    @Test
     public void validateBuyCard_acceptsCardWhenBonusExceedsCost() {
         Player player = new Player();
         player.addDevelopmentCard(new Card(1, TokenColor.DIAMOND, Map.of(), 0));

@@ -1,10 +1,14 @@
 package domain;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import java.lang.reflect.Field;
 import java.util.Locale;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -1444,6 +1448,60 @@ class GameTest {
         assertEquals(1, game.getWinners().size());
         assertEquals(playerZero, game.getWinners().get(0));
         assertEquals(playerZero, game.getCurrentPlayer());
+    }
+
+    @ParameterizedTest
+    @MethodSource("nullGuardCases")
+    void gameAction_failsWhenRequiredFieldIsNull(
+            String fieldName, GameAction action, int level, int index, String errorKey) throws Exception {
+        Game game = new Game();
+        game.startGame(2, Locale.US);
+
+        if (fieldName != null) {
+            setGameField(game, fieldName, null);
+        }
+
+        ActionResult result;
+        if (action == GameAction.TAKE_TOKENS) {
+            result = game.takeTokens(
+                    Map.of(TokenColor.DIAMOND, 1, TokenColor.RUBY, 1, TokenColor.ONYX, 1),
+                    Locale.US);
+        } else if (action == GameAction.RESERVE_FACE_UP) {
+            result = game.reserveFaceUpCard(level, index, Locale.US);
+        } else {
+            result = game.buyFaceUpCard(level, index, Locale.US);
+        }
+
+        assertFalse(result.isSuccess());
+        assertEquals(MessageProvider.getMessage(errorKey, Locale.US), result.getMessage());
+    }
+
+    private static Stream<Arguments> nullGuardCases() {
+        return Stream.of(
+                Arguments.of("players", GameAction.TAKE_TOKENS, 0, 0, "error.invalid_token_selection"),
+                Arguments.of("tokenBank", GameAction.TAKE_TOKENS, 0, 0, "error.invalid_token_selection"),
+                Arguments.of("players", GameAction.RESERVE_FACE_UP, 1, 0, "error.invalid_reserve_card"),
+                Arguments.of("tokenBank", GameAction.RESERVE_FACE_UP, 1, 0, "error.invalid_reserve_card"),
+                Arguments.of("faceUpCards", GameAction.RESERVE_FACE_UP, 1, 0, "error.invalid_reserve_card"),
+                Arguments.of("decks", GameAction.RESERVE_FACE_UP, 1, 0, "error.invalid_reserve_card"),
+                Arguments.of("players", GameAction.BUY_FACE_UP, 1, 0, "error.invalid_buy_card"),
+                Arguments.of("tokenBank", GameAction.BUY_FACE_UP, 1, 0, "error.invalid_buy_card"),
+                Arguments.of("faceUpCards", GameAction.BUY_FACE_UP, 1, 0, "error.invalid_buy_card"),
+                Arguments.of("decks", GameAction.BUY_FACE_UP, 1, 0, "error.invalid_buy_card"),
+                Arguments.of(null, GameAction.BUY_FACE_UP, 4, 0, "error.invalid_buy_card")
+        );
+    }
+
+    private static void setGameField(Game game, String fieldName, Object value) throws Exception {
+        Field field = Game.class.getDeclaredField(fieldName);
+        field.setAccessible(true);
+        field.set(game, value);
+    }
+
+    private enum GameAction {
+        TAKE_TOKENS,
+        RESERVE_FACE_UP,
+        BUY_FACE_UP
     }
 
     private static String levelOneDrawOrderFingerprint(Game game) {

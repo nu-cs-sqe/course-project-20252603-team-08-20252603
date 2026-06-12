@@ -179,7 +179,7 @@
 
 | ID | Summary | Implemented? |
 |----|---------|--------------|
-| Test Case 93 | CC-GAME-12: `@ParameterizedTest` — null-field guards for all actions (11 rows) | :x: |
+| Test Case 93 | CC-GAME-12: `@ParameterizedTest` — null-field guards for all actions (11 rows) | :white_check_mark: |
 | Test Case 94 | CC-GAME-13: `@ParameterizedTest` — deck null (no refill) and `revealedNobles` null | :x: |
 | Test Case 95 | CC-GAME-14: `@ParameterizedTest` — 3-player `calculateWinners` single winner vs tie | :x: |
 | Test Case 96 | CC-GAME-15: one multi-color buy killing `calculatePayment` boundary mutants | :x: |

@@ -5,11 +5,15 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import java.util.AbstractMap;
+import java.util.AbstractSet;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -112,6 +116,39 @@ public class RuleValidatorTest {
         ActionResult result = validator.validateTakeTokens(player, bank, Map.of(TokenColor.DIAMOND, 2), Locale.US);
 
         assertTrue(result.isSuccess());
+    }
+
+    @Test
+    public void validateTakeTokens_rejectsDoubleTakeWhenEntryValueIsNotTwo() {
+        Player player = new Player();
+        TokenBank bank = new TokenBank();
+        bank.addTokens(Map.of(TokenColor.DIAMOND, 5));
+        Map<TokenColor, Integer> tokensToTake = new AbstractMap<>() {
+            private int iteratorsCreated;
+
+            @Override
+            public Set<Entry<TokenColor, Integer>> entrySet() {
+                return new AbstractSet<>() {
+                    @Override
+                    public Iterator<Entry<TokenColor, Integer>> iterator() {
+                        int pass = ++iteratorsCreated;
+                        Entry<TokenColor, Integer> entry =
+                                new SimpleEntry<>(TokenColor.DIAMOND, pass == 1 ? 2 : 1);
+                        return List.of(entry).iterator();
+                    }
+
+                    @Override
+                    public int size() {
+                        return 1;
+                    }
+                };
+            }
+        };
+
+        ActionResult result = validator.validateTakeTokens(player, bank, tokensToTake, Locale.US);
+
+        assertFalse(result.isSuccess());
+        assertEquals(MessageProvider.getMessage("error.invalid_token_selection", Locale.US), result.getMessage());
     }
 
     @Test

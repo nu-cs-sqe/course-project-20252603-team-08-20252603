@@ -294,7 +294,7 @@ Phase 2 closed most gaps but verification still reported **domain branch 97%** a
 |----|-------------|-------------------------------|-----------------|--------------|
 | CC-RV-08 | `validateTakeTokens_acceptsTwoSameGemTokensWhenBankHasMoreThanMinimum` | Bank **5** DIAMOND; take 2 DIAMOND | `isSuccess() == true` | :white_check_mark: |
 | CC-RV-09 | `validateTakeTokens_rejectsZeroCountEntryEvenWhenOtherTokensFormValidTake` | `{DIAMOND:0, RUBY:2, SAPPHIRE:1}` | `isSuccess() == false` | :white_check_mark: |
-| CC-RV-10 | `validateTakeTokens_rejectsDoubleTakeWhenEntryValueIsNotTwo` | Custom `Map` — loop sees count 2, inner check sees 1 | `isSuccess() == false` | :x: |
+| CC-RV-10 | `validateTakeTokens_rejectsDoubleTakeWhenEntryValueIsNotTwo` | Custom `Map` — loop sees count 2, inner check sees 1 | `isSuccess() == false` | :white_check_mark: |
 | CC-RV-11 | `validateBuyCard_succeedsWhenBonusCoversOneColorInMultiColorCost` | Costs 1 DIAMOND + 1 SAPPHIRE; DIAMOND bonus; 1 GOLD; assert **2** `getTokenCount` calls | `isSuccess() == true` | :x: |
 
 *Also enhance `validateBuyCard_succeedsWhenBonusCoversEntireColorCost` (TC50): assert **1** `getTokenCount` call (GOLD check only).*

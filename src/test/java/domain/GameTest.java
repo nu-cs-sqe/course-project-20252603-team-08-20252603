@@ -1517,6 +1517,23 @@ class GameTest {
         );
     }
 
+    @ParameterizedTest
+    @MethodSource("threePlayerFinalRoundCases")
+    void calculateWinners_threePlayerFinalRound(ThreePlayerFinalRoundCase testCase) {
+        Game game = new Game();
+        game.startGame(3, Locale.US);
+
+        testCase.triggerFinalRound(game);
+        testCase.completeFinalRoundAndAssert(game);
+    }
+
+    private static Stream<Arguments> threePlayerFinalRoundCases() {
+        return Stream.of(
+                Arguments.of(ThreePlayerFinalRoundCase.SINGLE_WINNER),
+                Arguments.of(ThreePlayerFinalRoundCase.TIED_WINNERS)
+        );
+    }
+
     private static void setGameField(Game game, String fieldName, Object value) throws Exception {
         Field field = Game.class.getDeclaredField(fieldName);
         field.setAccessible(true);
@@ -1571,6 +1588,81 @@ class GameTest {
         abstract void prepare(Game game, Player player) throws Exception;
 
         abstract void assertOutcome(Game game, Player player, Card card, int marketSizeBefore);
+    }
+
+    private enum ThreePlayerFinalRoundCase {
+        SINGLE_WINNER {
+            @Override
+            void triggerFinalRound(Game game) {
+                Player playerZero = game.getPlayers().get(0);
+                Player playerOne = game.getPlayers().get(1);
+                Player playerTwo = game.getPlayers().get(2);
+                playerZero.addDevelopmentCard(new Card(1, TokenColor.DIAMOND, Map.of(), 14));
+                playerOne.addDevelopmentCard(new Card(1, TokenColor.EMERALD, Map.of(), 10));
+                playerTwo.addDevelopmentCard(new Card(1, TokenColor.RUBY, Map.of(), 5));
+                game.getFaceUpCards(1).set(0, new Card(1, TokenColor.SAPPHIRE, Map.of(), 1));
+
+                assertTrue(game.buyFaceUpCard(1, 0, Locale.US).isSuccess());
+                assertEquals(GamePhase.FINAL_ROUND, game.getPhase());
+                assertEquals(playerOne, game.getCurrentPlayer());
+            }
+
+            @Override
+            void completeFinalRoundAndAssert(Game game) {
+                completeRemainingThreePlayerFinalRoundTurns(game);
+
+                Player playerZero = game.getPlayers().get(0);
+                assertEquals(GamePhase.GAME_OVER, game.getPhase());
+                assertEquals(1, game.getWinners().size());
+                assertEquals(playerZero, game.getWinners().get(0));
+                assertEquals(playerZero, game.getWinner());
+            }
+        },
+        TIED_WINNERS {
+            @Override
+            void triggerFinalRound(Game game) {
+                Player playerZero = game.getPlayers().get(0);
+                Player playerOne = game.getPlayers().get(1);
+                Player playerTwo = game.getPlayers().get(2);
+                playerZero.addDevelopmentCard(new Card(1, TokenColor.DIAMOND, Map.of(), 14));
+                playerZero.addDevelopmentCard(new Card(1, TokenColor.RUBY, Map.of(), 1));
+                playerOne.addDevelopmentCard(new Card(1, TokenColor.EMERALD, Map.of(), 14));
+                playerOne.addDevelopmentCard(new Card(1, TokenColor.SAPPHIRE, Map.of(), 1));
+                playerTwo.addDevelopmentCard(new Card(1, TokenColor.ONYX, Map.of(), 5));
+
+                assertTrue(game.takeTokens(THREE_DIFFERENT_TOKENS, Locale.US).isSuccess());
+                assertEquals(GamePhase.FINAL_ROUND, game.getPhase());
+                assertEquals(playerOne, game.getCurrentPlayer());
+            }
+
+            @Override
+            void completeFinalRoundAndAssert(Game game) {
+                Player playerZero = game.getPlayers().get(0);
+                Player playerOne = game.getPlayers().get(1);
+                completeRemainingThreePlayerFinalRoundTurns(game);
+
+                assertEquals(GamePhase.GAME_OVER, game.getPhase());
+                assertEquals(15, playerZero.getPrestigePoints());
+                assertEquals(15, playerOne.getPrestigePoints());
+                assertEquals(2, playerZero.getDevelopmentCards().size());
+                assertEquals(2, playerOne.getDevelopmentCards().size());
+                assertEquals(2, game.getWinners().size());
+                assertTrue(game.getWinners().contains(playerZero));
+                assertTrue(game.getWinners().contains(playerOne));
+            }
+        };
+
+        abstract void triggerFinalRound(Game game);
+
+        abstract void completeFinalRoundAndAssert(Game game);
+    }
+
+    private static final Map<TokenColor, Integer> THREE_DIFFERENT_TOKENS = Map.of(
+            TokenColor.SAPPHIRE, 1, TokenColor.EMERALD, 1, TokenColor.ONYX, 1);
+
+    private static void completeRemainingThreePlayerFinalRoundTurns(Game game) {
+        assertTrue(game.takeTokens(THREE_DIFFERENT_TOKENS, Locale.US).isSuccess());
+        assertTrue(game.takeTokens(THREE_DIFFERENT_TOKENS, Locale.US).isSuccess());
     }
 
     private enum GameAction {

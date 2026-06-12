@@ -418,6 +418,19 @@ public class RuleValidatorTest {
     }
 
     @Test
+    public void validateBuyCard_rejectsCardWhenGoldNeededExceedsPlayerGoldByOne() {
+        Player player = new Player();
+        player.addTokens(Map.of(TokenColor.GOLD, 2));
+        assertEquals(2, player.getTokenCount(TokenColor.GOLD));
+        Card card = new Card(1, TokenColor.RUBY, Map.of(TokenColor.DIAMOND, 3), 0);
+
+        ActionResult result = validator.validateBuyCard(player, card, Locale.US);
+
+        assertFalse(result.isSuccess());
+        assertEquals(MessageProvider.getMessage("error.invalid_buy_card", Locale.US), result.getMessage());
+    }
+
+    @Test
     public void validateBuyCard_acceptsCardPaidWithBonusGemAndGoldToken() {
         Player player = new Player();
         player.addDevelopmentCard(new Card(1, TokenColor.DIAMOND, Map.of(), 0));

@@ -35,6 +35,7 @@
 3. [done] zwu454(Zhixuan Wu): Updated README.md documentation by incorporating final test coverage statistics, test exemption notes for the UI layer, and the official game rules hyperlink. Link to PR: (https://github.com/nu-cs-sqe/course-project-20252603-team-08-20252603/pull/68)
 4. [done] avemujicasaki(Sicheng Liu): Reached **100% domain JaCoCo branch coverage** (242/242) and **100% domain PIT** line/mutation/test strength (264/264) via BVA-first testing: updated `docs/bva/` and `docs/bva/coverage/` (including Phase 3 plan and reference patch), then added Phase 1–3 tests in `GameTest`, `RuleValidatorTest`, and `MessageProviderTest` (CC-GAME-01 … CC-MSG-02), one commit per case. Link to PR: (https://github.com/nu-cs-sqe/course-project-20252603-team-08-20252603/pull/70)
 5. [done] avemujicasaki(Sicheng Liu): Merged `main` into the coverage branch, resolved `DeckTest` shuffle conflict, and fixed CI checkstyle/SpotBugs issues so the PR passes Gradle build. Link to PR: (https://github.com/nu-cs-sqe/course-project-20252603-team-08-20252603/pull/70)
+6. [done] Mengxi-Xia(Mengxi Xia): Improve the UI design, add player's current balance table. Link to PR: (https://github.com/nu-cs-sqe/course-project-20252603-team-08-20252603/pull/72)
 
 # Week X (XX/XX/2026-XX/XX/2026) TEMPLATE (You can change the format to whatever the team likes better)
 **Planning and Progress Tracking**:

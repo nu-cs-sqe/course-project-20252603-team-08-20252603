@@ -39,7 +39,7 @@ public class ConsoleGame {
         String lowerLine = line.toLowerCase(Locale.US);
 
         if (lowerLine.startsWith(TAKE_COMMAND_PREFIX)) {
-            actionResult = game.takeTokens(parseTokens(line.substring(TAKE_COMMAND_PREFIX.length())), locale);
+            actionResult = takeTokens(game, line.substring(TAKE_COMMAND_PREFIX.length()), locale);
         } else if (lowerLine.startsWith(RESERVE_COMMAND_PREFIX)) {
             actionResult = reserveFaceUpCard(game, line.substring(RESERVE_COMMAND_PREFIX.length()), locale);
         } else if (lowerLine.startsWith(BUY_COMMAND_PREFIX)) {
@@ -153,12 +153,47 @@ public class ConsoleGame {
 
     private void printCurrentPlayerStatus(Game game, Locale locale) {
         out.println(message("ui.prestige_points", locale) + " " + game.getCurrentPlayer().getPrestigePoints());
+        printCurrentPlayerResources(game, locale);
         out.println(message("ui.owned_nobles", locale));
         List<Noble> nobles = game.getCurrentPlayer().getNobles();
         for (int i = 0; i < nobles.size(); i++) {
             Noble noble = nobles.get(i);
             out.println("  [" + i + "] " + message("ui.points", locale) + "=" + noble.prestigePoints + ", " + message("ui.requirements", locale) + "=" + formatCost(noble.requirements));
         }
+    }
+
+    private void printCurrentPlayerResources(Game game, Locale locale) {
+        out.println(message("ui.player_resources", locale));
+        printResourceHeader();
+        printResourceRow(message("ui.tokens", locale), game, ResourceRow.TOKENS);
+        printResourceRow(message("ui.bonuses", locale), game, ResourceRow.BONUSES);
+        printResourceRow(message("ui.purchasing_power", locale), game, ResourceRow.PURCHASING_POWER);
+    }
+
+    private void printResourceHeader() {
+        StringBuilder builder = new StringBuilder(String.format(Locale.US, "  %-18s", ""));
+        for (TokenColor color : TokenColor.values()) {
+            builder.append(String.format(Locale.US, "%-10s", color));
+        }
+        out.println(builder);
+    }
+
+    private void printResourceRow(String label, Game game, ResourceRow row) {
+        StringBuilder builder = new StringBuilder(String.format(Locale.US, "  %-18s", label));
+        for (TokenColor color : TokenColor.values()) {
+            builder.append(String.format(Locale.US, "%-10d", getResourceValue(game.getCurrentPlayer(), color, row)));
+        }
+        out.println(builder);
+    }
+
+    private int getResourceValue(Player player, TokenColor color, ResourceRow row) {
+        if (row == ResourceRow.TOKENS) {
+            return player.getTokenCount(color);
+        }
+        if (row == ResourceRow.BONUSES) {
+            return player.getBonusCount(color);
+        }
+        return player.getTokenCount(color) + player.getBonusCount(color);
     }
 
     private void printTokenBank(Game game, Locale locale) {
@@ -221,6 +256,14 @@ public class ConsoleGame {
         return tokens;
     }
 
+    private ActionResult takeTokens(Game game, String input, Locale locale) {
+        try {
+            return game.takeTokens(parseTokens(input), locale);
+        } catch (IllegalArgumentException e) {
+            return ActionResult.failure(message("error.invalid_token_selection", locale));
+        }
+    }
+
     private ActionResult reserveFaceUpCard(Game game, String input, Locale locale) {
         String[] parts = input.trim().split("\\s+");
         if (parts.length != 2) {
@@ -267,6 +310,12 @@ public class ConsoleGame {
         } catch (NumberFormatException e) {
             return ActionResult.failure(message("ui.unknown_action", locale));
         }
+    }
+
+    private enum ResourceRow {
+        TOKENS,
+        BONUSES,
+        PURCHASING_POWER
     }
 
     private String message(String key, Locale locale) {

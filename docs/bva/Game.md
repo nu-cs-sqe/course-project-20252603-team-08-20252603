@@ -183,4 +183,4 @@
 | Test Case 94 | CC-GAME-13: `@ParameterizedTest` — deck null (no refill) and `revealedNobles` null | :white_check_mark: |
 | Test Case 95 | CC-GAME-14: `@ParameterizedTest` — 3-player `calculateWinners` single winner vs tie | :white_check_mark: |
 | Test Case 96 | CC-GAME-15: one multi-color buy killing `calculatePayment` boundary mutants | :white_check_mark: |
-| Test Case 97 | CC-GAME-16: `@ParameterizedTest` — `startGame` when card/noble loader fails (needs test seam) | :x: |
+| Test Case 97 | CC-GAME-16: `@ParameterizedTest` — `startGame` when card/noble loader fails (needs test seam) | :white_check_mark: |

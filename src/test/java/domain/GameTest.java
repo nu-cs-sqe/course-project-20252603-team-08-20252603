@@ -5,7 +5,9 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import java.io.IOException;
 import java.lang.reflect.Field;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Stream;
@@ -1559,6 +1561,36 @@ class GameTest {
         assertEquals(sapphireBankBefore + 1, game.getTokenBank().getTokenCount(TokenColor.SAPPHIRE));
         assertEquals(goldBankBefore + 1, game.getTokenBank().getTokenCount(TokenColor.GOLD));
         assertEquals(game.getPlayers().get(1), game.getCurrentPlayer());
+    }
+
+    @ParameterizedTest
+    @MethodSource("resourceLoaderFailureCases")
+    void startGame_throwsWhenResourceLoaderFails(Game game, String expectedMessage) {
+        IllegalStateException exception = assertThrows(
+                IllegalStateException.class, () -> game.startGame(2, Locale.US));
+
+        assertEquals(expectedMessage, exception.getMessage());
+    }
+
+    private static Stream<Arguments> resourceLoaderFailureCases() {
+        return Stream.of(
+                Arguments.of(new Game(new FailingCardLoader(), null), "Unable to initialize cards."),
+                Arguments.of(new Game(null, new FailingNobleLoader()), "Unable to initialize nobles.")
+        );
+    }
+
+    private static final class FailingCardLoader extends CardLoader {
+        @Override
+        public List<Card> loadFromClasspath(Class<?> anchorClass, String resourcePath) throws IOException {
+            throw new IOException("simulated card load failure");
+        }
+    }
+
+    private static final class FailingNobleLoader extends NobleLoader {
+        @Override
+        public List<Noble> loadFromClasspath(Class<?> anchorClass, String resourcePath) throws IOException {
+            throw new IOException("simulated noble load failure");
+        }
     }
 
     private static void setGameField(Game game, String fieldName, Object value) throws Exception {

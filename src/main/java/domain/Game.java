@@ -30,9 +30,17 @@ public class Game
     private List<Noble> revealedNobles;
     private int winnerIndex;
     private List<Player> winners;
+    private CardLoader cardLoader;
+    private NobleLoader nobleLoader;
 
     public Game(){
         this.phase = GamePhase.SETUP;
+    }
+
+    Game(CardLoader cardLoader, NobleLoader nobleLoader) {
+        this.phase = GamePhase.SETUP;
+        this.cardLoader = cardLoader;
+        this.nobleLoader = nobleLoader;
     }
 
     public ActionResult startGame(int playerCount, Locale locale) {
@@ -382,7 +390,8 @@ public class Game
 
     private void initializeCards() {
         try {
-            List<Card> cards = new CardLoader().loadFromClasspath(Game.class, CARDS_RESOURCE_PATH);
+            CardLoader loader = cardLoader != null ? cardLoader : new CardLoader();
+            List<Card> cards = loader.loadFromClasspath(Game.class, CARDS_RESOURCE_PATH);
             decks = new HashMap<>();
             faceUpCards = new HashMap<>();
 
@@ -408,7 +417,8 @@ public class Game
 
     private void initializeNobles(int playerCount) {
         try {
-            List<Noble> nobles = new NobleLoader().loadFromClasspath(Game.class, NOBLES_RESOURCE_PATH);
+            NobleLoader loader = nobleLoader != null ? nobleLoader : new NobleLoader();
+            List<Noble> nobles = loader.loadFromClasspath(Game.class, NOBLES_RESOURCE_PATH);
             revealedNobles = new ArrayList<>();
             for (int i = 0; i < playerCount + EXTRA_REVEALED_NOBLE_COUNT; i++) {
                 revealedNobles.add(nobles.get(i));

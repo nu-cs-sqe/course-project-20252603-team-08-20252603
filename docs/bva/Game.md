@@ -185,7 +185,7 @@
 |----|---------|--------------|
 | Test Case 93 | CC-GAME-12: `@ParameterizedTest` — null-field guards for all actions (11 rows) | :white_check_mark: |
 | Test Case 94 | CC-GAME-13: `@ParameterizedTest` — deck null (no refill) and `revealedNobles` null | :white_check_mark: |
-| Test Case 95 | CC-GAME-14: `@ParameterizedTest` — 3-player `calculateWinners` single winner vs tie vs **fewest dev cards** (3 rows) | :white_check_mark: / :x: row 3 |
+| Test Case 95 | CC-GAME-14: `@ParameterizedTest` — 3-player `calculateWinners` single winner vs tie vs **fewest dev cards** (3 rows) | :white_check_mark: |
 | Test Case 96 | CC-GAME-15: one multi-color buy killing `calculatePayment` boundary mutants | :white_check_mark: |
 | Test Case 97 | CC-GAME-16: `@ParameterizedTest` — `startGame` when card/noble loader fails (needs test seam) | :white_check_mark: |
 
@@ -199,7 +199,7 @@
 | Test Case 92 | CC-GAME-20: `buyFaceUpCard` when level market list is `null` | :white_check_mark: |
 | Test Case 98 | CC-GAME-17: `buyReservedCard` when `players` is `null` | :white_check_mark: |
 | Test Case 99 | CC-GAME-18: `buyReservedCard` when `tokenBank` is `null` | :white_check_mark: |
-| Test Case 95† | CC-GAME-21: `calculateWinners_threePlayerFinalRound` — `FEWEST_DEV_CARDS_WINS` row | :x: |
+| Test Case 95† | CC-GAME-21: `calculateWinners_threePlayerFinalRound` — `FEWEST_DEV_CARDS_WINS` row | :white_check_mark: |
 | Test Case 100 | CC-GAME-22: `calculateWinners` clears stale winners (reflection + `ClearCountingList`) | :x: |
 | Test Case 101 | CC-GAME-23: `calculatePayment` omits zero gem/gold map entries (reflection) | :x: |
 

@@ -819,6 +819,22 @@ class GameTest {
     }
 
     @Test
+    void buyFaceUpCard_failsWhenLevelMarketListIsNull() throws Exception {
+        Game game = new Game();
+        game.startGame(2, Locale.US);
+        Field faceUpCardsField = Game.class.getDeclaredField("faceUpCards");
+        faceUpCardsField.setAccessible(true);
+        @SuppressWarnings("unchecked")
+        Map<Integer, List<Card>> faceUpCards = (Map<Integer, List<Card>>) faceUpCardsField.get(game);
+        faceUpCards.put(1, null);
+
+        ActionResult result = game.buyFaceUpCard(1, 0, Locale.US);
+
+        assertFalse(result.isSuccess());
+        assertEquals(MessageProvider.getMessage("error.invalid_buy_card", Locale.US), result.getMessage());
+    }
+
+    @Test
     void buyFaceUpCard_rejectsInvalidIndexAndLeavesStateUnchanged() {
         Game game = new Game();
         game.startGame(2, Locale.US);

@@ -152,7 +152,7 @@
 | Test Case 89 | After startGame(2, US), player 0 takes 2 RUBY, then buys level 1 card costing 2 RUBY with no bonus or GOLD                                                                                                     | Returns ActionResult (isSuccess=true), player spends exactly 2 RUBY, GOLD unchanged, card bought, current player advances to player 1                                                                                                      | :white_check_mark: |
 | Test Case 90 | After startGame(2, US), player 0 has 0 RUBY and 1 GOLD from reserve, buys level 1 card costing 1 RUBY                                                                                                          | Returns ActionResult (isSuccess=true), player spends 1 GOLD only, bank RUBY unchanged, bank GOLD increases by 1, card bought, current player advances to player 1                                                                          | :white_check_mark: |
 | Test Case 91 | CC-GAME-19: After startGame(2, US), current player buys level 1 card at index **−1**                                                                                                                            | Returns ActionResult (isSuccess=false) with invalid buy card message; face-up card unchanged; development cards unchanged; current player unchanged                                                                                          | :white_check_mark: |
-| Test Case 92 | CC-GAME-20: After startGame(2, US), reflection sets level-1 face-up market list to `null`, then buy at index 0                                                                                                  | Returns ActionResult (isSuccess=false) with invalid buy card message                                                                                                                                                                         | :x: |
+| Test Case 92 | CC-GAME-20: After startGame(2, US), reflection sets level-1 face-up market list to `null`, then buy at index 0                                                                                                  | Returns ActionResult (isSuccess=false) with invalid buy card message                                                                                                                                                                         | :white_check_mark: |
 
 ---
 
@@ -196,7 +196,7 @@
 | ID | Summary | Implemented? |
 |----|---------|--------------|
 | Test Case 91 | CC-GAME-19: `buyFaceUpCard` rejects negative card index | :white_check_mark: |
-| Test Case 92 | CC-GAME-20: `buyFaceUpCard` when level market list is `null` | :x: |
+| Test Case 92 | CC-GAME-20: `buyFaceUpCard` when level market list is `null` | :white_check_mark: |
 | Test Case 98 | CC-GAME-17: `buyReservedCard` when `players` is `null` | :white_check_mark: |
 | Test Case 99 | CC-GAME-18: `buyReservedCard` when `tokenBank` is `null` | :white_check_mark: |
 | Test Case 95† | CC-GAME-21: `calculateWinners_threePlayerFinalRound` — `FEWEST_DEV_CARDS_WINS` row | :x: |

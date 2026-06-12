@@ -504,15 +504,29 @@ public class RuleValidatorTest {
 
     @Test
     public void validateBuyCard_succeedsWhenBonusCoversEntireColorCost() {
-        Player player = new Player();
+        TokenReadCountingPlayer player = new TokenReadCountingPlayer();
         player.addDevelopmentCard(new Card(1, TokenColor.DIAMOND, Map.of(), 0));
         Card card = new Card(1, TokenColor.RUBY, Map.of(TokenColor.DIAMOND, 1), 0);
+        player.resetTokenReadCount();
 
         ActionResult result = validator.validateBuyCard(player, card, Locale.US);
 
         assertTrue(result.isSuccess());
-        assertEquals(0, player.getTokenCount(TokenColor.DIAMOND));
-        assertEquals(0, player.getTokenCount(TokenColor.GOLD));
+        assertEquals(1, player.getTokenReadCountDuringValidation());
+    }
+
+    @Test
+    public void validateBuyCard_succeedsWhenBonusCoversOneColorInMultiColorCost() {
+        TokenReadCountingPlayer player = new TokenReadCountingPlayer();
+        player.addDevelopmentCard(new Card(1, TokenColor.DIAMOND, Map.of(), 0));
+        player.addTokens(Map.of(TokenColor.GOLD, 1));
+        Card card = new Card(1, TokenColor.RUBY, Map.of(TokenColor.DIAMOND, 1, TokenColor.SAPPHIRE, 1), 0);
+        player.resetTokenReadCount();
+
+        ActionResult result = validator.validateBuyCard(player, card, Locale.US);
+
+        assertTrue(result.isSuccess());
+        assertEquals(2, player.getTokenReadCountDuringValidation());
     }
 
     @Test
@@ -748,6 +762,24 @@ public class RuleValidatorTest {
 
         assertFalse(result.isSuccess());
         assertEquals(MessageProvider.getMessage("error.invalid_noble_visit", Locale.US), result.getMessage());
+    }
+
+    private static final class TokenReadCountingPlayer extends Player {
+        private int tokenReadCountDuringValidation;
+
+        @Override
+        public int getTokenCount(TokenColor color) {
+            tokenReadCountDuringValidation++;
+            return super.getTokenCount(color);
+        }
+
+        int getTokenReadCountDuringValidation() {
+            return tokenReadCountDuringValidation;
+        }
+
+        void resetTokenReadCount() {
+            tokenReadCountDuringValidation = 0;
+        }
     }
 
 }

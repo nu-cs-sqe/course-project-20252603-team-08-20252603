@@ -1534,6 +1534,33 @@ class GameTest {
         );
     }
 
+    @Test
+    void buyFaceUpCard_multiColorPurchaseKillsCalculatePaymentBoundaryMutants() {
+        Game game = new Game();
+        game.startGame(2, Locale.US);
+        Player playerZero = game.getCurrentPlayer();
+        playerZero.addDevelopmentCard(new Card(1, TokenColor.RUBY, Map.of(), 0));
+        playerZero.addTokens(Map.of(TokenColor.SAPPHIRE, 1, TokenColor.GOLD, 1));
+        Card card = new Card(1, TokenColor.DIAMOND, Map.of(TokenColor.RUBY, 1, TokenColor.SAPPHIRE, 2), 0);
+        game.getFaceUpCards(1).set(0, card);
+        int rubyBankBefore = game.getTokenBank().getTokenCount(TokenColor.RUBY);
+        int sapphireBankBefore = game.getTokenBank().getTokenCount(TokenColor.SAPPHIRE);
+        int goldBankBefore = game.getTokenBank().getTokenCount(TokenColor.GOLD);
+
+        ActionResult result = game.buyFaceUpCard(1, 0, Locale.US);
+
+        assertTrue(result.isSuccess());
+        assertEquals(2, playerZero.getDevelopmentCards().size());
+        assertEquals(card, playerZero.getDevelopmentCards().get(1));
+        assertEquals(0, playerZero.getTokenCount(TokenColor.RUBY));
+        assertEquals(0, playerZero.getTokenCount(TokenColor.SAPPHIRE));
+        assertEquals(0, playerZero.getTokenCount(TokenColor.GOLD));
+        assertEquals(rubyBankBefore, game.getTokenBank().getTokenCount(TokenColor.RUBY));
+        assertEquals(sapphireBankBefore + 1, game.getTokenBank().getTokenCount(TokenColor.SAPPHIRE));
+        assertEquals(goldBankBefore + 1, game.getTokenBank().getTokenCount(TokenColor.GOLD));
+        assertEquals(game.getPlayers().get(1), game.getCurrentPlayer());
+    }
+
     private static void setGameField(Game game, String fieldName, Object value) throws Exception {
         Field field = Game.class.getDeclaredField(fieldName);
         field.setAccessible(true);

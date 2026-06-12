@@ -63,6 +63,7 @@
 | TC33 | Player has 1 DIAMOND token, 1 DIAMOND bonus, and 0 GOLD tokens, card costs 3 DIAMOND                             | `isSuccess()` is false, returns US invalid buy card message | :white_check_mark: |
 | TC34 | Player has 1 DIAMOND token, 1 SAPPHIRE token, and 0 bonuses, card costs 1 DIAMOND and 1 SAPPHIRE                 | `isSuccess()` is true                                       | :white_check_mark: |
 | TC35 | Player has 1 DIAMOND token, 0 SAPPHIRE tokens, 0 bonuses, and 0 GOLD tokens, card costs 1 DIAMOND and 1 SAPPHIRE | `isSuccess()` is false, returns US invalid buy card message | :white_check_mark: |
+| TC47 | Player has 0 gem tokens, 0 bonuses, and **exactly 2 GOLD** tokens, card costs 2 DIAMOND (goldNeeded equals player GOLD) | `isSuccess()` is true | :white_check_mark: |
 
 ---
 

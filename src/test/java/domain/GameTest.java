@@ -803,6 +803,22 @@ class GameTest {
     }
 
     @Test
+    void buyFaceUpCard_rejectsNegativeCardIndexAndLeavesStateUnchanged() {
+        Game game = new Game();
+        game.startGame(2, Locale.US);
+        Player playerZero = game.getCurrentPlayer();
+        Card originalCard = game.getFaceUpCards(1).get(0);
+
+        ActionResult result = game.buyFaceUpCard(1, -1, Locale.US);
+
+        assertFalse(result.isSuccess());
+        assertEquals(MessageProvider.getMessage("error.invalid_buy_card", Locale.US), result.getMessage());
+        assertEquals(0, playerZero.getDevelopmentCards().size());
+        assertEquals(originalCard, game.getFaceUpCards(1).get(0));
+        assertEquals(playerZero, game.getCurrentPlayer());
+    }
+
+    @Test
     void buyFaceUpCard_rejectsInvalidIndexAndLeavesStateUnchanged() {
         Game game = new Game();
         game.startGame(2, Locale.US);

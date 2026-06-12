@@ -1647,6 +1647,51 @@ class GameTest {
         assertEquals(2, winners.getClearCount());
     }
 
+    @Test
+    void calculatePayment_omitsZeroGemAndGoldEntriesWhenNotNeeded() throws Exception {
+        Game game = new Game();
+        game.startGame(2, Locale.US);
+        Method calculatePayment = Game.class.getDeclaredMethod("calculatePayment", Player.class, Card.class);
+        calculatePayment.setAccessible(true);
+
+        TokenReadCountingPlayer bonusCoversPlayer = new TokenReadCountingPlayer();
+        bonusCoversPlayer.addDevelopmentCard(new Card(1, TokenColor.RUBY, Map.of(), 0));
+        Card bonusCoversCard = new Card(1, TokenColor.DIAMOND, Map.of(TokenColor.RUBY, 1), 0);
+        @SuppressWarnings("unchecked")
+        Map<TokenColor, Integer> bonusOnlyPayment = (Map<TokenColor, Integer>) calculatePayment.invoke(
+                game, bonusCoversPlayer, bonusCoversCard);
+        assertTrue(bonusOnlyPayment.isEmpty());
+        assertEquals(0, bonusCoversPlayer.getTokenReadCountDuringPayment());
+
+        Player gemOnlyPlayer = new Player();
+        gemOnlyPlayer.addTokens(Map.of(TokenColor.RUBY, 1));
+        Card gemOnlyCard = new Card(1, TokenColor.DIAMOND, Map.of(TokenColor.RUBY, 1), 0);
+        @SuppressWarnings("unchecked")
+        Map<TokenColor, Integer> gemOnlyPayment = (Map<TokenColor, Integer>) calculatePayment.invoke(
+                game, gemOnlyPlayer, gemOnlyCard);
+        assertEquals(Map.of(TokenColor.RUBY, 1), gemOnlyPayment);
+        assertFalse(gemOnlyPayment.containsKey(TokenColor.GOLD));
+
+        Player goldOnlyPlayer = new Player();
+        goldOnlyPlayer.addTokens(Map.of(TokenColor.GOLD, 1));
+        Card goldOnlyCard = new Card(1, TokenColor.DIAMOND, Map.of(TokenColor.RUBY, 1), 0);
+        @SuppressWarnings("unchecked")
+        Map<TokenColor, Integer> goldOnlyPayment = (Map<TokenColor, Integer>) calculatePayment.invoke(
+                game, goldOnlyPlayer, goldOnlyCard);
+        assertEquals(Map.of(TokenColor.GOLD, 1), goldOnlyPayment);
+        assertFalse(goldOnlyPayment.containsKey(TokenColor.RUBY));
+
+        Player multiColorPlayer = new Player();
+        multiColorPlayer.addDevelopmentCard(new Card(1, TokenColor.DIAMOND, Map.of(), 0));
+        multiColorPlayer.addTokens(Map.of(TokenColor.GOLD, 1));
+        Card multiColorCard = new Card(1, TokenColor.EMERALD, Map.of(TokenColor.DIAMOND, 1, TokenColor.RUBY, 1), 0);
+        @SuppressWarnings("unchecked")
+        Map<TokenColor, Integer> multiColorPayment = (Map<TokenColor, Integer>) calculatePayment.invoke(
+                game, multiColorPlayer, multiColorCard);
+        assertEquals(Map.of(TokenColor.GOLD, 1), multiColorPayment);
+        assertFalse(multiColorPayment.containsKey(TokenColor.DIAMOND));
+    }
+
     @ParameterizedTest
     @MethodSource("resourceLoaderFailureCases")
     void startGame_throwsWhenResourceLoaderFails(Game game, String expectedMessage) {
@@ -1870,6 +1915,20 @@ class GameTest {
 
         int getClearCount() {
             return clearCount;
+        }
+    }
+
+    private static final class TokenReadCountingPlayer extends Player {
+        private int tokenReadCountDuringPayment;
+
+        @Override
+        public int getTokenCount(TokenColor color) {
+            tokenReadCountDuringPayment++;
+            return super.getTokenCount(color);
+        }
+
+        int getTokenReadCountDuringPayment() {
+            return tokenReadCountDuringPayment;
         }
     }
 }

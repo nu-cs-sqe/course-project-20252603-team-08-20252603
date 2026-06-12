@@ -122,6 +122,18 @@ public class RuleValidatorTest {
     }
 
     @Test
+    public void validateTakeTokens_rejectsTokenMapWithZeroCount() {
+        Player player = new Player();
+        TokenBank bank = new TokenBank();
+        bank.initialize(2);
+
+        ActionResult result = validator.validateTakeTokens(player, bank, Map.of(TokenColor.DIAMOND, 0), Locale.US);
+
+        assertFalse(result.isSuccess());
+        assertEquals(MessageProvider.getMessage("error.invalid_token_selection", Locale.US), result.getMessage());
+    }
+
+    @Test
     public void validateTakeTokens_rejectsUnavailableBankToken() {
         Player player = new Player();
         TokenBank bank = new TokenBank();

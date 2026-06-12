@@ -200,7 +200,7 @@
 | Test Case 98 | CC-GAME-17: `buyReservedCard` when `players` is `null` | :white_check_mark: |
 | Test Case 99 | CC-GAME-18: `buyReservedCard` when `tokenBank` is `null` | :white_check_mark: |
 | Test Case 95† | CC-GAME-21: `calculateWinners_threePlayerFinalRound` — `FEWEST_DEV_CARDS_WINS` row | :white_check_mark: |
-| Test Case 100 | CC-GAME-22: `calculateWinners` clears stale winners (reflection + `ClearCountingList`) | :x: |
+| Test Case 100 | CC-GAME-22: `calculateWinners` clears stale winners (reflection + `ClearCountingList`) | :white_check_mark: |
 | Test Case 101 | CC-GAME-23: `calculatePayment` omits zero gem/gold map entries (reflection) | :x: |
 
 † Third row of Test Case 95 / CC-GAME-14 parameterized test.

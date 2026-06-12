@@ -7,6 +7,8 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -1622,6 +1624,29 @@ class GameTest {
         assertEquals(game.getPlayers().get(1), game.getCurrentPlayer());
     }
 
+    @Test
+    void calculateWinners_clearsExistingWinnersBeforeSelectingNewWinner() throws Exception {
+        Game game = new Game();
+        game.startGame(2, Locale.US);
+        ClearCountingList<Player> winners = new ClearCountingList<>();
+        winners.add(new Player());
+        winners.add(new Player());
+        setGameField(game, "winners", winners);
+
+        Player playerZero = game.getPlayers().get(0);
+        Player playerOne = game.getPlayers().get(1);
+        playerZero.addDevelopmentCard(new Card(1, TokenColor.DIAMOND, Map.of(), 16));
+        playerOne.addDevelopmentCard(new Card(1, TokenColor.RUBY, Map.of(), 5));
+
+        Method calculateWinners = Game.class.getDeclaredMethod("calculateWinners");
+        calculateWinners.setAccessible(true);
+        calculateWinners.invoke(game);
+
+        assertEquals(1, game.getWinners().size());
+        assertEquals(playerZero, game.getWinners().get(0));
+        assertEquals(2, winners.getClearCount());
+    }
+
     @ParameterizedTest
     @MethodSource("resourceLoaderFailureCases")
     void startGame_throwsWhenResourceLoaderFails(Game game, String expectedMessage) {
@@ -1832,5 +1857,19 @@ class GameTest {
 
     private static String cardFingerprint(Card card) {
         return card.bonusColor + ":" + card.prestigePoints + ":" + card.cost;
+    }
+
+    private static final class ClearCountingList<E> extends ArrayList<E> {
+        private int clearCount;
+
+        @Override
+        public void clear() {
+            clearCount++;
+            super.clear();
+        }
+
+        int getClearCount() {
+            return clearCount;
+        }
     }
 }

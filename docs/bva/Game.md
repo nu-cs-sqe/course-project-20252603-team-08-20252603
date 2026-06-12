@@ -175,7 +175,7 @@
 | Test Case 81 | During FINAL_ROUND, current player buys a reserved card and this completes the final round                                                                                                                           | Returns ActionResult (isSuccess=true), phase becomes GAME_OVER and winners are calculated                                                                                                                                                              | :white_check_mark: |
 | Test Case 87 | After startGame(2, US), `ruleValidator` set to `null`, current player buys affordable reserved card at index 0                                                                                                       | Returns ActionResult (isSuccess=true), reserved card moves to development cards, reserved list empty, current player advances to player 1                                                                                                              | :white_check_mark: |
 | Test Case 98 | CC-GAME-17: After startGame(2, US), player has one reserved card; reflection sets `players` to `null`; buyReservedCard(0)                                                                                          | Returns ActionResult (isSuccess=false) with invalid buy card message                                                                                                                                                                                    | :white_check_mark: |
-| Test Case 99 | CC-GAME-18: After startGame(2, US), player has one reserved card; reflection sets `tokenBank` to `null`; buyReservedCard(0)                                                                                       | Returns ActionResult (isSuccess=false) with invalid buy card message                                                                                                                                                                                    | :x: |
+| Test Case 99 | CC-GAME-18: After startGame(2, US), player has one reserved card; reflection sets `tokenBank` to `null`; buyReservedCard(0)                                                                                       | Returns ActionResult (isSuccess=false) with invalid buy card message                                                                                                                                                                                    | :white_check_mark: |
 
 ---
 
@@ -198,7 +198,7 @@
 | Test Case 91 | CC-GAME-19: `buyFaceUpCard` rejects negative card index | :x: |
 | Test Case 92 | CC-GAME-20: `buyFaceUpCard` when level market list is `null` | :x: |
 | Test Case 98 | CC-GAME-17: `buyReservedCard` when `players` is `null` | :white_check_mark: |
-| Test Case 99 | CC-GAME-18: `buyReservedCard` when `tokenBank` is `null` | :x: |
+| Test Case 99 | CC-GAME-18: `buyReservedCard` when `tokenBank` is `null` | :white_check_mark: |
 | Test Case 95† | CC-GAME-21: `calculateWinners_threePlayerFinalRound` — `FEWEST_DEV_CARDS_WINS` row | :x: |
 | Test Case 100 | CC-GAME-22: `calculateWinners` clears stale winners (reflection + `ClearCountingList`) | :x: |
 | Test Case 101 | CC-GAME-23: `calculatePayment` omits zero gem/gold map entries (reflection) | :x: |

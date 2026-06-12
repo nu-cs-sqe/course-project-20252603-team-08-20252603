@@ -277,7 +277,7 @@ Phase 2 closed most gaps but verification still reported **domain branch 97%** a
 | ID | Test method | State of the System (summary) | Expected output | Implemented? |
 |----|-------------|-------------------------------|-----------------|--------------|
 | CC-GAME-17 | `buyReservedCard_failsWhenPlayersIsNull` | After `startGame(2, US)`; reserved card on current player; `players` set to `null` | `isSuccess() == false`, invalid buy card message | :white_check_mark: |
-| CC-GAME-18 | `buyReservedCard_failsWhenTokenBankIsNull` | Same; `tokenBank` set to `null` | `isSuccess() == false`, invalid buy card message | :x: |
+| CC-GAME-18 | `buyReservedCard_failsWhenTokenBankIsNull` | Same; `tokenBank` set to `null` | `isSuccess() == false`, invalid buy card message | :white_check_mark: |
 | CC-GAME-19 | `buyFaceUpCard_rejectsNegativeCardIndexAndLeavesStateUnchanged` | After `startGame(2, US)`; buy level 1 at index **−1** | `isSuccess() == false`; state unchanged | :x: |
 | CC-GAME-20 | `buyFaceUpCard_failsWhenLevelMarketListIsNull` | After `startGame(2, US)`; level-1 market list set to `null` | `isSuccess() == false`, invalid buy card message | :x: |
 | CC-GAME-21 | `calculateWinners_threePlayerFinalRound` row `FEWEST_DEV_CARDS_WINS` | 3 players; two at 15 prestige / 3 dev cards; one at 15 / 2 dev cards | After final round: single winner with fewest dev cards | :x: |

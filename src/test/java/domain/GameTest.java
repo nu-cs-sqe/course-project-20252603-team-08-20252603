@@ -1197,6 +1197,19 @@ class GameTest {
     }
 
     @Test
+    void buyReservedCard_failsWhenTokenBankIsNull() throws Exception {
+        Game game = new Game();
+        game.startGame(2, Locale.US);
+        game.getCurrentPlayer().addReservedCard(new Card(1, TokenColor.DIAMOND, Map.of(), 0));
+        setGameField(game, "tokenBank", null);
+
+        ActionResult result = game.buyReservedCard(0, Locale.US);
+
+        assertFalse(result.isSuccess());
+        assertEquals(MessageProvider.getMessage("error.invalid_buy_card", Locale.US), result.getMessage());
+    }
+
+    @Test
     void buyReservedCard_whenBoughtCardSatisfiesOneNobleAddsNobleToPlayerAndRemovesItFromRevealedNobles() {
         Game game = new Game();
         game.startGame(2, Locale.US);

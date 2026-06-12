@@ -1492,10 +1492,85 @@ class GameTest {
         );
     }
 
+    @ParameterizedTest
+    @MethodSource("skipWhenTargetNullCases")
+    void buyFaceUpCard_skipsReplenishOrNobleWhenTargetIsNull(SkipWhenTargetNullCase testCase) throws Exception {
+        Game game = new Game();
+        game.startGame(2, Locale.US);
+        Player playerZero = game.getCurrentPlayer();
+        game.getFaceUpCards(1).set(0, new Card(1, TokenColor.DIAMOND, Map.of(), 0));
+        int marketSizeBefore = game.getFaceUpCards(1).size();
+
+        testCase.prepare(game, playerZero);
+        Card cardToBuy = game.getFaceUpCards(1).get(0);
+
+        ActionResult result = game.buyFaceUpCard(1, 0, Locale.US);
+
+        assertTrue(result.isSuccess());
+        testCase.assertOutcome(game, playerZero, cardToBuy, marketSizeBefore);
+    }
+
+    private static Stream<Arguments> skipWhenTargetNullCases() {
+        return Stream.of(
+                Arguments.of(SkipWhenTargetNullCase.NULL_DECK),
+                Arguments.of(SkipWhenTargetNullCase.NULL_REVEALED_NOBLES)
+        );
+    }
+
     private static void setGameField(Game game, String fieldName, Object value) throws Exception {
         Field field = Game.class.getDeclaredField(fieldName);
         field.setAccessible(true);
         field.set(game, value);
+    }
+
+    private static void setDeckForLevel(Game game, int level, Deck deck) throws Exception {
+        Field decksField = Game.class.getDeclaredField("decks");
+        decksField.setAccessible(true);
+        @SuppressWarnings("unchecked")
+        Map<Integer, Deck> decks = (Map<Integer, Deck>) decksField.get(game);
+        decks.put(level, deck);
+    }
+
+    private enum SkipWhenTargetNullCase {
+        NULL_DECK {
+            @Override
+            void prepare(Game game, Player player) throws Exception {
+                setDeckForLevel(game, 1, null);
+            }
+
+            @Override
+            void assertOutcome(Game game, Player player, Card card, int marketSizeBefore) {
+                assertEquals(1, player.getDevelopmentCards().size());
+                assertEquals(card, player.getDevelopmentCards().get(0));
+                assertEquals(marketSizeBefore - 1, game.getFaceUpCards(1).size());
+            }
+        },
+        NULL_REVEALED_NOBLES {
+            @Override
+            void prepare(Game game, Player player) throws Exception {
+                player.addDevelopmentCard(new Card(1, TokenColor.SAPPHIRE, Map.of(), 0));
+                player.addDevelopmentCard(new Card(1, TokenColor.SAPPHIRE, Map.of(), 0));
+                player.addDevelopmentCard(new Card(1, TokenColor.SAPPHIRE, Map.of(), 0));
+                player.addDevelopmentCard(new Card(1, TokenColor.EMERALD, Map.of(), 0));
+                player.addDevelopmentCard(new Card(1, TokenColor.EMERALD, Map.of(), 0));
+                player.addDevelopmentCard(new Card(1, TokenColor.EMERALD, Map.of(), 0));
+                player.addDevelopmentCard(new Card(1, TokenColor.RUBY, Map.of(), 0));
+                player.addDevelopmentCard(new Card(1, TokenColor.RUBY, Map.of(), 0));
+                game.getFaceUpCards(1).set(0, new Card(1, TokenColor.RUBY, Map.of(), 1));
+                setGameField(game, "revealedNobles", null);
+            }
+
+            @Override
+            void assertOutcome(Game game, Player player, Card card, int marketSizeBefore) {
+                assertTrue(player.getDevelopmentCards().contains(card));
+                assertEquals(0, player.getNobles().size());
+                assertNull(game.getRevealedNobles());
+            }
+        };
+
+        abstract void prepare(Game game, Player player) throws Exception;
+
+        abstract void assertOutcome(Game game, Player player, Card card, int marketSizeBefore);
     }
 
     private enum GameAction {

@@ -150,7 +150,7 @@ Target: **8 new test methods** (7 required + 1 optional) instead of 25.
 | Phase | BVA cases | Planned test methods | Status |
 |-------|-----------|----------------------|--------|
 | Phase 1 | 18 | 18+ | :white_check_mark: |
-| **Phase 2** | **CC-GAME-12 … 16, CC-RV-06 … 07, CC-MSG-02 (opt.)** | **~8** | :x: **1/7** required |
+| **Phase 2** | **CC-GAME-12 … 16, CC-RV-06 … 07, CC-MSG-02 (opt.)** | **~8** | :x: **2/7** required |
 
 ### Phase 2 → gap mapping (why this is enough)
 
@@ -172,7 +172,7 @@ Target: **8 new test methods** (7 required + 1 optional) instead of 25.
 | ID | Test method (planned) | State of the System (summary) | Expected output | Implemented? |
 |----|----------------------|-------------------------------|-----------------|--------------|
 | CC-GAME-12 | `gameAction_failsWhenRequiredFieldIsNull` **`@ParameterizedTest`** | After `startGame(2, US)`; reflection sets one field to `null` per row: `players`, `tokenBank`, `faceUpCards`, `decks` × action (`takeTokens`, `reserveFaceUpCard`, `buyFaceUpCard`, `buyReservedCard`); plus row: `buyFaceUpCard(4, 0)` | Each row: `isSuccess() == false` with matching error message | :white_check_mark: |
-| CC-GAME-13 | `buyFaceUpCard_skipsReplenishOrNobleWhenTargetIsNull` **`@ParameterizedTest`** | (1) level-1 deck set to `null`, affordable buy; (2) `revealedNobles` set to `null`, affordable buy | (1) buy succeeds, market size −1; (2) buy succeeds, nobles unchanged | :x: |
+| CC-GAME-13 | `buyFaceUpCard_skipsReplenishOrNobleWhenTargetIsNull` **`@ParameterizedTest`** | (1) level-1 deck set to `null`, affordable buy; (2) `revealedNobles` set to `null`, affordable buy | (1) buy succeeds, market size −1; (2) buy succeeds, nobles unchanged | :white_check_mark: |
 | CC-GAME-14 | `calculateWinners_threePlayerFinalRound` **`@ParameterizedTest`** | 3-player `startGame`; final-round setup per row: (1) one player strictly highest prestige; (2) two players tied on prestige **and** dev-card count | (1) `getWinners().size() == 1`; (2) `getWinners().size() == 2` | :x: |
 | CC-GAME-15 | `buyFaceUpCard_multiColorPurchaseKillsCalculatePaymentBoundaryMutants` | Card costs 1 RUBY + 1 SAPPHIRE; player has 1 RUBY **bonus**, 0 RUBY gems, 1 SAPPHIRE gem, 1 GOLD | Buy succeeds; spends 1 SAPPHIRE + 1 GOLD only; RUBY/gold bank counts reflect no RUBY gem spend | :x: |
 | CC-GAME-16 | `startGame_throwsWhenResourceLoaderFails` **`@ParameterizedTest`** | Test seam makes card or noble loader throw | `IllegalStateException` (*Unable to initialize cards/nobles.*) | :x: |

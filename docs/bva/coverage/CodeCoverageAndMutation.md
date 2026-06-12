@@ -150,7 +150,7 @@ Target: **8 new test methods** (7 required + 1 optional) instead of 25.
 | Phase | BVA cases | Planned test methods | Status |
 |-------|-----------|----------------------|--------|
 | Phase 1 | 18 | 18+ | :white_check_mark: |
-| **Phase 2** | **CC-GAME-12 … 16, CC-RV-06 … 07, CC-MSG-02 (opt.)** | **~8** | :x: **5/7** required |
+| **Phase 2** | **CC-GAME-12 … 16, CC-RV-06 … 07, CC-MSG-02 (opt.)** | **~8** | :x: **6/7** required |
 
 ### Phase 2 → gap mapping (why this is enough)
 
@@ -188,7 +188,7 @@ Target: **8 new test methods** (7 required + 1 optional) instead of 25.
 
 | ID | Test method (planned) | State of the System (summary) | Expected output | Implemented? |
 |----|----------------------|-------------------------------|-----------------|--------------|
-| CC-RV-06 | `validateTakeTokens_boundaryTokenRules` **`@ParameterizedTest`** | (1) bank **1** DIAMOND, take 1D+1R+1O; (2) player **7** tokens, take 3 gems; (3) map contains count **−1** | (1)(2) `isSuccess() == true`; (3) `isSuccess() == false` | :x: |
+| CC-RV-06 | `validateTakeTokens_boundaryTokenRules` **`@ParameterizedTest`** | (1) bank **1** DIAMOND, take 1D+1R+1O; (2) player **7** tokens, take 3 gems; (3) map contains count **−1** | (1)(2) `isSuccess() == true`; (3) `isSuccess() == false` | :white_check_mark: |
 | CC-RV-07 | `validateBuyCard_succeedsWhenBonusCoversEntireColorCost` | Card costs 1 DIAMOND; player has 1 DIAMOND bonus, 0 gems, 0 gold | `isSuccess() == true` | :x: |
 
 *Also add to `docs/bva/RuleValidator.md` as TC49–TC50 when implemented.*

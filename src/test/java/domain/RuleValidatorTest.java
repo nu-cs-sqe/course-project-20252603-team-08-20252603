@@ -1,10 +1,17 @@
 package domain;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.stream.Stream;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class RuleValidatorTest {
@@ -206,6 +213,88 @@ public class RuleValidatorTest {
 
         assertFalse(result.isSuccess());
         assertEquals(MessageProvider.getMessage("error.invalid_token_selection", Locale.US), result.getMessage());
+    }
+
+    @ParameterizedTest
+    @MethodSource("takeTokensBoundaryCases")
+    public void validateTakeTokens_boundaryTokenRules(TakeTokensBoundaryCase testCase) {
+        Player player = new Player();
+        TokenBank bank = new TokenBank();
+        bank.initialize(2);
+        testCase.prepare(player, bank);
+
+        ActionResult result = validator.validateTakeTokens(player, bank, testCase.tokensToTake(), Locale.US);
+
+        assertEquals(testCase.expectedSuccess(), result.isSuccess());
+        if (!testCase.expectedSuccess()) {
+            assertEquals(MessageProvider.getMessage("error.invalid_token_selection", Locale.US), result.getMessage());
+        }
+    }
+
+    private static Stream<Arguments> takeTokensBoundaryCases() {
+        return Stream.of(
+                Arguments.of(TakeTokensBoundaryCase.BANK_COUNT_EQUALS_TAKE_COUNT),
+                Arguments.of(TakeTokensBoundaryCase.PLAYER_AT_TOKEN_LIMIT_BOUNDARY),
+                Arguments.of(TakeTokensBoundaryCase.NEGATIVE_TOKEN_COUNT)
+        );
+    }
+
+    private enum TakeTokensBoundaryCase {
+        BANK_COUNT_EQUALS_TAKE_COUNT {
+            @Override
+            void prepare(Player player, TokenBank bank) {
+                bank.removeTokens(Map.of(TokenColor.DIAMOND, 3));
+            }
+
+            @Override
+            Map<TokenColor, Integer> tokensToTake() {
+                return Map.of(TokenColor.DIAMOND, 1, TokenColor.RUBY, 1, TokenColor.ONYX, 1);
+            }
+
+            @Override
+            boolean expectedSuccess() {
+                return true;
+            }
+        },
+        PLAYER_AT_TOKEN_LIMIT_BOUNDARY {
+            @Override
+            void prepare(Player player, TokenBank bank) {
+                player.addTokens(Map.of(TokenColor.DIAMOND, 4, TokenColor.RUBY, 3));
+            }
+
+            @Override
+            Map<TokenColor, Integer> tokensToTake() {
+                return Map.of(TokenColor.DIAMOND, 1, TokenColor.SAPPHIRE, 1, TokenColor.EMERALD, 1);
+            }
+
+            @Override
+            boolean expectedSuccess() {
+                return true;
+            }
+        },
+        NEGATIVE_TOKEN_COUNT {
+            @Override
+            void prepare(Player player, TokenBank bank) {
+            }
+
+            @Override
+            Map<TokenColor, Integer> tokensToTake() {
+                Map<TokenColor, Integer> tokens = new HashMap<>();
+                tokens.put(TokenColor.DIAMOND, -1);
+                return tokens;
+            }
+
+            @Override
+            boolean expectedSuccess() {
+                return false;
+            }
+        };
+
+        abstract void prepare(Player player, TokenBank bank);
+
+        abstract Map<TokenColor, Integer> tokensToTake();
+
+        abstract boolean expectedSuccess();
     }
 
     @Test

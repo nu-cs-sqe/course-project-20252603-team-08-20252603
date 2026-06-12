@@ -51,17 +51,26 @@ class DeckTest {
     }
 
     @Test
-    void gameSetup_shuffle_changesOrderWhenDeckHasDistinctCards() {
+    void gameSetup_shuffle_actuallyChangesOrder() {
         Deck deck = new Deck();
-        List<Card> orderBefore = new ArrayList<>();
-        for (int i = 0; i < 8; i++) {
-            Card card = new Card(1, TokenColor.DIAMOND, new HashMap<>(), i);
-            deck.addCard(card);
-            orderBefore.add(card);
+
+        for (int i = 0; i < 20; i++) {
+            Card uniqueCard = new Card(1, TokenColor.DIAMOND, new HashMap<>(), i);
+            deck.addCard(uniqueCard);
         }
+
+        java.util.List<Card> originalOrder = new java.util.ArrayList<>(deck.cards);
 
         deck.shuffle();
 
-        assertNotEquals(orderBefore, deck.cards);
+        boolean orderChanged = false;
+        for (int i = 0; i < originalOrder.size(); i++) {
+            if (originalOrder.get(i) != deck.cards.get(i)) {
+                orderChanged = true;
+                break;
+            }
+        }
+
+        assertTrue(orderChanged, "Shuffle should actively change the order of cards in the deck");
     }
 }

@@ -26,6 +26,9 @@
 | TC13 | Player has 0 tokens, bank has tokens, take empty token map                          | `isSuccess()` is false, returns US invalid token selection message | :white_check_mark: |
 | TC14 | Player has 0 tokens, bank has tokens, take 1 DIAMOND and 1 RUBY                     | `isSuccess()` is false, returns US invalid token selection message | :white_check_mark: |
 | TC15 | Player has 0 tokens, bank has tokens, take 1 DIAMOND, 1 RUBY, 1 ONYX, and 1 EMERALD | `isSuccess()` is false, returns US invalid token selection message | :white_check_mark: |
+| TC44 | Player has 0 tokens, bank has **exactly 4** DIAMOND, take 2 DIAMOND | `isSuccess()` is true | :white_check_mark: |
+| TC45 | Player has 0 tokens, bank has **exactly 3** DIAMOND, take 2 DIAMOND | `isSuccess()` is false, returns US invalid token selection message | :white_check_mark: |
+| TC46 | Player has 0 tokens, bank has tokens, take token map with **0** DIAMOND | `isSuccess()` is false, returns US invalid token selection message | :white_check_mark: |
 
 ---
 
@@ -60,6 +63,14 @@
 | TC33 | Player has 1 DIAMOND token, 1 DIAMOND bonus, and 0 GOLD tokens, card costs 3 DIAMOND                             | `isSuccess()` is false, returns US invalid buy card message | :white_check_mark: |
 | TC34 | Player has 1 DIAMOND token, 1 SAPPHIRE token, and 0 bonuses, card costs 1 DIAMOND and 1 SAPPHIRE                 | `isSuccess()` is true                                       | :white_check_mark: |
 | TC35 | Player has 1 DIAMOND token, 0 SAPPHIRE tokens, 0 bonuses, and 0 GOLD tokens, card costs 1 DIAMOND and 1 SAPPHIRE | `isSuccess()` is false, returns US invalid buy card message | :white_check_mark: |
+| TC47 | Player has 0 gem tokens, 0 bonuses, and **exactly 2 GOLD** tokens, card costs 2 DIAMOND (goldNeeded equals player GOLD) | `isSuccess()` is true | :white_check_mark: |
+| TC48 | Player has 0 gem tokens, 0 bonuses, and **exactly 2 GOLD** tokens, card costs 3 DIAMOND (goldNeeded is player GOLD + 1) | `isSuccess()` is false, returns US invalid buy card message | :white_check_mark: |
+| TC49 | CC-RV-06: `@ParameterizedTest` — bank count equals take count; player at token limit 10; count −1 | rows (1)(2) true, (3) false | :white_check_mark: |
+| TC50 | CC-RV-07: bonus fully covers single-color cost (`remainingCost == 0`) | `isSuccess()` is true; **no** `getTokenCount` during cost loop (only final GOLD check) | :white_check_mark: |
+| TC51 | CC-RV-08: bank has **5** DIAMOND; take 2 DIAMOND | `isSuccess()` is true | :white_check_mark: |
+| TC52 | CC-RV-09: map `{DIAMOND:0, RUBY:2, SAPPHIRE:1}` (total 3, size 3) | `isSuccess()` is false — rejects zero-count entry | :white_check_mark: |
+| TC53 | CC-RV-10: double-take path with entry value ≠ 2 on second iterator pass | `isSuccess()` is false | :white_check_mark: |
+| TC54 | CC-RV-11: card costs 1 DIAMOND + 1 SAPPHIRE; player has DIAMOND bonus and 1 GOLD; `getTokenCount` called exactly twice during validation | `isSuccess()` is true | :white_check_mark: |
 
 ---
 
